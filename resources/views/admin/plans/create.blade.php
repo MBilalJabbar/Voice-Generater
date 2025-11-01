@@ -21,7 +21,7 @@
                 <div class="card bg-white shadow p-4">
                     <h5 class="mb-4">Create Plan</h5>
                     {{-- Note: 'item.store' is the assumed route for saving a new item --}}
-                    <form action="" method="POST" enctype="multipart/form-data">
+                    <form action="{{ route('storePlans') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
                             {{-- Basic Details --}}

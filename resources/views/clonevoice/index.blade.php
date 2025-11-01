@@ -94,43 +94,62 @@
                     <h6 class="fw-semibold mb-1">Upload Voice File</h6>
 
                     <!-- Drag & Drop File Upload -->
-                    <div class="mb-3 mt-4">
-                        <div id="upload-area" class="upload-area">
-                            <i class="fa-solid fa-cloud-arrow-up mb-3 upload-icon"></i>
-                            <p class="mb-1 fw-semibold text-dark">Drag & drop your audio file here</p>
-                            <p class="text-muted small text-center">or click to browse</p>
-                            <input type="file" class="d-none" id="fileInput" accept="audio/*">
-                            <button class="btn btn-light btn-md">Upload</button>
-                        </div>
-                    </div>
+                    <form action="{{ route('addVoiceClone') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
-                    <!-- Name Field -->
-                    <div class="mb-3">
-                        <label class="fw-semibold mb-1">Name</label>
-                        <input type="text" class="form-control input-custom shadow-sm" placeholder="Enter Name">
-                    </div>
+    <div class="mb-3 mt-4">
+        <div id="upload-area" class="upload-area text-center">
+            <i class="fa-solid fa-cloud-arrow-up mb-3 upload-icon"></i>
+            <p class="mb-1 fw-semibold text-dark">Drag & drop your audio file here</p>
+            <p class="text-muted small text-center">or click to browse</p>
 
-                    <!-- Noise Reduction Switch -->
-                    <div class="form-check form-switch mb-3 mt-4">
-                        <input class="form-check-input switch-custom" type="checkbox" id="noiseReductionSwitch" checked>
-                        <label class="form-check-label fw-semibold" for="noiseReductionSwitch">
-                            Enable Noise Reduction
-                        </label>
-                    </div>
+            <input type="file" class="d-none" id="fileInput" name="voice_file" accept="audio/*" required>
 
-                    <!-- Sample Text -->
-                    <div class="mb-3">
-                        <label class="fw-semibold mb-1">Sample Text</label>
-                        <input type="text" class="form-control input-custom shadow-sm"
-                            placeholder="Enter sample text for testing">
-                    </div>
+            <!-- This triggers file input click -->
+            <button type="button" class="btn btn-light btn-md"
+                onclick="document.getElementById('fileInput').click()">Upload</button>
+        </div>
+    </div>
 
-                    <!-- Button -->
-                    <div class="text-end mt-4">
-                        <button class="btn btn-lg text-white px-4 clone-btn" style="border-radius: 40px">
-                            Clone Voice
-                        </button>
-                    </div>
+    <!-- Name Field -->
+    <div class="mb-3">
+        <label class="fw-semibold mb-1">Name</label>
+        <input type="text" name="name" class="form-control input-custom shadow-sm" placeholder="Enter Name" required>
+    </div>
+
+    <!-- Noise Reduction Switch -->
+    <div class="form-check form-switch mb-3 mt-4">
+    <!-- Hidden input ensures value is sent even when unchecked -->
+    <input type="hidden" name="noise_reduction" value="0">
+
+    <input class="form-check-input switch-custom"
+           type="checkbox"
+           name="noise_reduction"
+           id="noiseReductionSwitch"
+           value="1"
+           checked>
+
+    <label class="form-check-label fw-semibold" for="noiseReductionSwitch">
+        Enable Noise Reduction
+    </label>
+</div>
+
+
+    <!-- Sample Text -->
+    <div class="mb-3">
+        <label class="fw-semibold mb-1">Sample Text</label>
+        <input type="text" name="sample_text" class="form-control input-custom shadow-sm"
+            placeholder="Enter sample text for testing">
+    </div>
+
+    <!-- Submit Button -->
+    <div class="text-end mt-4">
+        <button type="submit" class="btn btn-lg text-white px-4 clone-btn" style="border-radius: 40px">
+            Clone Voice
+        </button>
+    </div>
+</form>
+
                 </div>
 
                 <!-- Right: Saved Voices -->
@@ -181,4 +200,11 @@
             }
         });
     </script>
+    <script>
+document.getElementById('fileInput').addEventListener('change', function () {
+    const fileName = this.files[0]?.name || "No file chosen";
+    document.querySelector('#upload-area p.mb-1').textContent = fileName;
+});
+</script>
+
 @endsection

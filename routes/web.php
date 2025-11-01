@@ -92,7 +92,14 @@ Route::put('/updateUserAdmin/{id}', [AddUserAdminController::class, 'updateUserA
 Route::delete('/deleteUserAdmin/{id}', [AddUserAdminController::class, 'deleteUserAdmin'])->name('deleteUserAdmin');
 Route::get('/ShowUserAdminDetails/{id}', [AddUserAdminController::class, 'ShowUserAdminDetails']);
 
-// Voice Clone Routes Admin Dashboard
+// Voice Clone User Dashboard
+Route::post('/addVoiceClone', [CloneVoiceController::class, 'addVoiceClone'])->name('addVoiceClone');
+
+
+// Voice  Routes Admin Dashboard
 Route::post('/createVoices', [AdminController::class, 'createVoices']);
 Route::post('/editVoice/{id}', [AdminController::class, 'editVoice']);
 Route::post('/deleteVoice/{id}', [AdminController::class, 'deleteVoice']);
+
+// Admin Add Plans Section
+Route::post('/storePlans', [PlanController::class, 'storePlans'])->name('storePlans');
