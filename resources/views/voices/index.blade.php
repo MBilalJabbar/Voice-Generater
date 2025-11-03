@@ -82,7 +82,7 @@
             padding: 0.5rem 0.75rem; /* Adjusted padding */
             height: auto; /* Reset height */
         }
-        
+
         /* New style for smaller Trending/Filter buttons */
         .compact-header-btn {
             padding: 0.5rem 1rem; /* Reduced padding for smaller size */
@@ -150,42 +150,45 @@
 
         <h3 style="font-size: 1.5rem; font-weight:600; margin-bottom: 1.5rem;">Trending Voices</h3>
         <div class="row">
-            @for ($i = 0; $i < 9; $i++)
-                {{-- Loop to create 9 identical cards --}}
-                <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
-                    <div class="card custom-card shadow-sm"
-                        style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
-                        <div class="card-body d-flex align-items-center p-3">
-                            <span class="avatar">
-                                <img src="{{ asset('assets/images/Ellipse 22.png') }}" alt="Voice Profile">
+    @foreach($voices as $voice)
+        <div class="col-xxl-3 col-lg-4 col-md-6 col-sm-12 mb-4">
+            <div class="card custom-card shadow-sm" style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
+                <div class="card-body d-flex align-items-center p-3">
+                    <span class="avatar">
+                        <img src="{{ $voice['cover_url'] ?? asset('assets/images/Ellipse 22.png') }}" alt="Voice Profile">
+                    </span>
+                    <div class="flex-fill ms-3">
+                        <h5 class="fw-semibold mb-1 lh-1" style="font-size: 1rem;">
+                            {{ $voice['voice_name'] ?? 'Unnamed Voice' }}
+                        </h5>
+                        <div class="voice-meta d-flex flex-column">
+                            <span>{{ implode(', ', $voice['tag_list'] ?? []) }}</span>
+                            <span class="mt-1 d-flex align-items-center">
+                                {{-- Example: you can use flags if you want --}}
+                                English +{{ count($voice['tag_list'] ?? []) }}
                             </span>
-                            <div class="flex-fill ms-3">
-                                <h5 class="fw-semibold mb-1 lh-1" style="font-size: 1rem;">Declan Sage - Wise, Deliberate...
-                                </h5>
-                                <div class="voice-meta d-flex flex-column"> {{-- Use flex-column to stack meta info --}}
-                                    <span>Narrative & Story</span>
-                                    <span class="mt-1 d-flex align-items-center"> {{-- Added mt-1 for spacing and d-flex for alignment --}}
-                                        <img src="{{ asset('assets/images/Ellipse 32.png') }}" alt="Country Flag 1"
-                                            style="width: 15px; height: 15px; margin-right: 3px;">
-                                        <img src="{{ asset('assets/images/Ellipse 33.png') }}" alt="Country Flag 2"
-                                            style="width: 15px; height: 15px; margin-right: 5px;">
-                                        English +8
-                                    </span>
-                                </div>
-                            </div>
-                            {{-- Action Buttons --}}
-                            <div class="voice-actions">
-                                <button type="button" class="btn btn-sm text-dark p-0 me-2" title="Add">
-                                    <i class="fa-solid fa-plus-circle"></i>
-                                </button>
-                                <button type="button" class="btn btn-sm text-dark p-0" title="More Options">
-                                    <i class="fa-solid fa-ellipsis-h"></i>
-                                </button>
-                            </div>
                         </div>
                     </div>
+                    <div class="voice-actions">
+                        <button type="button" class="btn btn-sm text-dark p-0 me-2" title="Add">
+                            <i class="fa-solid fa-plus-circle"></i>
+                        </button>
+                        <button type="button" class="btn btn-sm text-dark p-0" title="More Options">
+                            <i class="fa-solid fa-ellipsis-h"></i>
+                        </button>
+                    </div>
                 </div>
-            @endfor
+                {{-- Optional: Add audio sample player --}}
+                @if(isset($voice['sample_audio']))
+                    <audio controls class="w-100 mt-2">
+                        <source src="{{ $voice['sample_audio'] }}" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                @endif
+            </div>
         </div>
+    @endforeach
+</div>
+
     </div>
 @endsection

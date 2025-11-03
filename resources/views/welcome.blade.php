@@ -58,8 +58,13 @@
             color: #000;
         }
 
-        .btn-outline:hover {
+        /* .btn-outline:hover {
             background-color: #f8f8f8;
+        } */
+         .btn-outline:hover {
+            color: #fff;
+
+            background-color: #003E78;
         }
 
         .btn-primary-custom {
@@ -67,28 +72,33 @@
             color: #fff;
         }
 
-        .btn-primary-custom:hover {
+        /* .btn-primary-custom:hover {
             background-color: rgba(0, 62, 120, 0.9);
+        } */
+        .btn-primary-custom:hover {
+            color: #003E78 !important;
+            background: transparent !important;
+            border-color: rgba(0, 62, 120, 0.9) !important;
         }
 
         /* ---------- Hero Section (No Change to styling) ---------- */
         .hero-section {
             text-align: center;
-            padding: 80px 20px;
+            padding: 10px 20px;
         }
 
         .hero-section h1 {
-            font-size: 2.5rem;
+            font-size: 38px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .hero-section .text-color {
             color: rgba(0, 0, 0, 1);
             font-weight: 500;
-            font-size: 1.4rem;
+            font-size: 18px;
             line-height: 1.5;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .hero-section .text-color p {
@@ -118,7 +128,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light p-0">
         <div class="container">
             <a class="navbar-brand mt-3" href="#home-section">
                     <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}" alt="Logo" width="90">
@@ -162,10 +172,18 @@
             <a href="{{ route('login') }}" class="btn btn-outline btn-rounded">Contact Sale</a>
         </div>
     </section>
-    <div class="text-center my-3">
+    {{-- <div class="text-center my-2">
         <video src="{{ asset('assets/video/1115101_Broadcast_Woman_3840x2160.mp4') }}"
             style="width: 70%; border-radius: 50px;"></video>
-    </div>
+    </div> --}}
+    <div class="text-center my-2">
+    <video
+        src="{{ asset('assets/video/1115101_Broadcast_Woman_3840x2160.mp4') }}"
+        style="width: 65%; height: 50vh; border-radius: 12px; object-fit: cover;"
+        autoplay muted loop>
+    </video>
+</div>
+
 
     <div class="container py-5" style="background:#fff;" id="pricing-section">
         <div class="row g-4">

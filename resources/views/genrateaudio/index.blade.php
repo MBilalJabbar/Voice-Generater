@@ -345,7 +345,7 @@
     </div>
 
 <!-- Optional: hidden default avatar you can keep in Blade so JS can read a safe asset path -->
-<img id="default-voice-avatar" src="{{ asset('assets/images/profile.png') }}" style="display:none;" alt="default avatar">
+{{-- <img id="default-voice-avatar" src="{{ asset('assets/images/profile.png') }}" style="display:none;" alt="default avatar">
 
 <script>
 (() => {
@@ -438,7 +438,7 @@
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 10000); // 10s timeout
 
-      const res = await fetch('/voices-eleven', { signal: controller.signal });
+      const res = await fetch('/voices-genai', { signal: controller.signal });
       clearTimeout(timeout);
 
       if (!res.ok) {
@@ -522,7 +522,173 @@
   });
 })();
 
+</script> --}}
+{{-- Fatch Voices --}}
+<img id="default-voice-avatar" src="{{ asset('assets/images/profile.png') }}" style="display:none;" alt="default avatar">
+
+<script>
+(() => {
+  const btn = document.getElementById('voice-trigger-button');
+  const selectedVoiceName = document.getElementById('selected-voice-name');
+  const overlay = document.getElementById('voice-sidebar-overlay');
+  const sidebar = document.getElementById('voice-sidebar');
+  const voiceList = document.querySelector('.voice-list');
+  const defaultAvatarEl = document.getElementById('default-voice-avatar');
+  const DEFAULT_AVATAR = defaultAvatarEl?.src || '/assets/images/profile.png';
+
+  let voicesCache = null;
+  let isLoading = false;
+  let currentAudio = null;
+
+  function openSidebar() {
+    overlay.style.display = 'block';
+    sidebar.classList.add('open');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+  }
+
+  function setLoadingState(state) {
+    isLoading = state;
+    btn.disabled = state;
+  }
+
+  function showMessage(html) {
+    voiceList.innerHTML = `<p style="padding:1rem;margin:0;text-align:center;">${html}</p>`;
+  }
+
+  function createVoiceItem(voice) {
+    const item = document.createElement('div');
+    item.className = 'voice-list-item';
+
+    const avatar = voice.avatar_url || DEFAULT_AVATAR;
+    const name = escapeHtml(voice.name || 'Unknown Voice');
+    const category = escapeHtml(voice.category || 'General Voice');
+    const preview = voice.preview_url || '';
+
+    item.innerHTML = `
+      <img src="${avatar}" alt="Voice Avatar">
+      <div class="voice-info">
+        <h6>${name}</h6>
+        <small>${category}</small>
+      </div>
+      <div class="voice-actions">
+        <i class="fa-solid fa-play voice-play-icon" data-preview="${preview}" title="Play Preview"></i>
+      </div>
+    `;
+
+    // Select voice
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('.voice-play-icon')) return; // ignore play clicks
+      document.getElementById('selected-voice-name').value = voice.name;
+      document.getElementById('voice-id').value = voice.voice_id || '';
+      closeSidebar();
+    });
+
+    // Play preview
+    const playIcon = item.querySelector('.voice-play-icon');
+    playIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const previewUrl = playIcon.dataset.preview;
+      if (!previewUrl) return;
+      if (currentAudio) currentAudio.pause();
+      currentAudio = new Audio(previewUrl);
+      currentAudio.play().catch(err => console.warn('Preview failed', err));
+    });
+
+    return item;
+  }
+
+  async function fetchVoices() {
+    if (voicesCache) return voicesCache;
+
+    setLoadingState(true);
+    showMessage('Loading voices...');
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+
+      const res = await fetch('/voices-genai', { signal: controller.signal });
+      clearTimeout(timeout);
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const data = await res.json();
+      let voices = [];
+
+      // Support multiple formats
+      if (Array.isArray(data)) {
+        voices = data;
+      } else if (data.voices && Array.isArray(data.voices)) {
+        voices = data.voices;
+      } else if (data.data && Array.isArray(data.data)) {
+        voices = data.data;
+      } else {
+        console.warn('Unknown API format', data);
+      }
+
+      voicesCache = voices;
+      return voices;
+    } catch (err) {
+      console.error('Error fetching voices:', err);
+      throw err;
+    } finally {
+      setLoadingState(false);
+    }
+  }
+
+  async function openAndLoadVoices(forceRefresh = false) {
+    if (isLoading) return;
+    openSidebar();
+
+    if (voicesCache && !forceRefresh) {
+      renderVoiceList(voicesCache);
+      return;
+    }
+
+    try {
+      const voices = await fetchVoices();
+      if (!voices?.length) {
+        showMessage('No voices found.');
+        return;
+      }
+      renderVoiceList(voices);
+    } catch (err) {
+      showMessage('Error loading voices. Check console or server logs.');
+    }
+  }
+
+  function renderVoiceList(voices) {
+    voiceList.innerHTML = '';
+    const fragment = document.createDocumentFragment();
+    voices.forEach(v => fragment.appendChild(createVoiceItem(v)));
+    voiceList.appendChild(fragment);
+  }
+
+  function escapeHtml(str) {
+    return String(str || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // Event bindings
+  btn.addEventListener('click', () => openAndLoadVoices(false));
+  selectedVoiceName.addEventListener('click', () => openAndLoadVoices(false));
+  document.getElementById('close-voice-sidebar').addEventListener('click', closeSidebar);
+  overlay.addEventListener('click', closeSidebar);
+
+  window.addEventListener('beforeunload', () => {
+    if (currentAudio) currentAudio.pause();
+  });
+})();
 </script>
+
+
 
 {{-- Generate voices  --}}
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -556,6 +722,130 @@ document.querySelectorAll("input[type=range]").forEach(slider => {
         similarity.addEventListener('input', () => similarityValue.textContent = similarity.value);
         stability.addEventListener('input', () => stabilityValue.textContent = stability.value);
 
+// $(document).ready(function() {
+
+//     // 🎚 Slider style update
+//     $("input[type=range]").each(function() {
+//         let slider = $(this);
+//         function updateTrack() {
+//             let value = (slider.val() - slider.attr("min")) / (slider.attr("max") - slider.attr("min")) * 100;
+//             slider.css("background", `linear-gradient(to right, #003E78 ${value}%, #E7EAE9 ${value}%)`);
+//         }
+//         slider.on("input", updateTrack);
+//         updateTrack();
+//     });
+
+//     // 🎚 Display slider values
+//     function updateLabels() {
+//         $("#speed-value").text($("#speed").val() + 'x');
+//         $("#style-value").text($("#style").val());
+//         $("#similarity-value").text($("#similarity").val());
+//         $("#stability-value").text($("#stability").val());
+//     }
+
+//     $("input[type=range]").on("input", updateLabels);
+//     updateLabels();
+
+//      function updateTextInfo() {
+//         let text = $("#user_text").val();
+//         let charCount = text.length;
+//         let wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+//         $("#char-count").text(charCount);
+//         $("#word-count").text(wordCount);
+//     }
+//     $("#user_text").on("input", updateTextInfo);
+//     updateTextInfo();
+
+//     // 🎤 Handle Generate Audio
+//     $("#generate-audio").on("click", function(e) {
+//         e.preventDefault();
+
+//         let text = $("#user_text").val().trim();
+//         // let voiceId = $("#voice-id").val();
+//         let voiceId = $("#voice-id").val() || "21m00Tcm4TlvDq8ikWAM";
+//         let voiceName = $("#selected-voice-name").val();
+//         let model = $("#model").val();
+
+//         if (!text) {
+//             alert("Please enter text before generating.");
+//             return;
+//         }
+
+//         let stability = parseFloat($("#stability").val()) / 100;
+//         let similarity = parseFloat($("#similarity").val()) / 100;
+//         let style = parseFloat($("#style").val()) / 100;
+//         let speed = parseFloat($("#speed").val());
+
+//         $.ajax({
+//     url: "{{ route('generateAudioVoice') }}",
+//     type: "POST",
+//     dataType: "json",
+//     data: {
+//         text: text,
+//         voice_id: voiceId,
+//         voice_name: voiceName,
+//         model: $("#model").val(),
+//         best_voice: $("#best-voices").val(),
+//         stability: stability,
+//         similarity: similarity,
+//         style: style,
+//         speed: speed,
+//         _token: $('meta[name="csrf-token"]').attr('content')
+//     },
+//     beforeSend: function() {
+//         $("#generate-audio").prop("disabled", true).text("Generating...");
+//         Swal.fire({
+//             title: 'Generating Voice...',
+//             text: 'Please wait a moment while we process your request.',
+//             allowOutsideClick: false,
+//             didOpen: () => Swal.showLoading()
+//         });
+//     },
+//     success: function(data) {
+//         $("#generate-audio").prop("disabled", false).text("Generate Audio");
+//         Swal.close();
+
+//         if (data.success) {
+//             Swal.fire({
+//                 icon: 'success',
+//                 title: 'Voice Generated!',
+//                 text: 'Your voice has been generated and saved successfully 🎉',
+//                 showConfirmButton: true,
+//                 confirmButtonText: 'Play Audio'
+//             }).then(() => {
+//                 $("#audio-container").html(`
+//                     <audio controls autoplay class="w-100 mt-3">
+//                         <source src="${data.audio_path}" type="audio/mpeg">
+//                     </audio>
+//                 `);
+//             });
+//         } else {
+//             Swal.fire({
+//                 icon: 'error',
+//                 title: 'Generation Failed 😢',
+//                 text: data.message || 'Unknown error occurred.'
+//             });
+//             console.error("Voice generation error:", data);
+//         }
+//     },
+//     error: function(xhr) {
+//         $("#generate-audio").prop("disabled", false).text("Generate Audio");
+//         Swal.close();
+//         Swal.fire({
+//             icon: 'error',
+//             title: 'Server Error',
+//             text: 'Something went wrong. Check console for details.'
+//         });
+//         console.error("AJAX Error:", xhr.responseText);
+//     }
+// });
+
+//     });
+// });
+</script>
+<div id="audio-container"></div>
+
+<script>
 $(document).ready(function() {
 
     // 🎚 Slider style update
@@ -580,7 +870,7 @@ $(document).ready(function() {
     $("input[type=range]").on("input", updateLabels);
     updateLabels();
 
-     function updateTextInfo() {
+    function updateTextInfo() {
         let text = $("#user_text").val();
         let charCount = text.length;
         let wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
@@ -595,10 +885,8 @@ $(document).ready(function() {
         e.preventDefault();
 
         let text = $("#user_text").val().trim();
-        // let voiceId = $("#voice-id").val();
         let voiceId = $("#voice-id").val() || "21m00Tcm4TlvDq8ikWAM";
         let voiceName = $("#selected-voice-name").val();
-        let model = $("#model").val();
 
         if (!text) {
             alert("Please enter text before generating.");
@@ -611,13 +899,13 @@ $(document).ready(function() {
         let speed = parseFloat($("#speed").val());
 
         $.ajax({
-            url: "{{ route('generateAudioVoice') }}", // ✅ Laravel route
+            url: "{{ route('generateAudioVoice') }}",
             type: "POST",
             dataType: "json",
             data: {
                 text: text,
                 voice_id: voiceId,
-                voice_name: voiceName, // ✅ added
+                voice_name: voiceName,
                 model: $("#model").val(),
                 best_voice: $("#best-voices").val(),
                 stability: stability,
@@ -625,62 +913,53 @@ $(document).ready(function() {
                 style: style,
                 speed: speed,
                 _token: $('meta[name="csrf-token"]').attr('content')
-                // _token: $('meta[name=\"csrf-token\"]').attr('content')
             },
-           beforeSend: function() {
+            beforeSend: function() {
                 $("#generate-audio").prop("disabled", true).text("Generating...");
-
-                // Optional: show loading Swal while generating
                 Swal.fire({
                     title: 'Generating Voice...',
                     text: 'Please wait a moment while we process your request.',
                     allowOutsideClick: false,
-                    didOpen: () => {
-                        Swal.showLoading();
-                    }
+                    didOpen: () => Swal.showLoading()
                 });
             },
             success: function(data) {
-                $("#generate-audio").prop("disabled", false).text("Generate Audio");
+            $("#generate-audio").prop("disabled", false).text("Generate Audio");
+            Swal.close();
 
-                if (data.success) {
-                    // Close loading popup
-                    Swal.close();
+            if (data.success) {
+                const audioHtml = `
+                    <audio controls class="w-100 mt-3">
+                        <source src="${data.audio_path}" type="audio/mpeg">
+                    </audio>
+                `;
+                $("#audio-container").html(audioHtml);
 
-                    // Show success popup
+                // Play programmatically
+                const audioElement = $("#audio-container audio")[0];
+                audioElement.load();
+                audioElement.play().catch(e => {
+                    console.error("Autoplay blocked", e);
                     Swal.fire({
-                        icon: 'success',
-                        title: 'Voice Generated!',
-                        text: 'Your voice has been generated and saved successfully 🎉',
-                        showConfirmButton: true,
-                        confirmButtonText: 'Play Audio'
-                    }).then(() => {
-                        // After confirming, show audio player
-                        $("#audio-container").html(`
-                            <audio controls autoplay class="w-100 mt-3">
-                                <source src="${data.audio_url}" type="audio/mpeg">
-                            </audio>
-                        `);
+                        icon: 'info',
+                        title: 'Click Play',
+                        text: 'Browser blocked autoplay. Click the play button to listen.'
                     });
+                });
 
-                } else {
-                    Swal.close();
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Generation Failed 😢',
-                        text: data.message || 'Unknown error occurred while generating voice.'
-                    });
-                    console.error("Voice generation error:", data);
-                }
-            },
-            error: function(xhr, status, error) {
+                Swal.fire({icon:'success', title:'Voice Generated!', text:'Your audio is ready 🎉'});
+
+            } else {
+                Swal.fire({icon:'error', title:'Generation Failed', text:data.message || 'Unknown error'});
+            }
+        },
+            error: function(xhr) {
                 $("#generate-audio").prop("disabled", false).text("Generate Audio");
                 Swal.close();
-
                 Swal.fire({
                     icon: 'error',
                     title: 'Server Error',
-                    text: 'Something went wrong. Please check the console for details.'
+                    text: 'Something went wrong. Check console for details.'
                 });
                 console.error("AJAX Error:", xhr.responseText);
             }
@@ -688,6 +967,7 @@ $(document).ready(function() {
     });
 });
 </script>
+
 
 {{-- upload-audio file --}}
 <script>

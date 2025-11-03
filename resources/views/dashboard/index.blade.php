@@ -203,7 +203,7 @@
                                             <button class="btn btn-sm me-1 download-voice" data-audio="{{ asset($voice->audio_path) }}" style="color: #003E78;">
                                                 <i class="fas fa-download"></i>
                                             </button>
-                                            <button class="btn btn-sm me-1 play-voice" data-audio="{{ asset($voice->audio_path) }}" style="color: #DBBF4D;">
+                                            <button class="btn btn-sm me-1 play-voice" data-audio="{{ $voice->audio_path }}" style="color: #DBBF4D;">
                                                 <i class="fas fa-play"></i>
                                             </button>
                                             <button class="btn btn-sm" id="deleteVoice" data-id="{{ $voice->id }}" style="color: #FF0000;">
@@ -352,9 +352,7 @@ $(document).on('click', '.download-voice', function(e){
 // Play voice File
 $(document).on('click', '.play-voice', function() {
     const button = $(this);
-    const audioUrl = button.data('audio');
-
-    console.log("🎵 Audio URL:", audioUrl); //  check this in console
+    const audioUrl = button.data('audio'); // must be full URL
 
     if (!audioUrl) {
         alert("No audio file path found!");
@@ -365,15 +363,14 @@ $(document).on('click', '.play-voice', function() {
         const audio = new Audio(audioUrl);
         button.data('audioObj', audio);
 
-        // When audio finishes
         audio.onended = () => {
             button.find('i').removeClass('fa-pause').addClass('fa-play');
             button.data('playing', false);
         };
 
-        // Handle missing or bad file
         audio.onerror = () => {
             alert('⚠️ Audio file not found or unsupported format.');
+            console.error("Audio failed to load:", audioUrl);
             button.find('i').removeClass('fa-pause').addClass('fa-play');
             button.data('playing', false);
         };
@@ -386,12 +383,17 @@ $(document).on('click', '.play-voice', function() {
         audio.pause();
         button.find('i').removeClass('fa-pause').addClass('fa-play');
     } else {
-        audio.play();
+        audio.play().catch(e => {
+            console.error("Audio play blocked:", e);
+            alert("⚠️ Audio cannot play. Check console for details.");
+        });
         button.find('i').removeClass('fa-play').addClass('fa-pause');
     }
 
     button.data('playing', !isPlaying);
 });
+
+
 </script>
 
 

@@ -28,7 +28,7 @@ Route::get('/subscription', [PlanController::class, 'index'])->name('subscriptio
 Route::get('/genrate-audio', [GenrateAudioController::class, 'genrateaudio'])->name('genrateaudio.index');
 Route::get('/genrate-bulk-audio', [GenrateAudioController::class, 'genrateBulkAudio'])->name('genrateaudio.bulkaudio');
 Route::get('/task-history', [TaskController::class, 'taskhistory'])->name('taskhistory.index');
-Route::get('/voices', [VoiceController::class, 'index'])->name('voice.index');
+Route::get('/voices-Page', [VoiceController::class, 'index'])->name('voice.index');
 Route::get('/clone-voice', [CloneVoiceController::class, 'index'])->name('clonevoice.index');
 Route::get('/setting', [PagesController::class, 'setting'])->name('pages.setting');
 Route::get('/profile', [PagesController::class, 'profile'])->name('pages.profile');
@@ -73,8 +73,8 @@ Route::post('UpdateSetting', [PagesController::class, 'UpdateSetting']);
 
 
 // Voice Generated Routes
-Route::get('/voices-eleven', [VoiceGeneratorController::class, 'fetchVoices']);
-Route::post('/generateAudioVoice', [VoiceGeneratorController::class, 'generateAudioVoice'])->name('generateAudioVoice');
+Route::get('/voices-genai', [VoiceGeneratorController::class, 'fetchGenAIVoices']);
+Route::post('/generateAudioVoice', [VoiceGeneratorController::class, 'generateAudioVoices'])->name('generateAudioVoice');
 
 // Show Data in Dashboard
 Route::get('/fetchVoices/{id}', [DashbaordController::class, 'fetchVoices']);
@@ -94,6 +94,7 @@ Route::get('/ShowUserAdminDetails/{id}', [AddUserAdminController::class, 'ShowUs
 
 // Voice Clone User Dashboard
 Route::post('/addVoiceClone', [CloneVoiceController::class, 'addVoiceClone'])->name('addVoiceClone');
+Route::delete('/cloneVoiceDelete/{id}', [CloneVoiceController::class, 'cloneVoiceDelete'])->name('cloneVoiceDelete');
 
 
 // Voice  Routes Admin Dashboard
