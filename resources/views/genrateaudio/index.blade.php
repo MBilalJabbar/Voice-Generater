@@ -267,18 +267,41 @@
                             <i class="fa-solid fa-sliders" style="color: #003E78;"></i>
                             <span style="padding-left: 8px;">Voice Model Selection</span>
                         </h5>
+<!-- Normal Voice -->
+<div class="form-group mb-3">
+  <label>Voice*</label>
+  <div class="input-group">
+    <input type="text" class="form-control voice-input" data-type="normal" value="Select Voice" readonly style="cursor: pointer;">
+    <button class="btn btn-outline-secondary voice-trigger" data-type="normal" type="button">
+      <i class="fa-solid fa-caret-down"></i>
+    </button>
+  </div>
+  <input type="hidden" class="voice-id" value="">
+</div>
 
-                        <div class="form-group mb-3">
-                            <label for="voice-trigger">Voice*</label>
-                            <div class="input-group">
-                                <input type="text" id="selected-voice-name" class="form-control" value="Zara" readonly
-                                    style="cursor: pointer;">
-                                <button class="btn btn-outline-secondary" type="button" id="voice-trigger-button">
-                                    <i class="fa-solid fa-caret-down"></i>
-                                </button>
-                            </div>
-                            <input type="hidden" id="voice-id" value="zara_id">
-                        </div>
+<!-- Clone Voice -->
+@php
+    $userVoices = \App\Models\VoiceClone::where('user_id', Auth::id())->get();
+@endphp
+
+@if ($userVoices->count() > 0)
+<div class="form-group mb-3">
+  <label>Clone Voices*</label>
+  <div class="input-group">
+    <input type="text" class="form-control voice-input" data-type="clone" value="Select Clone Voice" readonly style="cursor: pointer;">
+    <button class="btn btn-outline-secondary voice-trigger" data-type="clone" type="button">
+      <i class="fa-solid fa-caret-down"></i>
+    </button>
+  </div>
+  <input type="hidden" class="voice-id" value="">
+</div>
+@endif
+
+
+
+
+
+
                         <div class="form-group mb-3 custom-select-wrapper">
                             <label for="model">Model*</label>
                             <select id="model" class="form-control">
@@ -526,7 +549,7 @@
 {{-- Fatch Voices --}}
 <img id="default-voice-avatar" src="{{ asset('assets/images/profile.png') }}" style="display:none;" alt="default avatar">
 
-<script>
+{{-- <script>
 (() => {
   const btn = document.getElementById('voice-trigger-button');
   const selectedVoiceName = document.getElementById('selected-voice-name');
@@ -686,7 +709,311 @@
     if (currentAudio) currentAudio.pause();
   });
 })();
+</script> --}}
+<script>
+    (() => {
+  const overlay = document.getElementById('voice-sidebar-overlay');
+  const sidebar = document.getElementById('voice-sidebar');
+  const voiceList = document.querySelector('.voice-list');
+  const defaultAvatarEl = document.getElementById('default-voice-avatar');
+  const DEFAULT_AVATAR = defaultAvatarEl?.src || '/assets/images/profile.png';
+
+  let voicesCache = null;
+  let cloneVoicesCache = null;
+  let isLoading = false;
+  let currentAudio = null;
+  let activeInput = null;
+  let activeType = 'normal'; // 'normal' or 'clone'
+
+  function openSidebar() {
+    overlay.style.display = 'block';
+    sidebar.classList.add('open');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    setTimeout(() => { overlay.style.display = 'none'; }, 300);
+  }
+
+  function setLoadingState(state) {
+    isLoading = state;
+  }
+
+  function showMessage(html) {
+    voiceList.innerHTML = `<p style="padding:1rem;margin:0;text-align:center;">${html}</p>`;
+  }
+
+  function createVoiceItem(voice) {
+    const item = document.createElement('div');
+    item.className = 'voice-list-item';
+
+    const avatar = voice.avatar_url || DEFAULT_AVATAR;
+    const name = escapeHtml(voice.name || 'Unknown Voice');
+    const category = escapeHtml(voice.category || 'General Voice');
+    const preview = voice.preview_url || '';
+
+    item.innerHTML = `
+      <img src="${avatar}" alt="Voice Avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+      <div class="voice-info">
+        <h6>${name}</h6>
+        <small>${category}</small>
+      </div>
+      <div class="voice-actions">
+        <i class="fa-solid fa-play voice-play-icon" data-preview="${preview}" title="Play Preview"></i>
+      </div>
+    `;
+
+    // Select voice
+    item.addEventListener('click', (e) => {
+      if (e.target.closest('.voice-play-icon')) return;
+      if (!activeInput) return;
+
+      const wrapper = activeInput.closest('.form-group');
+      const formControl = wrapper.querySelector('.form-control');
+      const voiceIdInput = wrapper.querySelector('.voice-id');
+
+      if (formControl) {
+  formControl.value = voice.name;
+  document.querySelectorAll('.voice-input').forEach(i => i.classList.remove('active')); // remove previous
+  formControl.classList.add('active'); // mark selected as active
+}
+if (voiceIdInput) voiceIdInput.value = voice.voice_id || voice.id || '';
+
+closeSidebar();
+
+    });
+
+    // Play preview
+    const playIcon = item.querySelector('.voice-play-icon');
+    playIcon.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const previewUrl = playIcon.dataset.preview;
+      if (!previewUrl) {
+        console.log('No preview URL available for this voice');
+        return;
+      }
+
+      // Toggle play/pause
+      if (currentAudio && !currentAudio.paused) {
+        currentAudio.pause();
+        playIcon.className = 'fa-solid fa-play voice-play-icon';
+      } else {
+        if (currentAudio) currentAudio.pause();
+
+        // Reset all play icons
+        document.querySelectorAll('.voice-play-icon').forEach(icon => {
+          icon.className = 'fa-solid fa-play voice-play-icon';
+        });
+
+        currentAudio = new Audio(previewUrl);
+        currentAudio.play()
+          .then(() => {
+            playIcon.className = 'fa-solid fa-pause voice-play-icon';
+          })
+          .catch(err => {
+            console.warn('Preview failed to play:', err);
+            playIcon.className = 'fa-solid fa-play voice-play-icon';
+          });
+
+        currentAudio.onended = () => {
+          playIcon.className = 'fa-solid fa-play voice-play-icon';
+        };
+      }
+    });
+
+    return item;
+  }
+
+  async function fetchVoices(type) {
+    let cache = type === 'clone' ? cloneVoicesCache : voicesCache;
+    if (cache) {
+      console.log(`Using cached ${type} voices:`, cache);
+      return cache;
+    }
+
+    const endpoint = type === 'clone' ? '/clone-voices' : '/voices-genai';
+    console.log(`Fetching ${type} voices from:`, endpoint);
+
+    setLoadingState(true);
+    showMessage('Loading voices...');
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 10000);
+      const res = await fetch(endpoint, { signal: controller.signal });
+      clearTimeout(timeout);
+
+      console.log(`Response status for ${type}:`, res.status);
+
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const data = await res.json();
+
+      console.log(`Raw API response for ${type}:`, data);
+
+      let voices = [];
+      if (Array.isArray(data)) {
+        voices = data;
+      } else if (data.voices && Array.isArray(data.voices)) {
+        voices = data.voices;
+      } else if (data.data && Array.isArray(data.data)) {
+        voices = data.data;
+      } else {
+        // If no array found, try to extract any potential voice data
+        voices = Object.values(data).find(val => Array.isArray(val)) || [];
+      }
+
+      console.log(`Processed voices for ${type}:`, voices);
+
+      if (type === 'clone') {
+        cloneVoicesCache = voices;
+      } else {
+        voicesCache = voices;
+      }
+
+      return voices;
+    } catch (err) {
+      console.error(`Error fetching ${type} voices:`, err);
+      throw err;
+    } finally {
+      setLoadingState(false);
+    }
+  }
+
+  async function openAndLoadVoices(inputEl, type) {
+    if (isLoading) {
+      console.log('Already loading voices, please wait...');
+      return;
+    }
+
+    activeInput = inputEl;
+    activeType = type;
+    console.log(`Opening sidebar for ${type} voices, activeInput:`, activeInput);
+
+    openSidebar();
+
+    let cache = type === 'clone' ? cloneVoicesCache : voicesCache;
+    if (cache && cache.length > 0) {
+      console.log(`Rendering cached ${type} voices:`, cache);
+      renderVoiceList(cache);
+      return;
+    }
+
+    try {
+      const voices = await fetchVoices(type);
+      console.log(`Fetched ${voices?.length} ${type} voices:`, voices);
+
+      if (!voices || voices.length === 0) {
+        showMessage('No voices found. Please check if your account has access to voice cloning.');
+        return;
+      }
+      renderVoiceList(voices);
+    } catch (err) {
+      console.error(`Failed to load ${type} voices:`, err);
+      showMessage(`Error loading ${type} voices. Please check the console for details.`);
+    }
+  }
+
+  function renderVoiceList(voices) {
+    voiceList.innerHTML = '';
+
+    if (!voices || voices.length === 0) {
+      showMessage('No voices available.');
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    voices.forEach((v, index) => {
+      const voiceItem = createVoiceItem(v);
+      fragment.appendChild(voiceItem);
+    });
+    voiceList.appendChild(fragment);
+
+    console.log(`Rendered ${voices.length} voice items`);
+  }
+
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  // ✅ FIXED: Better event listener attachment
+  function initializeEventListeners() {
+    // For voice input fields
+    document.querySelectorAll('.voice-input').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const type = el.dataset.type || 'normal';
+        console.log('Voice input clicked, type:', type);
+        openAndLoadVoices(el, type);
+      });
+    });
+
+    // For voice trigger buttons
+    document.querySelectorAll('.voice-trigger').forEach(el => {
+      el.addEventListener('click', (e) => {
+        const type = el.dataset.type || 'normal';
+        console.log('Voice trigger clicked, type:', type);
+
+        // Find the corresponding input field in the same form-group
+        const formGroup = el.closest('.form-group');
+        const inputField = formGroup?.querySelector('.voice-input');
+
+        if (inputField) {
+          openAndLoadVoices(inputField, type);
+        } else {
+          console.error('Could not find corresponding voice input field');
+        }
+      });
+    });
+
+    // Close sidebar events
+    const closeBtn = document.getElementById('close-voice-sidebar');
+    if (closeBtn) {
+      closeBtn.addEventListener('click', closeSidebar);
+    } else {
+      console.error('Close voice sidebar button not found');
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', closeSidebar);
+    }
+  }
+
+  // Initialize when DOM is ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeEventListeners);
+  } else {
+    initializeEventListeners();
+  }
+
+  // Clean up audio on page unload
+  window.addEventListener('beforeunload', () => {
+    if (currentAudio) {
+      currentAudio.pause();
+      currentAudio = null;
+    }
+  });
+
+  // Make functions available globally for debugging
+  window.voiceManager = {
+    clearCache: () => {
+      voicesCache = null;
+      cloneVoicesCache = null;
+      console.log('Voice caches cleared');
+    },
+    getCache: () => ({
+      normal: voicesCache,
+      clone: cloneVoicesCache
+    })
+  };
+})();
 </script>
+
+
 
 
 
@@ -885,8 +1212,14 @@ $(document).ready(function() {
         e.preventDefault();
 
         let text = $("#user_text").val().trim();
-        let voiceId = $("#voice-id").val() || "21m00Tcm4TlvDq8ikWAM";
-        let voiceName = $("#selected-voice-name").val();
+        // Get the currently active (selected) input field
+let activeInput = $(".voice-input[data-type='normal']");
+if ($(".voice-input[data-type='clone']").val() !== "Select Clone Voice") {
+    activeInput = $(".voice-input[data-type='clone']");
+}
+let voiceId = activeInput.closest('.form-group').find('.voice-id').val();
+let voiceName = activeInput.val() || "Generated Voice";
+
 
         if (!text) {
             alert("Please enter text before generating.");
@@ -1015,6 +1348,91 @@ $(document).ready(function() {
 </script>
 
 
+<script>
+    function createVoiceItem(voice) {
+  const item = document.createElement('div');
+  item.className = 'voice-list-item voice-item';
 
+  // Add data attributes for later use
+  item.dataset.name = voice.name || voice.display_name || 'Unnamed Voice';
+  item.dataset.id = voice.voice_id || voice.id || '';
+  item.dataset.category = voice.category || 'General Voice';
+
+  const avatar = voice.avatar_url || DEFAULT_AVATAR;
+  const name = escapeHtml(voice.name || voice.display_name || 'Unnamed Voice');
+  const category = escapeHtml(voice.category || 'General Voice');
+  const preview = voice.preview_url || '';
+
+  item.innerHTML = `
+    <img src="${avatar}" alt="Voice Avatar" onerror="this.src='${DEFAULT_AVATAR}'">
+    <div class="voice-info">
+      <h6>${name}</h6>
+      <small>${category}</small>
+    </div>
+    <div class="voice-actions">
+      <i class="fa-solid fa-play voice-play-icon" data-preview="${preview}" title="Play Preview"></i>
+    </div>
+  `;
+
+  // ✅ Click: Select voice
+  item.addEventListener('click', (e) => {
+    if (e.target.closest('.voice-play-icon')) return;
+    if (!activeInput) return;
+
+    const wrapper = activeInput.closest('.form-group');
+    const formControl = wrapper.querySelector('.form-control');
+    const voiceIdInput = wrapper.querySelector('.voice-id');
+
+    const selectedName = item.dataset.name;
+    const selectedId = item.dataset.id;
+
+    // Update visible & hidden fields
+    if (formControl) formControl.value = selectedName;
+    if (voiceIdInput) voiceIdInput.value = selectedId;
+
+    // Add 'active' class to mark current selection
+    document.querySelectorAll('.voice-input').forEach(el => el.classList.remove('active'));
+    activeInput.classList.add('active');
+
+    closeSidebar();
+  });
+
+  // ✅ Click: Play preview
+  const playIcon = item.querySelector('.voice-play-icon');
+  playIcon.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const previewUrl = playIcon.dataset.preview;
+    if (!previewUrl) {
+      console.log('No preview URL available for this voice');
+      return;
+    }
+
+    if (currentAudio && !currentAudio.paused) {
+      currentAudio.pause();
+      playIcon.className = 'fa-solid fa-play voice-play-icon';
+    } else {
+      if (currentAudio) currentAudio.pause();
+      document.querySelectorAll('.voice-play-icon').forEach(icon => {
+        icon.className = 'fa-solid fa-play voice-play-icon';
+      });
+
+      currentAudio = new Audio(previewUrl);
+      currentAudio.play()
+        .then(() => { playIcon.className = 'fa-solid fa-pause voice-play-icon'; })
+        .catch(err => {
+          console.warn('Preview failed to play:', err);
+          playIcon.className = 'fa-solid fa-play voice-play-icon';
+        });
+
+      currentAudio.onended = () => {
+        playIcon.className = 'fa-solid fa-play voice-play-icon';
+      };
+    }
+  });
+
+  return item;
+}
+
+</script>
 
 @endsection

@@ -11,7 +11,8 @@ class CloneVoiceController extends Controller
 {
     public function index()
     {
-        $VoiceClone = VoiceClone::all();
+        // $VoiceClone = VoiceClone::all();
+        $VoiceClone = VoiceClone::where('user_id', Auth::id())->get();
         return view('clonevoice.index', compact('VoiceClone'));
     }
 //     public function addVoiceClone(Request $request){
@@ -134,5 +135,105 @@ public function addVoiceClone(Request $request){
             return response()->json(['success'=>true, 'message'=> 'Voice Deleted Successfully']);
         }
     }
+
+public function getCloneVoices()
+{
+    try {
+        \Log::info('🔍 Fetching cloned voices from GenAI Pro...');
+
+        // ✅ Get API key consistently from config/services.php
+        $apiKey = config('services.genai_pro.key');
+
+        if (empty($apiKey)) {
+            \Log::error('❌ Missing GENAIPRO_API_KEY in environment');
+            return response()->json([
+                'error' => 'API configuration error',
+                'message' => 'API key not configured'
+            ], 500);
+        }
+
+        // ✅ Make API request (removed trailing slash)
+        $response = Http::withHeaders([
+            'Authorization' => 'Bearer ' . $apiKey,
+            'Accept'        => 'application/json',
+            'Content-Type'  => 'application/json',
+        ])
+        ->timeout(30)
+        ->retry(3, 200)
+        ->get('https://genaipro.vn/api/v1/max/voice-clones');
+
+        \Log::info('🌐 API Response Status: ' . $response->status());
+        \Log::info('🌐 API Response Body: ' . $response->body());
+
+        // ✅ Handle failed responses
+        if ($response->failed()) {
+            \Log::error('❌ API request failed', [
+                'status'  => $response->status(),
+                'body'    => $response->body(),
+                'headers' => $response->headers()
+            ]);
+
+            return response()->json([
+                'error'   => 'API request failed',
+                'status'  => $response->status(),
+                'message' => $response->body(),
+            ], 500);
+        }
+
+        // ✅ Decode JSON safely
+        $data = $response->json();
+
+        if (empty($data)) {
+            \Log::warning('⚠️ Empty response from clone voices API');
+            return response()->json([
+                'voices'  => [],
+                'message' => 'No clone voices found'
+            ]);
+        }
+
+        // ✅ Handle possible data structures
+        $voices = [];
+
+        if (isset($data['data']) && is_array($data['data'])) {
+            $voices = $data['data'];
+        } elseif (isset($data['voices']) && is_array($data['voices'])) {
+            $voices = $data['voices'];
+        } elseif (is_array($data)) {
+            $voices = $data;
+        }
+
+        \Log::info('✅ Voices extracted: ' . count($voices));
+
+        // ✅ Format results consistently
+        $formattedVoices = array_map(function ($voice) {
+            return [
+                'voice_id'    => $voice['voice_id'] ?? $voice['id'] ?? null,
+                'name'        => $voice['voice_name'] ?? 'Unnamed Clone Voice',
+                'category'    => $voice['category'] ?? 'Clone Voice',
+                'avatar_url'  => $voice['avatar_url'] ?? $voice['avatar'] ?? null,
+                'preview_url' => $voice['preview_url'] ?? $voice['preview'] ?? null,
+                'description' => $voice['description'] ?? null,
+            ];
+        }, $voices);
+
+        return response()->json([
+            'voices' => $formattedVoices,
+            'count'  => count($formattedVoices)
+        ]);
+
+    } catch (\Exception $e) {
+        \Log::error('💥 Exception in getCloneVoices: ' . $e->getMessage(), [
+            'file'  => $e->getFile(),
+            'line'  => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+
+        return response()->json([
+            'error'   => 'Internal server error',
+            'message' => $e->getMessage(),
+        ], 500);
+    }
+}
+
 
 }

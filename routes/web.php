@@ -95,6 +95,7 @@ Route::get('/ShowUserAdminDetails/{id}', [AddUserAdminController::class, 'ShowUs
 // Voice Clone User Dashboard
 Route::post('/addVoiceClone', [CloneVoiceController::class, 'addVoiceClone'])->name('addVoiceClone');
 Route::delete('/cloneVoiceDelete/{id}', [CloneVoiceController::class, 'cloneVoiceDelete'])->name('cloneVoiceDelete');
+Route::get('/clone-voices', [CloneVoiceController::class, 'getCloneVoices']);
 
 
 // Voice  Routes Admin Dashboard
