@@ -35,7 +35,7 @@ Route::get('/profile', [PagesController::class, 'profile'])->name('pages.profile
 Route::get('/contact', [PagesController::class, 'contact'])->name('pages.contact');
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard.index');
 Route::get('/admin/payment-proof', [AdminController::class, 'payment'])->name('admin.payment.index');
-Route::get('/admin/plans/index', [AdminController::class, 'plansIndex'])->name('admin.plans.index');
+// Route::get('/admin/plans/index', [AdminController::class, 'plansIndex'])->name('admin.plans.index');
 Route::get('/admin/plans/create', [AdminController::class, 'plansCreate'])->name('admin.plans.create');
 Route::get('/admin/plans/edit', [AdminController::class, 'plansEdit'])->name('admin.plans.Edit');
 Route::get('/admin/voices/index', [AdminController::class, 'addvoices'])->name('admin.voices.index');
@@ -105,3 +105,11 @@ Route::post('/deleteVoice/{id}', [AdminController::class, 'deleteVoice']);
 
 // Admin Add Plans Section
 Route::post('/storePlans', [PlanController::class, 'storePlans'])->name('storePlans');
+Route::get('/showPlansTable', [PlanController::class, 'showPlansTable'])->name('showPlansTable');
+Route::get('/editPlans/{id}', [PlanController::class, 'editPlans']);
+Route::put('/updatePlans/{id}', [PlanController::class, 'updatePlans'])->name('plansUpdate');
+Route::delete('/deletedPlans/{id}', [PlanController::class, 'deletedPlans']);
+
+
+Route::get('/voices/filter', [VoiceController::class, 'filter'])->name('voices.filter');
+
