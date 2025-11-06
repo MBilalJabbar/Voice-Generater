@@ -524,7 +524,7 @@ function formatVoiceTime(utcTime) {
 
                     // Audio load
                     if (voice.audio_path) {
-                        let audioPath = `/storage/${voice.audio_path}`;
+                        let audioPath = `/${voice.audio_path}`;
                         $('#modalAudioSource').attr('src', audioPath);
                         $('#voicePlayer')[0].load();
                     }
@@ -536,7 +536,7 @@ function formatVoiceTime(utcTime) {
     // 🎧 Download Audio
     $('#downloadAudio').on('click', function () {
         if (currentVoice?.audio_path) {
-            let url = `/storage/${currentVoice.audio_path}`;
+            let url = `/${currentVoice.audio_path}`;
             let a = document.createElement('a');
             a.href = url;
             a.download = currentVoice.audio_path.split('/').pop();

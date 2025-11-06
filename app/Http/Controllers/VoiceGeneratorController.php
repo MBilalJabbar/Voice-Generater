@@ -104,97 +104,225 @@ public function fetchGenAIVoices()
     //                         ], $response->status());
     // }
 
-  public function generateAudioVoices(Request $request)
+    // give me late response but work good function
+public function generateAudioVoices(Request $request)
 {
     $apiKey = env('GENAIPRO_API_KEY');
-    $voiceId = $request->voice_id ?? 'uju3wxzG5OhpWcoi3SMy'; // Default voice ID from GenAIPro
+    $voiceId = $request->voice_id ?? 'uju3wxzG5OhpWcoi3SMy';
     $text = $request->text;
 
     if (!$text) {
         return response()->json(['success' => false, 'message' => 'No text provided']);
     }
 
-    $url = "https://genaipro.vn/api/v1/labs/task";
-
     try {
-        // ✅ Correct JSON structure (matches cURL example)
-        $response = Http::withHeaders([
+
+        // ✅ 1. Create TTS Task
+        $taskResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
-            'Content-Type' => 'application/json',
-        ])->post($url, [
+        ])->post('https://genaipro.vn/api/v1/labs/task', [
             "input" => $text,
             "voice_id" => $voiceId,
             "model_id" => "eleven_multilingual_v2",
             "style" => (float)($request->style ?? 0.5),
             "speed" => (float)($request->speed ?? 1.0),
-            "use_speaker_boost" => true,
             "similarity" => (float)($request->similarity ?? 0.75),
             "stability" => (float)($request->stability ?? 0.5),
-            "call_back_url" => url('/webhook'), // optional
+            "use_speaker_boost" => true
         ]);
 
-        if (!$response->ok()) {
+        if (!$taskResponse->ok()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Voice generation failed',
-                'details' => $response->json() ?? $response->body(),
-            ], $response->status());
+                'message' => 'Task creation failed',
+                'details' => $taskResponse->body(),
+            ]);
         }
 
-        // ✅ Ensure folder exists
+        $taskId = $taskResponse->json()['task_id'] ?? null;
+        if (!$taskId) {
+            return response()->json(['success' => false, 'message' => 'Task ID missing']);
+        }
+
+        // ✅ 2. Poll task status until audio is ready
+        $audioUrl = null;
+
+        for ($i = 0; $i < 20; $i++) {
+            sleep(1);
+
+            $statusResponse = Http::withHeaders([
+                'Authorization' => 'Bearer ' . $apiKey,
+            ])->get("https://genaipro.vn/api/v1/labs/task/" . $taskId);
+
+            $status = $statusResponse->json()['status'] ?? null;
+            $resultUrl = $statusResponse->json()['result'] ?? null;
+
+            if ($status === 'completed' && $resultUrl) {
+                $audioUrl = $resultUrl;
+                break;
+            }
+        }
+
+        if (!$audioUrl) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Processing... No audio returned yet',
+            ]);
+        }
+
+        // ✅ 3. Download & Save Audio
+        $fileName = 'voice_' . time() . '.mp3';
+        $savePath = public_path("generated/$fileName");
+
         if (!file_exists(public_path('generated'))) {
             mkdir(public_path('generated'), 0777, true);
         }
 
-        // ✅ Save file (response may contain URL or audio blob)
-        $result = $response->json();
+        $audioData = file_get_contents($audioUrl);
 
-        if (isset($result['data']['output_url'])) {
-            // If GenAIPro returns a link to audio file
-            $audioUrl = $result['data']['output_url'];
-        } else {
-            // If it returns raw audio (rare)
-            $fileName = 'voice_' . time() . '.mp3';
-            $path = public_path('generated/' . $fileName);
-            file_put_contents($path, $response->body());
-            $audioUrl = asset('generated/' . $fileName);
-
+        // ✅ Detect wrong API response (JSON instead of MP3)
+        if (strpos($audioData, '{') === 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Genaipro returned JSON instead of MP3 file',
+                'response' => $audioData
+            ]);
         }
 
-        // ✅ Save to DB
+        file_put_contents($savePath, $audioData);
+
+        // ✅ Will be used on frontend
+        $publicAudioUrl = asset("generated/$fileName");
+
+        // ✅ 4. Save into Database (only path)
         $voice = new VoiceGenerate();
-        $voice->user_id = Auth::check() ? Auth::id() : null;
+        $voice->user_id = Auth::id() ?? null;
         $voice->voice_name = $request->voice_name ?? 'Generated Voice';
         $voice->text = $text;
         $voice->language = $request->language ?? 'en-US';
-        $voice->model = $request->model ?? 'eleven_multilingual_v2';
+        $voice->model = "eleven_multilingual_v2";
         $voice->voice_settings = json_encode([
-            'style' => (float)($request->style ?? 0.5),
-            'speed' => (float)($request->speed ?? 1.0),
-            'stability' => (float)($request->stability ?? 0.5),
-            'similarity' => (float)($request->similarity ?? 0.75),
+            'style' => $request->style ?? 0.5,
+            'speed' => $request->speed ?? 1.0,
+            'stability' => $request->stability ?? 0.5,
+            'similarity' => $request->similarity ?? 0.75,
         ]);
         $voice->api_voice_id = $voiceId;
-        $voice->audio_path = $audioUrl;
-        $voice->status = 'completed';
+        $voice->audio_path = "generated/$fileName"; // ✅ only file path
         $voice->started_time = now();
         $voice->completed_time = now();
+        $voice->status = 'completed';
         $voice->save();
 
+        // ✅ 5. Return playable audio to frontend
         return response()->json([
             'success' => true,
-            'audio_url' => $audioUrl,
-            'voice' => $voice,
+            'audio_url' => $publicAudioUrl,
+            'voice' => $voice
         ]);
 
     } catch (\Exception $e) {
         return response()->json([
             'success' => false,
             'message' => 'Error generating voice',
-            'error' => $e->getMessage(),
-        ], 500);
+            'error' => $e->getMessage()
+        ]);
     }
 }
+
+
+
+//   public function generateAudioVoices(Request $request)
+// {
+//     $apiKey = env('GENAIPRO_API_KEY');
+//     $voiceId = $request->voice_id ?? 'uju3wxzG5OhpWcoi3SMy'; // Default voice ID from GenAIPro
+//     $text = $request->text;
+
+//     if (!$text) {
+//         return response()->json(['success' => false, 'message' => 'No text provided']);
+//     }
+
+//     $url = "https://genaipro.vn/api/v1/labs/task";
+
+//     try {
+//         // ✅ Correct JSON structure (matches cURL example)
+//         $response = Http::withHeaders([
+//             'Authorization' => 'Bearer ' . $apiKey,
+//             'Content-Type' => 'application/json',
+//         ])->post($url, [
+//             "input" => $text,
+//             "voice_id" => $voiceId,
+//             "model_id" => "eleven_multilingual_v2",
+//             "style" => (float)($request->style ?? 0.5),
+//             "speed" => (float)($request->speed ?? 1.0),
+//             "use_speaker_boost" => true,
+//             "similarity" => (float)($request->similarity ?? 0.75),
+//             "stability" => (float)($request->stability ?? 0.5),
+//             "call_back_url" => url('/webhook'), // optional
+//         ]);
+
+//         if (!$response->ok()) {
+//             return response()->json([
+//                 'success' => false,
+//                 'message' => 'Voice generation failed',
+//                 'details' => $response->json() ?? $response->body(),
+//             ], $response->status());
+//         }
+
+//         // ✅ Ensure folder exists
+//         if (!file_exists(public_path('generated'))) {
+//             mkdir(public_path('generated'), 0777, true);
+//         }
+
+//         // ✅ Save file (response may contain URL or audio blob)
+//         $result = $response->json();
+
+//         if (isset($result['data']['output_url'])) {
+//             // If GenAIPro returns a link to audio file
+//             $audioUrl = $result['data']['output_url'];
+//         } else {
+//             // If it returns raw audio (rare)
+//             $fileName = 'voice_' . time() . '.mp3';
+//             $path = public_path('generated/' . $fileName);
+//             file_put_contents($path, $response->body());
+//             $audioUrl = asset('generated/' . $fileName);
+
+//         }
+
+//         // ✅ Save to DB
+//         $voice = new VoiceGenerate();
+//         $voice->user_id = Auth::check() ? Auth::id() : null;
+//         $voice->voice_name = $request->voice_name ?? 'Generated Voice';
+//         $voice->text = $text;
+//         $voice->language = $request->language ?? 'en-US';
+//         $voice->model = $request->model ?? 'eleven_multilingual_v2';
+//         $voice->voice_settings = json_encode([
+//             'style' => (float)($request->style ?? 0.5),
+//             'speed' => (float)($request->speed ?? 1.0),
+//             'stability' => (float)($request->stability ?? 0.5),
+//             'similarity' => (float)($request->similarity ?? 0.75),
+//         ]);
+//         $voice->api_voice_id = $voiceId;
+//         $voice->audio_path = $audioUrl;
+//         $voice->status = 'completed';
+//         $voice->started_time = now();
+//         $voice->completed_time = now();
+//         $voice->save();
+
+//         return response()->json([
+//             'success' => true,
+//             'audio_url' => $audioUrl,
+//             'voice' => $voice,
+//         ]);
+
+//     } catch (\Exception $e) {
+//         return response()->json([
+//             'success' => false,
+//             'message' => 'Error generating voice',
+//             'error' => $e->getMessage(),
+//         ], 500);
+//     }
+// }
 
 }
 

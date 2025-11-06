@@ -530,7 +530,7 @@ $(document).ready(function() {
 
                     // Audio
                     if (voice.audio_path) {
-                        const audioPath = `/storage/${voice.audio_path}`;
+                        const audioPath = `/${voice.audio_path}`;
                         $('#modalAudioSource').attr('src', audioPath);
                         $('#voicePlayer')[0].load();
                     }
@@ -547,7 +547,7 @@ $(document).ready(function() {
     // Download audio
     $('#downloadAudio').on('click', function() {
         if (currentVoice?.audio_path) {
-            const url = `/storage/${currentVoice.audio_path}`;
+            const url = `/${currentVoice.audio_path}`;
             const a = document.createElement('a');
             a.href = url;
             a.download = currentVoice.audio_path.split('/').pop();

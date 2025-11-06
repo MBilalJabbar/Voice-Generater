@@ -166,11 +166,12 @@
         <div class="d-flex align-items-center">
             @php
                 $audioSrc = null;
-                if($clone->last_generated_audio) {
+                if ($clone->last_generated_audio) {
                     $audioSrc = $clone->last_generated_audio;
-                } elseif($clone->file_path && Storage::disk('public')->exists($clone->file_path)) {
-                    $audioSrc = asset('storage/'.$clone->file_path);
+                } elseif ($clone->file_path && Storage::disk('public')->exists($clone->file_path)) {
+                    $audioSrc = Storage::url($clone->file_path);
                 }
+
             @endphp
 
             @if($audioSrc)
