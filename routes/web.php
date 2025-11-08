@@ -44,9 +44,9 @@ Route::get('/admin/voices/index', [AdminController::class, 'addvoices'])->name('
 
 
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
 
 Route::middleware([
     'auth:sanctum',
@@ -110,6 +110,12 @@ Route::get('/editPlans/{id}', [PlanController::class, 'editPlans']);
 Route::put('/updatePlans/{id}', [PlanController::class, 'updatePlans'])->name('plansUpdate');
 Route::delete('/deletedPlans/{id}', [PlanController::class, 'deletedPlans']);
 
+// Plans Show On Web
+Route::get('/', [PlanController::class, 'ShowPlanWeb']);
 
+// Voice UserDashboad page
 Route::get('/voices/filter', [VoiceController::class, 'filter'])->name('voices.filter');
+
+// Admin dashboard get Users With Graph
+Route::get('/users-stats', [AdminController::class, 'usersStats']);
 

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\VoicesModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -19,6 +20,42 @@ class AdminController extends Controller
 
         return view('admin.dashboard.index', compact('users', 'userCount'));
     }
+
+    // get user information with graph
+    public function usersStats(Request $request){
+        try {
+            $year = $request->input('year', date('Y')); // default current year
+
+            $users = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+                ->whereYear('created_at', $year)
+                ->groupBy('month')
+                ->orderBy('month')
+                ->where('user_role', 'user')
+                ->get();
+
+            $dataPoints = [];
+
+            // Include all 12 months even if no users
+            for ($m = 1; $m <= 12; $m++) {
+                $monthData = $users->firstWhere('month', $m);
+                $dataPoints[] = [
+                    'x' => Carbon::create($year, $m, 1)->toDateString(),
+                    'y' => $monthData ? $monthData->count : 0
+                ];
+            }
+
+            return response()->json($dataPoints);
+
+        } catch (\Exception $e) {
+            // Return JSON error for debugging
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
 
     public function payment()
     {

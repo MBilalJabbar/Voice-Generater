@@ -39,7 +39,7 @@
                                     value="{{ old('user_name', $user->user_name) }}" required>
                             </div>
                             <div class="mb-3 col-6">
-                                <label for="name" class="form-label">Phone Name</label>
+                                <label for="name" class="form-label">Phone Number</label>
                                 <input type="tel" name="phone" class="form-control" placeholder="Enter Phone Number"
                                     value="{{ old('phone', $user->phone) }}" required>
                             </div>

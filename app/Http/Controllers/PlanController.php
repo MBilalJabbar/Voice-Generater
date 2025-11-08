@@ -82,4 +82,9 @@ class PlanController extends Controller
         $plan->delete();
         return response()->json(['message' => 'Plan deleted successfully.']);
     }
+
+    public function ShowPlanWeb(){
+        $plans = Plan::all();
+        return view('welcome', compact('plans'));
+    }
 }
