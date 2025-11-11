@@ -63,6 +63,9 @@
             color: #333;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-4">
@@ -149,7 +152,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table text-nowrap table-hover border align-middle">
+                            <table id="myTable" class="table text-nowrap table-hover border align-middle">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col">ID</th>
@@ -330,6 +333,12 @@
 
 
 <script>
+
+// DataTable
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
 
     // Download Voice File
 $(document).on('click', '.download-voice', function(e){

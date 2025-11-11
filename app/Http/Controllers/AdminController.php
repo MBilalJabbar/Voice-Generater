@@ -14,7 +14,7 @@ class AdminController extends Controller
     {
         $users = User::where('user_role', 'user')
                         ->orderBy('created_at', 'Desc')
-                        ->take(5)
+                        ->take(15)
                         ->get();
         $userCount = $users->count();
 

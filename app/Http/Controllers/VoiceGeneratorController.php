@@ -117,7 +117,7 @@ public function generateAudioVoices(Request $request)
 
     try {
 
-        // ✅ 1. Create TTS Task
+        // ✅ 1. Create Task
         $taskResponse = Http::withHeaders([
             'Authorization' => 'Bearer ' . $apiKey,
         ])->post('https://genaipro.vn/api/v1/labs/task', [
@@ -135,20 +135,24 @@ public function generateAudioVoices(Request $request)
             return response()->json([
                 'success' => false,
                 'message' => 'Task creation failed',
-                'details' => $taskResponse->body(),
+                'details' => $taskResponse->body()
             ]);
         }
 
         $taskId = $taskResponse->json()['task_id'] ?? null;
+
         if (!$taskId) {
             return response()->json(['success' => false, 'message' => 'Task ID missing']);
         }
 
-        // ✅ 2. Poll task status until audio is ready
-        $audioUrl = null;
 
-        for ($i = 0; $i < 20; $i++) {
-            sleep(1);
+        // ✅ 2. Poll Until Audio is Ready
+        $audioUrl = null;
+        $maxAttempts = 40;  // ✅ supports long audio (1 hour)
+
+        for ($i = 0; $i < $maxAttempts; $i++) {
+
+            sleep(2); // ✅ slower polling for large audio
 
             $statusResponse = Http::withHeaders([
                 'Authorization' => 'Bearer ' . $apiKey,
@@ -166,55 +170,57 @@ public function generateAudioVoices(Request $request)
         if (!$audioUrl) {
             return response()->json([
                 'success' => false,
-                'message' => 'Processing... No audio returned yet',
+                'message' => 'Audio generation still processing...'
             ]);
         }
 
+
         // ✅ 3. Download & Save Audio
         $fileName = 'voice_' . time() . '.mp3';
-        $savePath = public_path("generated/$fileName");
+        $saveDir = public_path("generated");
 
-        if (!file_exists(public_path('generated'))) {
-            mkdir(public_path('generated'), 0777, true);
-        }
+        if (!file_exists($saveDir)) mkdir($saveDir, 0777, true);
 
         $audioData = file_get_contents($audioUrl);
 
-        // ✅ Detect wrong API response (JSON instead of MP3)
+        // ✅ detect JSON (error from API)
         if (strpos($audioData, '{') === 0) {
             return response()->json([
                 'success' => false,
-                'message' => 'Genaipro returned JSON instead of MP3 file',
+                'message' => "API returned JSON instead of MP3",
                 'response' => $audioData
             ]);
         }
 
-        file_put_contents($savePath, $audioData);
+        file_put_contents("$saveDir/$fileName", $audioData);
 
-        // ✅ Will be used on frontend
         $publicAudioUrl = asset("generated/$fileName");
 
-        // ✅ 4. Save into Database (only path)
+
+        // ✅ 4. Save Database Entry
         $voice = new VoiceGenerate();
-        $voice->user_id = Auth::id() ?? null;
+        $voice->user_id = Auth::id();
         $voice->voice_name = $request->voice_name ?? 'Generated Voice';
         $voice->text = $text;
         $voice->language = $request->language ?? 'en-US';
         $voice->model = "eleven_multilingual_v2";
+
         $voice->voice_settings = json_encode([
             'style' => $request->style ?? 0.5,
             'speed' => $request->speed ?? 1.0,
             'stability' => $request->stability ?? 0.5,
             'similarity' => $request->similarity ?? 0.75,
         ]);
+
         $voice->api_voice_id = $voiceId;
-        $voice->audio_path = "generated/$fileName"; // ✅ only file path
+        $voice->audio_path = "generated/$fileName";
         $voice->started_time = now();
         $voice->completed_time = now();
         $voice->status = 'completed';
         $voice->save();
 
-        // ✅ 5. Return playable audio to frontend
+
+        // ✅ 5. Return To Frontend
         return response()->json([
             'success' => true,
             'audio_url' => $publicAudioUrl,
@@ -222,6 +228,7 @@ public function generateAudioVoices(Request $request)
         ]);
 
     } catch (\Exception $e) {
+
         return response()->json([
             'success' => false,
             'message' => 'Error generating voice',
@@ -229,7 +236,6 @@ public function generateAudioVoices(Request $request)
         ]);
     }
 }
-
 
 
 //   public function generateAudioVoices(Request $request)

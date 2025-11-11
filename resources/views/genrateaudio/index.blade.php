@@ -301,10 +301,6 @@
                         @endif
 
 
-
-
-
-
                         <div class="form-group mb-3 custom-select-wrapper">
                             <label for="model">Model*</label>
                             <select id="model" class="form-control">
@@ -442,7 +438,7 @@
                     if (formControl) {
                         formControl.value = voice.name;
                         document.querySelectorAll('.voice-input').forEach(i => i.classList.remove(
-                        'active')); // remove previous
+                            'active')); // remove previous
                         formControl.classList.add('active'); // mark selected as active
                     }
                     if (voiceIdInput) voiceIdInput.value = voice.voice_id || voice.id || '';
@@ -894,7 +890,7 @@
                             reader.onload = function(e) {
                                 document.getElementById('user_text').value = e.target.result;
                                 document.getElementById('user_text').dispatchEvent(new Event(
-                                'input')); // update char/word count
+                                    'input')); // update char/word count
                             }
                             reader.readAsText(file);
                         }

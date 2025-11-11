@@ -72,6 +72,7 @@ class AddUserAdminController extends Controller
     $user->email = $request->email;
     $user->user_role = $request->user_role;
     $user->phone = $request->phone;
+    $user->added_user_id = Auth::id();
 
     if ($request->password) {
         $user->password = Hash::make($request->password);

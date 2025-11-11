@@ -48,6 +48,10 @@ Route::get('/admin/voices/index', [AdminController::class, 'addvoices'])->name('
 //     return view('welcome');
 // });
 
+// Route::get('/password', function () {
+//     return view('auth.verify-email');
+// });
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -119,3 +123,6 @@ Route::get('/voices/filter', [VoiceController::class, 'filter'])->name('voices.f
 // Admin dashboard get Users With Graph
 Route::get('/users-stats', [AdminController::class, 'usersStats']);
 
+// Bulk Voices Generate Using GenerateAudioController
+Route::get('/fetchGenAIBulkVoices', [GenrateAudioController::class, 'fetchGenAIBulkVoices']);
+Route::post('/generateAudioVoices', [GenrateAudioController::class, 'generateBulkAudioVoices'])->name('generateAudioVoices');
