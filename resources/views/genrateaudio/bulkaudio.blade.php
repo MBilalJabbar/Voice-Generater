@@ -763,6 +763,26 @@ document.addEventListener('DOMContentLoaded', () => {
         getCache: () => ({ normal: voicesCache, clone: cloneVoicesCache })
     };
 })();
+
+
+ // ✅ Filter voices by search input
+        const searchInput = document.querySelector('#voice-sidebar input[type="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+
+                document.querySelectorAll('.voice-list-item').forEach(item => {
+                    const name = item.querySelector('.voice-info h6')?.textContent.toLowerCase() || '';
+                    const category = item.querySelector('.voice-info small')?.textContent.toLowerCase() || '';
+
+                    if (name.includes(query) || category.includes(query)) {
+                        item.style.display = ''; // show
+                    } else {
+                        item.style.display = 'none'; // hide
+                    }
+                });
+            });
+        }
     </script>
 
 
@@ -771,7 +791,7 @@ document.addEventListener('DOMContentLoaded', () => {
 {{-- Generate Bulk Voics Section --}}
 <script>
     $(document).ready(function() {
-
+        let allAudioUrls = [];
     // Slider visuals
     $("input[type=range]").each(function() {
         const slider = $(this);
@@ -852,7 +872,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 $(".generate-audio").prop("disabled", true).text("Generating...");
                 Swal.fire({
                     title: 'Generating Voice...',
-                    text: 'Please wait...',
+                    text: 'Please wait a moment while we process your request.',
                     allowOutsideClick: false,
                     didOpen: () => Swal.showLoading()
                 });
@@ -876,11 +896,15 @@ document.addEventListener('DOMContentLoaded', () => {
                         index++;
 
                         if (item && item.success) {
+                            allAudioUrls.push(item.audio_url);
                             wrapper.append(`
                                 <div class="mb-2">
                                     <audio controls class="w-100 mt-2">
                                         <source src="${item.audio_url}" type="audio/mpeg">
                                     </audio>
+                                    <button class="btn btn-sm btn-outline-primary mt-2 download-single" data-url="${item.audio_url}">
+                                        <i class="fa-solid fa-download me-1"></i> Download This
+                                    </button>
                                 </div>
                             `);
                             //  <p>${item.text}</p>
@@ -902,6 +926,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 Swal.fire({ icon: 'error', title: 'Server Error', text: 'Check console for details.' });
                 console.error("AJAX Error:", xhr.responseText);
             }
+        });
+    });
+        // 🎧 Download single voice
+    $(document).on("click", ".download-single", function(e) {
+        e.preventDefault();
+        const url = $(this).data("url");
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'voice_' + Date.now() + '.mp3';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+
+    // 🎧 Download all voices
+    $("#download-audio").on("click", function(e) {
+        e.preventDefault();
+
+        if (allAudioUrls.length === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Audio',
+                text: 'Please generate a voice first before downloading.'
+            });
+            return;
+        }
+
+        Swal.fire({
+            icon: 'info',
+            title: 'Downloading...',
+            text: 'All generated voices will be downloaded now.'
+        });
+
+        allAudioUrls.forEach((url, i) => {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `voice_${i + 1}.mp3`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         });
     });
 });

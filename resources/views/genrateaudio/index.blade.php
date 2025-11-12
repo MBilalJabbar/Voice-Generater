@@ -677,6 +677,27 @@
                 })
             };
         })();
+
+
+        // ✅ Filter voices by search input
+        const searchInput = document.querySelector('#voice-sidebar input[type="search"]');
+        if (searchInput) {
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+
+                document.querySelectorAll('.voice-list-item').forEach(item => {
+                    const name = item.querySelector('.voice-info h6')?.textContent.toLowerCase() || '';
+                    const category = item.querySelector('.voice-info small')?.textContent.toLowerCase() || '';
+
+                    if (name.includes(query) || category.includes(query)) {
+                        item.style.display = ''; // show
+                    } else {
+                        item.style.display = 'none'; // hide
+                    }
+                });
+            });
+        }
+
     </script>
 
 
@@ -719,6 +740,7 @@
 
     <script>
         $(document).ready(function() {
+            let currentAudioUrl = null;
 
             // 🎚 Slider style update
             $("input[type=range]").each(function() {
@@ -809,6 +831,7 @@
                         Swal.close();
 
                         if (data.success) {
+                            currentAudioUrl = data.audio_url;
                             const audioHtml = `
                     <audio controls class="w-100 mt-3">
                         <source src="${data.audio_url}" type="audio/mpeg">
@@ -853,6 +876,28 @@
                         console.error("AJAX Error:", xhr.responseText);
                     }
                 });
+            });
+
+             // Download audio
+            $("#download-audio").on("click", function(e) {
+                e.preventDefault();
+
+                if (!currentAudioUrl) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'No Audio',
+                        text: 'Please generate a voice first before downloading.'
+                    });
+                    return;
+                }
+
+                // Create temporary link and trigger download
+                const link = document.createElement('a');
+                link.href = currentAudioUrl;
+                link.download = 'generated_voice.mp3'; // default file name
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
             });
         });
     </script>

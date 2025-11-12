@@ -120,6 +120,10 @@
         .play-btn i {
             font-size: 18px;
         }
+        .play-btn{
+            color: #ffffff;
+            background-color: #8C52FF;
+        }
 
         .voice-avatar-wrapper {
             position: relative;
