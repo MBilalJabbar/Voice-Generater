@@ -48,9 +48,6 @@ Route::get('/admin/voices/index', [AdminController::class, 'addvoices'])->name('
 //     return view('welcome');
 // });
 
-// Route::get('/password', function () {
-//     return view('auth.verify-email');
-// });
 
 Route::middleware([
     'auth:sanctum',
@@ -126,3 +123,16 @@ Route::get('/users-stats', [AdminController::class, 'usersStats']);
 // Bulk Voices Generate Using GenerateAudioController
 Route::get('/fetchGenAIBulkVoices', [GenrateAudioController::class, 'fetchGenAIBulkVoices']);
 Route::post('/generateAudioVoices', [GenrateAudioController::class, 'generateBulkAudioVoices'])->name('generateAudioVoices');
+
+// Password Reset Route
+Route::get('/password-reset', function () {
+    return view('auth.forgot-password');
+});
+
+Route::get('/reset-password', function () {
+    return view('auth.reset-password');
+});
+
+
+Route::post('/send-forgot-password-link', [UserController::class, 'sendForgotPasswordLink']);
+Route::post('/reset-user-password', [UserController::class, 'submitConfirmPassword'])->name('reset-user-password');

@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\LoginNotificationMail;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -73,5 +75,41 @@ class UserController extends Controller
         $request->session()->regenerateToken();
         return redirect('/');
         // return response()->json(['message' => 'Logout successful'], 200);
+    }
+
+    // Password Reset functions
+    public function sendForgotPasswordLink(Request $request){
+        $validateData = $request->validate([
+            'email'=> 'required|string|email|exists:users,email',
+        ]);
+        $token = Str::random(60);
+        DB::table('password_reset_tokens')->updateOrInsert([
+            'email' => $validateData['email'],
+            'token' => $token,
+            'created_at' => now(),
+        ]);
+        Mail::raw('Click the link to reset your password: ' . url('/reset-password?token=' . $token . '&email=' . urlencode($validateData['email'])), function ($message) use ($validateData) {
+            $message->to($validateData['email']);
+            $message->subject('Password Reset Link');
+        });
+        return redirect()->back()->with(['message' => 'Password reset link sent to your email.'], 200);
+    }
+
+    public function submitConfirmPassword(Request $request){
+        $request->validate([
+            'email'=> 'required|string|email|exists:users,email',
+            'password'=> 'required|string|min:8|confirmed',
+            'password_confirmation'=> 'required|string|min:8',
+        ]);
+        $updatePassword = DB::table('password_reset_tokens')
+            ->where([
+                'email' => $request->email,
+                'token' => $request->token,
+            ])->first();
+        $userTable = User::where('email', $request->email)->update([
+            'password' => bcrypt($request->password),
+        ]);
+        DB::table('password_reset_tokens')->where(['email' => $request->email])->delete();
+        return redirect('/login')->with(['message' => 'Password updated successfully. You can now login with your new password.'], 200);
     }
 }
