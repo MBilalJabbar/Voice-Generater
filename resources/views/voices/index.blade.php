@@ -52,6 +52,7 @@
             display: flex;
             align-items: center;
             margin-left: auto;
+            justify-content: flex-end;
             /* Push actions to the right */
         }
 
@@ -134,10 +135,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
+            background: #003E78;
             /* dark overlay */
             border-radius: 50%;
-            opacity: 0;
+            opacity: 1;
             transition: opacity 0.3s ease;
             z-index: 2;
             /* ensures overlay is above image */
@@ -324,14 +325,17 @@
 <div class="col-xxl-4 col-lg-4 col-md-6 col-sm-12 mb-4">
   <div class="card custom-card shadow-sm" style="border-radius:10px; border:2px solid rgba(231,234,233,1); overflow:hidden;">
     <div class="card-body d-flex align-items-center p-3">
-      <div class="voice-avatar-wrapper position-relative" style="width:100px; height:100px;">
-        <img src="${imgUrl}" alt="Voice Profile" class="voice-avatar rounded-circle" style="width:100%; height:100%; object-fit:cover; border:2px solid #ddd;">
-        <div class="play-overlay d-flex justify-content-center align-items-center">
-          <button class="btn btn-light rounded-circle play-btn" data-audio="${audioUrl}" style="width:40px; height:40px;">
-            <i class="fa-solid fa-play"></i>
-          </button>
+        <div style="width:30%;">
+            <div class="voice-avatar-wrapper position-relative" style="width:100px; height:100px;">
+
+                <div class="play-overlay d-flex justify-content-center align-items-center">
+                <button class="btn btn-light rounded-circle play-btn" data-audio="${audioUrl}" style="width:40px; height:40px;">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+                </div>
+            </div>
         </div>
-      </div>
+        <div style="width:70%;">
       <div class="flex-fill ms-3">
         <h5 class="fw-semibold mb-1 lh-1" style="font-size:1rem;">${voice.voice_name || voice.name || 'Unnamed Voice'}</h5>
         <span class="mt-1 d-flex align-items-center" style="font-size:0.85rem;">${metaLine}</span>
@@ -340,6 +344,7 @@
         <button type="button" class="btn btn-sm text-dark p-0 me-2" title="Add"><i class="fa-solid fa-plus-circle"></i></button>
         <button type="button" class="btn btn-sm text-dark p-0" title="More Options"><i class="fa-solid fa-ellipsis-h"></i></button>
       </div>
+    </div>
     </div>
   </div>
 </div>`;
