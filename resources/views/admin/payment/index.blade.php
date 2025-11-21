@@ -35,121 +35,67 @@
                                     <th style="background: #003E78; color:white">Phone Number</th>
                                     <th style="background: #003E78; color:white">Plan</th>
                                     <th style="background: #003E78; color:white">Plan Day Remaining</th>
-                                    <th style="background: #003E78; color:white">Payment Proof</th>
+                                    <th style="background: #003E78; color:white">Status</th>
+                                    {{-- <th style="background: #003E78; color:white">Payment Proof</th> --}}
                                     <th style="background: #003E78; color:white">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>1</td>
-                                    <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
-                                            class="rounded-circle border"></td>
-                                    <td>Ali Khan</td>
-                                    <td>ali@example.com</td>
-                                    <td>0300-1234567</td>
-                                    <td>Premium</td>
-                                    <td>25 days</td>
-                                    <td><img src="assets/images/payment-proof.png" width="50" class="border rounded">
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a>
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="View"><i class="fa fa-eye text-primary"></i></a>
-                                            <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
-                                                    class="fa fa-trash text-danger"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>2</td>
-                                    <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
-                                            class="rounded-circle border"></td>
-                                    <td>Sara Ahmed</td>
-                                    <td>sara@example.com</td>
-                                    <td>0312-7654321</td>
-                                    <td>Free</td>
-                                    <td>18 days</td>
-                                    <td><img src="assets/images/payment-proof.png" width="50" class="border rounded">
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a>
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="View"><i class="fa fa-eye text-primary"></i></a>
-                                            <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
-                                                    class="fa fa-trash text-danger"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>3</td>
-                                    <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
-                                            class="rounded-circle border"></td>
-                                    <td>Bilal Iqbal</td>
-                                    <td>bilal@example.com</td>
-                                    <td>0333-4445556</td>
-                                    <td>Standard</td>
-                                    <td>12 days</td>
-                                    <td><img src="assets/images/payment-proof.png" width="50" class="border rounded">
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a>
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="View"><i class="fa fa-eye text-primary"></i></a>
-                                            <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
-                                                    class="fa fa-trash text-danger"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>4</td>
-                                    <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
-                                            class="rounded-circle border"></td>
-                                    <td>Hira Fatima</td>
-                                    <td>hira@example.com</td>
-                                    <td>0345-2233445</td>
-                                    <td>Premium</td>
-                                    <td>20 days</td>
-                                    <td><img src="assets/images/payment-proof.png" width="50" class="border rounded">
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a>
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="View"><i class="fa fa-eye text-primary"></i></a>
-                                            <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
-                                                    class="fa fa-trash text-danger"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>5</td>
-                                    <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
-                                            class="rounded-circle border"></td>
-                                    <td>Usman Riaz</td>
-                                    <td>usman@example.com</td>
-                                    <td>0301-9876543</td>
-                                    <td>Basic</td>
-                                    <td>14 days</td>
-                                    <td><img src="assets/images/payment-proof.png" width="50" class="border rounded">
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-1">
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a>
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
-                                                title="View"><i class="fa fa-eye text-primary"></i></a>
-                                            <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
-                                                    class="fa fa-trash text-danger"></i></button>
-                                        </div>
-                                    </td>
-                                </tr>
+                                @foreach ($paymentProofs as $paymentProof)
+                                    @php
+                                        $end = \Carbon\Carbon::parse($paymentProof->plan->expires);
+                                        $daysRemaining = now()->startOfDay()->diffInDays($end->startOfDay());
+
+                                        if ($daysRemaining <= 0 && $paymentProof->status != 'expired') {
+                                            // Update status to expired
+                                            $paymentProof->status = 'expired';
+                                            $paymentProof->save();
+                                        }
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
+                                                class="rounded-circle border"></td>
+                                        <td>{{ $paymentProof->user->user_name }}</td>
+                                        <td>{{ $paymentProof->user->email }}</td>
+                                        <td>{{ $paymentProof->user->phone }}</td>
+                                        <td>{{ $paymentProof->plan->name }}</td>
+                                        <td>
+                                            @if ($daysRemaining > 0)
+                                                {{ $daysRemaining }} days
+                                            @else
+                                                <span class="text-danger">Expired</span>
+                                            @endif
+                                        </td>
+                                        <td>
+                                            @if ($paymentProof->status == 'pending')
+                                                <span class="badge bg-warning">Pending</span>
+                                            @elseif ($paymentProof->status == 'active')
+                                                <span class="badge bg-success">Active</span>
+                                            @else
+                                                <span class="badge bg-danger">Expired</span>
+                                            @endif
+                                        </td>
+                                        {{-- <td><img src="assets/images/payment-proof.png" width="50" class="border rounded">
+                                    </td> --}}
+                                        <td>
+                                            <div class="d-flex gap-1">
+                                                {{-- <a href="#" class="btn btn-light btn-sm rounded-circle border"
+                                                title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a> --}}
+                                                <button data-bs-toggle="modal"
+                                                        data-id="{{ $paymentProof->id }}"
+                                                        data-bs-target="#taskModal"
+                                                        class="btn btn-light btn-sm rounded-circle border viewPlan"
+                                                        title="View">
+                                                    <i class="fa fa-eye text-primary"></i>
+                                                </button>
+
+                                                <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
+                                                        class="fa fa-trash text-danger"></i></button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
                                 <!-- Continue same pattern for other rows -->
                             </tbody>
                         </table>
@@ -159,4 +105,78 @@
             </div>
         </div>
     </div>
+
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 50vw; height: 50vh;">
+            <div class="modal-content border-0 shadow-sm rounded-3" style="height: 60%;">
+                <!-- Header -->
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark px-3" id="taskModalLabel">Plan Details</h5>
+                    <button type="button" class="btn-close btn-close-white btn-lg" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <!-- Body -->
+                <div class="modal-body">
+                    <div class="card border-0 p-4 rounded-3">
+                        <!-- Task Information -->
+                        <h6 class="fw-bold text-primary mb-3" style="color: #003E78 !important;">Plan Information</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-6 small">
+                                <p><strong style="color:#47739E;">Status:</strong><br> <span id="modalStatus"></span></p>
+
+                            </div>
+                            <div class="col-md-6 small">
+                                <p>
+                                    <strong style="color:#47739E;">Name:</strong><br>
+                                    <span id="modalName"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6 small">
+                                <p><strong style="color:#47739E;">Email:</strong><br><span id="modalEmail"></span></p>
+                            </div>
+                            <div class="col-md-6 small">
+                                <p><strong style="color:#47739E;">Phone Number:</strong><br> <span id="modalPhone"></span></p>
+                            </div>
+                            <div class="col-md-6 small">
+                                <p><strong style="color:#47739E;">Plan:</strong><br> <span id="modalPlanName"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6 small">
+                                <p><strong style="color:#47739E;">Plan Day Remaining:</strong><br> <span id="modalRemaningday"></span>
+                                </p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $('.viewPlan').on('click', function() {
+    let id = $(this).data('id');
+
+    $.ajax({
+        url: `/fetchPlan/${id}`,
+        type: 'GET',
+        success: function(response) {
+            if (response.success) {
+                let s = response.data;
+
+                $('#modalStatus').text(s.status ?? 'N/A');
+                $('#modalName').text(s.user.full_name ?? 'N/A');
+                $('#modalEmail').text(s.user.email ?? 'N/A');
+                $('#modalPhone').text(s.user.phone ?? 'N/A');
+                $('#modalPlanName').text(s.plan.name ?? 'N/A');
+                $('#modalRemaningday').text(s.days_remaining ?? '0');
+                $('#modalCreated').text(s.created_at ?? 'N/A');
+            }
+        }
+    });
+});
+
+    </script>
 @endsection

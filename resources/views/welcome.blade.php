@@ -318,11 +318,12 @@
                             @endforeach
                         </ul>
 
-
+                        <a href="{{ url('viewCheckout', base64_encode($webplans->id)) }}">
                         <button class="btn text-white w-100 mt-auto"
                             style="background:rgba(0,62,120,1); height:50px; border-radius:27px; font-weight:500;">Choose Plan
                             {{-- {{ $plan['btn'] }} --}}
                         </button>
+                        </a>
                     </div>
                 </div>
             @endforeach

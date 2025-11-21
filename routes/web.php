@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AddUserAdminController;
 use App\Http\Controllers\GoogleController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoiceGeneratorController;
 use Illuminate\Support\Facades\Route;
@@ -14,14 +15,7 @@ use App\Http\Controllers\AddUserController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\CloneVoiceController;
 use App\Http\Controllers\PagesController;
-
-
-
-
-
-
-
-
+use App\Http\Controllers\Subscription;
 
 Route::get('/index', [DashbaordController::class, 'index'])->name('dashboard.index');
 Route::get('/subscription', [PlanController::class, 'index'])->name('subscriptions.index');
@@ -69,6 +63,12 @@ Route::post('LogoutUser', [UserController::class, 'LogoutUser']);
 // Login with Google
 Route::get('auth/google', [GoogleController::class, 'redirectToGoogle'])->name('google.login');
 Route::get('auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
+Route::get('/complete-profile', function () {
+    return view('auth.profileComplete');
+})->name('complete-profile');
+
+Route::post('/complete-profile', [GoogleController::class, 'updateCompleteProfile']);
+
 
 Route::post('UpdateSetting', [PagesController::class, 'UpdateSetting']);
 
@@ -136,3 +136,12 @@ Route::get('/reset-password', function () {
 
 Route::post('/send-forgot-password-link', [UserController::class, 'sendForgotPasswordLink']);
 Route::post('/reset-user-password', [UserController::class, 'submitConfirmPassword'])->name('reset-user-password');
+
+
+// Payment Routes
+Route::get('/viewCheckout/{id}', [PaymentController::class, 'viewCheckout']);
+Route::post('/progressCheckout', [Subscription::class, 'progressCheckout']);
+Route::get('/binancePay', [PaymentController::class, 'binancePay']);
+
+//Patment Proof
+Route::get('/fetchPlan/{id}', [AdminController::class, 'fetchPlan']);

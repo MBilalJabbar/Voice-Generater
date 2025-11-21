@@ -13,4 +13,8 @@ class Plan extends Model
         'ultra_hd_audio', 'all_voices_models', 'priority_usage', 'faster_processing',
         'team_studio_usage', 'premium_support', 'extended_usage'
     ];
+    public function subscriptions()
+    {
+        return $this->hasMany(Subscription::class);
+    }
 }

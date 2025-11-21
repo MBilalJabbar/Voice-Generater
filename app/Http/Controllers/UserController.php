@@ -18,6 +18,7 @@ class UserController extends Controller
             'user_name' => 'required|string|max:255|unique:users,user_name',
             'email' => 'required|string|email|max:255|unique:users,email',
             'phone' => 'nullable|string|max:20',
+            'dob' => 'nullable|date',
             'password' => 'required|string|min:8|confirmed',
             'google_id' => 'nullable|string|max:255',
             'profile_picture' => 'nullable|image|max:2048',
@@ -27,6 +28,7 @@ class UserController extends Controller
         $userData->user_name = $validatedData['user_name'];
         $userData->email = $validatedData['email'];
         $userData->phone = $validatedData['phone'] ?? null;
+        $userData->dob = $validatedData['dob'] ?? null;
         $userData->password = bcrypt($validatedData['password']);
         $userData->google_id = $validatedData['google_id'] ?? null;
         if ($request->hasFile('profile_picture')) {
