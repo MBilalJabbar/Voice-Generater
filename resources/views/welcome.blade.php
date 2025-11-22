@@ -58,8 +58,13 @@
             color: #000;
         }
 
-        .btn-outline:hover {
+        /* .btn-outline:hover {
             background-color: #f8f8f8;
+        } */
+         .btn-outline:hover {
+            color: #fff;
+
+            background-color: #003E78;
         }
 
         .btn-primary-custom {
@@ -67,28 +72,33 @@
             color: #fff;
         }
 
-        .btn-primary-custom:hover {
+        /* .btn-primary-custom:hover {
             background-color: rgba(0, 62, 120, 0.9);
+        } */
+        .btn-primary-custom:hover {
+            color: #003E78 !important;
+            background: transparent !important;
+            border-color: rgba(0, 62, 120, 0.9) !important;
         }
 
         /* ---------- Hero Section (No Change to styling) ---------- */
         .hero-section {
             text-align: center;
-            padding: 80px 20px;
+            padding: 10px 20px;
         }
 
         .hero-section h1 {
-            font-size: 2.5rem;
+            font-size: 38px;
             font-weight: 700;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .hero-section .text-color {
             color: rgba(0, 0, 0, 1);
             font-weight: 500;
-            font-size: 1.4rem;
+            font-size: 18px;
             line-height: 1.5;
-            margin-bottom: 40px;
+            margin-bottom: 20px;
         }
 
         .hero-section .text-color p {
@@ -118,7 +128,7 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-light">
+    <nav class="navbar navbar-expand-lg navbar-light p-0">
         <div class="container">
             <a class="navbar-brand mt-3" href="#home-section">
                     <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}" alt="Logo" width="90">
@@ -162,15 +172,23 @@
             <a href="{{ route('login') }}" class="btn btn-outline btn-rounded">Contact Sale</a>
         </div>
     </section>
-    <div class="text-center my-3">
+    {{-- <div class="text-center my-2">
         <video src="{{ asset('assets/video/1115101_Broadcast_Woman_3840x2160.mp4') }}"
             style="width: 70%; border-radius: 50px;"></video>
-    </div>
+    </div> --}}
+    <div class="text-center my-2">
+    <video
+        src="{{ asset('assets/video/1115101_Broadcast_Woman_3840x2160.mp4') }}"
+        style="width: 65%; height: 50vh; border-radius: 12px; object-fit: cover;"
+        autoplay muted loop>
+    </video>
+</div>
+
 
     <div class="container py-5" style="background:#fff;" id="pricing-section">
         <div class="row g-4">
 
-            @php
+            {{-- @php
                 $plans = [
                     ['name' => 'Free Plan', 'usd' => '$0', 'pkr' => 'PKR 0', 'btn' => 'Choose Plan'],
                     ['name' => 'Basic Plan', 'usd' => '$49', 'pkr' => 'PKR 14,000', 'btn' => 'Choose Plan'],
@@ -229,6 +247,83 @@
                             style="background:rgba(0,62,120,1); height:50px; border-radius:27px; font-weight:500;">
                             {{ $plan['btn'] }}
                         </button>
+                    </div>
+                </div>
+            @endforeach --}}
+
+
+            @foreach ($plans as $webplans)
+                <div class="col-md-4 mt-5">
+                    <div class="p-4 shadow-sm h-100 d-flex flex-column justify-content-between"
+                        style="border-radius:25px; border:1px solid #eee;">
+                        <div class="" style="color:#231D4F;">
+                            <h2 class="fw-bold mb-2" style="font-size:26px; font-weight:800">{{ $webplans->name }}</h2>
+                            <h3 class="fw-bold mb-2" style="font-size:22px; font-weight:700">{{ rtrim(rtrim(number_format($webplans->price, 2, '.', ''), '0'), '.') }}
+ {{ $webplans->currency }} <small
+                                    style="font-size:16px; font-weight:600;">/{{ $webplans->duration }}</small></h3>
+                            {{-- <h4 style="font-size:18px; color:#231D4F;font-weight:600">{{ $webplans->price }}</h4> --}}
+                        </div>
+                        @php
+                            $features = [
+                                // 'Characters' => $webplans->characters,
+                                // 'Minutes' => $webplans->minutes,
+                                'Text to Speech' => $webplans->text_to_speech,
+                                'Bulk Voice Generation' => $webplans->bulk_voice_generation,
+                                'Voice Effects (Pitch, Speed, Emotion)' => $webplans->voice_effects,
+                                'Ultra HD Audio (320 kbps)' => $webplans->ultra_hd_audio,
+                                'All ElevenLabs voices & models' => $webplans->all_voices_models,
+                                'Voice Cloning & Change' => $webplans->voice_cloning,
+                            ];
+
+                        @endphp
+
+                        <ul class="list-unstyled text-start mt-3 mb-4"
+                            style="color:rgba(132,129,153,1); font-size:16.96px; line-height:29.4px;">
+                                <li class="mt-2">
+                                    @if (!empty($webplans->minutes))
+                                        <i class="fas fa-check me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                        {{$webplans->minutes}} Characters
+                                    @else
+                                        <i class="fas fa-times me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                         {{ $webplans->minutes }} Characters
+                                    @endif
+                                </li>
+                                <li class="mt-2">
+                                    @if (!empty($webplans->characters))
+                                        <i class="fas fa-check me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                        {{$webplans->characters}} Minutes
+                                    @else
+                                        <i class="fas fa-times me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                         {{ $webplans->characters }} Minutes
+                                    @endif
+                                </li>
+
+
+                            @foreach ($features as $label => $value)
+                                <li class="mt-2">
+                                    @if (!empty($value))
+                                        <i class="fas fa-check me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                        {{ $label }}
+                                    @else
+                                        <i class="fas fa-times me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                         {{ $label }}     {{-- {{ $value }} --}}
+                                    @endif
+                                </li>
+                            @endforeach
+                        </ul>
+
+                        <a href="{{ url('viewCheckout', base64_encode($webplans->id)) }}">
+                        <button class="btn text-white w-100 mt-auto"
+                            style="background:rgba(0,62,120,1); height:50px; border-radius:27px; font-weight:500;">Choose Plan
+                            {{-- {{ $plan['btn'] }} --}}
+                        </button>
+                        </a>
                     </div>
                 </div>
             @endforeach

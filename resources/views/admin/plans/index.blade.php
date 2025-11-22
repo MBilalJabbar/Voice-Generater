@@ -43,31 +43,21 @@
                             </thead>
                             <tbody>
                                 {{-- Placeholder for 8 dummy records. In a real application, this data is passed from the controller. --}}
-                                <?php
-                                $userPlans = [
-                                    ['plan_name' => 'Basic Monthly', 'credit' => 100, 'duration' => '30 Days', 'expiry' => '2025-11-15', 'price' => '$9.99', 'minutes_limit' => 60, 'id' => 1],
-                                    ['plan_name' => 'Standard Quarterly', 'credit' => 500, 'duration' => '90 Days', 'expiry' => '2026-01-20', 'price' => '$29.99', 'minutes_limit' => 300, 'id' => 2],
-                                    ['plan_name' => 'Premium Annual', 'credit' => 2000, 'duration' => '365 Days', 'expiry' => '2026-10-17', 'price' => '$99.99', 'minutes_limit' => 1200, 'id' => 3],
-                                    ['plan_name' => 'Starter Pack', 'credit' => 50, 'duration' => '7 Days', 'expiry' => '2025-10-24', 'price' => '$4.99', 'minutes_limit' => 30, 'id' => 4],
-                                    ['plan_name' => 'Pro Monthly', 'credit' => 800, 'duration' => '30 Days', 'expiry' => '2025-11-10', 'price' => '$49.99', 'minutes_limit' => 480, 'id' => 5],
-                                    ['plan_name' => 'Enterprise Custom', 'credit' => 'Unlimited', 'duration' => '365 Days', 'expiry' => 'N/A', 'price' => 'Negotiated', 'minutes_limit' => 'Unlimited', 'id' => 6],
-                                    ['plan_name' => 'Trial (Expired)', 'credit' => 10, 'duration' => 'N/A', 'expiry' => '2025-09-01', 'price' => 'Free', 'minutes_limit' => 10, 'id' => 7],
-                                    ['plan_name' => 'Student Discount', 'credit' => 200, 'duration' => '90 Days', 'expiry' => '2026-02-01', 'price' => '$19.99', 'minutes_limit' => 120, 'id' => 8],
-                                ];
-                                ?>
-                                @foreach ($userPlans as $plan)
+
+                                @foreach ($plans as $userPlans)
                                     <tr class="@if ($loop->odd) bg-light @else bg-white @endif">
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $plan['plan_name'] }}</td>
-                                        <td>{{ $plan['credit'] }}</td>
-                                        <td>{{ $plan['duration'] }}</td>
-                                        <td>{{ $plan['expiry'] }}</td>
-                                        <td>{{ $plan['price'] }}</td>
-                                        <td>{{ $plan['minutes_limit'] }}</td>
+                                        <td>{{ $userPlans->name }}</td>
+                                        <td>{{ $userPlans->characters }}</td>
+                                        <td>{{ $userPlans->duration }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($userPlans->expires)->format('d M Y, h:i A') }}</td>
+
+                                        <td>{{ $userPlans->price }}{{ $userPlans->currency }}</td>
+                                        <td>{{ $userPlans->minutes}}</td>
                                         <td>
-                                            <a href="#" class="btn btn-light btn-sm rounded-circle border"
+                                            <a href="{{ url('editPlans/' . $userPlans->id) }}" class="btn btn-light btn-sm rounded-circle border"
                                                 title="Edit"><i class="fa fa-pen-to-square text-warning"></i></a>
-                                            <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
+                                            <button class="btn btn-light btn-sm rounded-circle border deletePlan" title="Delete" data-id="{{ $userPlans->id }}"><i
                                                     class="fa fa-trash text-danger"></i></button>
                                         </td>
                                     </tr>
@@ -79,4 +69,54 @@
             </div>
         </div>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    $(document).ready(function() {
+        $('.deletePlan').on('click', function() {
+            let id = $(this).data('id');
+            let button = $(this);
+
+            Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: '/deletedPlans/' + id,  // 👈 make sure your route matches this
+                        type: 'DELETE',
+                        data: {
+                            _token: '{{ csrf_token() }}'  // required for Laravel
+                        },
+                        success: function(response) {
+                            Swal.fire(
+                                'Deleted!',
+                                response.message || 'Plan has been deleted.',
+                                'success'
+                            );
+                            button.closest('tr').fadeOut(500, function() {
+                                $(this).remove();
+                            });
+                        },
+                        error: function(xhr) {
+                            Swal.fire(
+                                'Error!',
+                                'Something went wrong while deleting.',
+                                'error'
+                            );
+                        }
+                    });
+                }
+            });
+        });
+    });
+</script>
+
 @endsection

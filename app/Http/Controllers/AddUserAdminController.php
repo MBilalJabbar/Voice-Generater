@@ -18,7 +18,7 @@ class AddUserAdminController extends Controller
             'user_name'=> 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
             'password' => 'nullable|string|min:8',
-            'user_type' => 'required|string|in:admin,manager,user',
+            'user_role' => 'required|string|in:admin,manager,user',
             'phone' => 'required|string',
             'profileImage' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
@@ -33,13 +33,13 @@ class AddUserAdminController extends Controller
             'user_name'       => $request->user_name,
             'full_name'  => $request->full_name,
             'email'      => $request->email,
-            'user_type'  => $request->user_type,
+            'user_role'  => $request->user_role,
             'profile_picture' => $imagePath,
             'phone' => $request->phone,
             'password'   => Hash::make($request->password),
             'added_user_id' => Auth::id(),
         ]);
-        return view('admin.adduser.create');
+        return view('admin.dashboard.index');
         // return redirect()->back()->with('success', 'User added successfully.');
     }
     public function index(Request $request)
@@ -72,6 +72,7 @@ class AddUserAdminController extends Controller
     $user->email = $request->email;
     $user->user_role = $request->user_role;
     $user->phone = $request->phone;
+    $user->added_user_id = Auth::id();
 
     if ($request->password) {
         $user->password = Hash::make($request->password);

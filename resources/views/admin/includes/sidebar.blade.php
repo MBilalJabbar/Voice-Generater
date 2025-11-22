@@ -42,12 +42,12 @@
                  </li>
 
                  <!-- Add Voices -->
-                 <li class="slide mt-2">
+                 {{-- <li class="slide mt-2">
                      <a href="{{ url('admin/voices/index') }}" class="side-menu__item">
                          <i class="fas fa-microphone side-menu__icon"></i>
                          <span class="side-menu__label">Add Voices</span>
                      </a>
-                 </li>
+                 </li> --}}
 
                  <!-- Payment Proof -->
                  <li class="slide mt-2">
@@ -59,7 +59,7 @@
 
                  <!-- Plans -->
                  <li class="slide mt-2">
-                     <a href="{{ url('admin/plans/index') }}" class="side-menu__item">
+                     <a href="{{ url('showPlansTable') }}" class="side-menu__item">
                          <i class="fas fa-layer-group side-menu__icon"></i>
                          <span class="side-menu__label">Plans</span>
                      </a>

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subscription;
 use App\Models\User;
 use App\Models\VoicesModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class AdminController extends Controller
 {
@@ -13,17 +15,79 @@ class AdminController extends Controller
     {
         $users = User::where('user_role', 'user')
                         ->orderBy('created_at', 'Desc')
-                        ->take(5)
+                        ->take(15)
                         ->get();
         $userCount = $users->count();
 
         return view('admin.dashboard.index', compact('users', 'userCount'));
     }
 
+    // get user information with graph
+    public function usersStats(Request $request){
+        try {
+            $year = $request->input('year', date('Y')); // default current year
+
+            $users = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+                ->whereYear('created_at', $year)
+                ->groupBy('month')
+                ->orderBy('month')
+                ->where('user_role', 'user')
+                ->get();
+
+            $dataPoints = [];
+
+            // Include all 12 months even if no users
+            for ($m = 1; $m <= 12; $m++) {
+                $monthData = $users->firstWhere('month', $m);
+                $dataPoints[] = [
+                    'x' => Carbon::create($year, $m, 1)->toDateString(),
+                    'y' => $monthData ? $monthData->count : 0
+                ];
+            }
+
+            return response()->json($dataPoints);
+
+        } catch (\Exception $e) {
+            // Return JSON error for debugging
+            return response()->json([
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+
     public function payment()
     {
-        return view('admin.payment.index');
+        $paymentProofs = Subscription::with(['user', 'plan'])->orderBy('created_at', 'Desc')->get();
+
+        return view('admin.payment.index', compact('paymentProofs'));
     }
+
+    public function fetchPlan($id){
+        $subscription = Subscription::with(['user', 'plan'])->find($id);
+
+        if (!$subscription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Subscription not found'
+            ], 404);
+        }
+
+        // Calculate remaining days
+        $end = \Carbon\Carbon::parse($subscription->plan->expires);
+        $daysRemaining = now()->startOfDay()->diffInDays($end->startOfDay(), false);
+
+        // Attach remaining days to response
+        $subscription->days_remaining = $daysRemaining > 0 ? $daysRemaining : 0;
+
+        return response()->json([
+            'success' => true,
+            'data' => $subscription
+        ]);
+    }
+
 
     public function plansIndex()
     {

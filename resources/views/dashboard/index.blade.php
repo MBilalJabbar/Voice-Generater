@@ -63,6 +63,9 @@
             color: #333;
         }
     </style>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.4/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.3.4/js/dataTables.js"></script>
+
     <div class="container-fluid mt-4">
         <div class="row">
             <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-4">
@@ -149,7 +152,7 @@
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table class="table text-nowrap table-hover border align-middle">
+                            <table id="myTable" class="table text-nowrap table-hover border align-middle">
                                 <thead class="table-light">
                                     <tr>
                                         <th scope="col">ID</th>
@@ -203,7 +206,7 @@
                                             <button class="btn btn-sm me-1 download-voice" data-audio="{{ asset($voice->audio_path) }}" style="color: #003E78;">
                                                 <i class="fas fa-download"></i>
                                             </button>
-                                            <button class="btn btn-sm me-1 play-voice" data-audio="{{ asset($voice->audio_path) }}" style="color: #DBBF4D;">
+                                            <button class="btn btn-sm me-1 play-voice" data-audio="{{ $voice->audio_path }}" style="color: #DBBF4D;">
                                                 <i class="fas fa-play"></i>
                                             </button>
                                             <button class="btn btn-sm" id="deleteVoice" data-id="{{ $voice->id }}" style="color: #FF0000;">
@@ -331,6 +334,12 @@
 
 <script>
 
+// DataTable
+$(document).ready( function () {
+    $('#myTable').DataTable();
+} );
+
+
     // Download Voice File
 $(document).on('click', '.download-voice', function(e){
     e.preventDefault();
@@ -352,9 +361,7 @@ $(document).on('click', '.download-voice', function(e){
 // Play voice File
 $(document).on('click', '.play-voice', function() {
     const button = $(this);
-    const audioUrl = button.data('audio');
-
-    console.log("🎵 Audio URL:", audioUrl); //  check this in console
+    const audioUrl = button.data('audio'); // must be full URL
 
     if (!audioUrl) {
         alert("No audio file path found!");
@@ -365,15 +372,14 @@ $(document).on('click', '.play-voice', function() {
         const audio = new Audio(audioUrl);
         button.data('audioObj', audio);
 
-        // When audio finishes
         audio.onended = () => {
             button.find('i').removeClass('fa-pause').addClass('fa-play');
             button.data('playing', false);
         };
 
-        // Handle missing or bad file
         audio.onerror = () => {
             alert('⚠️ Audio file not found or unsupported format.');
+            console.error("Audio failed to load:", audioUrl);
             button.find('i').removeClass('fa-pause').addClass('fa-play');
             button.data('playing', false);
         };
@@ -386,12 +392,17 @@ $(document).on('click', '.play-voice', function() {
         audio.pause();
         button.find('i').removeClass('fa-pause').addClass('fa-play');
     } else {
-        audio.play();
+        audio.play().catch(e => {
+            console.error("Audio play blocked:", e);
+            alert("⚠️ Audio cannot play. Check console for details.");
+        });
         button.find('i').removeClass('fa-play').addClass('fa-pause');
     }
 
     button.data('playing', !isPlaying);
 });
+
+
 </script>
 
 
@@ -522,7 +533,7 @@ function formatVoiceTime(utcTime) {
 
                     // Audio load
                     if (voice.audio_path) {
-                        let audioPath = `/storage/${voice.audio_path}`;
+                        let audioPath = `/${voice.audio_path}`;
                         $('#modalAudioSource').attr('src', audioPath);
                         $('#voicePlayer')[0].load();
                     }
@@ -534,7 +545,7 @@ function formatVoiceTime(utcTime) {
     // 🎧 Download Audio
     $('#downloadAudio').on('click', function () {
         if (currentVoice?.audio_path) {
-            let url = `/storage/${currentVoice.audio_path}`;
+            let url = `/${currentVoice.audio_path}`;
             let a = document.createElement('a');
             a.href = url;
             a.download = currentVoice.audio_path.split('/').pop();

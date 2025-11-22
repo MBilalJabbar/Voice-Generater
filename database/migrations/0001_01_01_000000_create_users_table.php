@@ -17,12 +17,16 @@ return new class extends Migration
             $table->string('user_name')->nullable();
             $table->string('user_role')->default('user');
             $table->string('added_user_id')->nullable();
-            $table->string('status')->default(1);
+            $table->string('status')->default(0);
             $table->string('email')->unique();
             $table->string('phone')->nullable();
+            $table->date('dob')->nullable();
             $table->string('password');
             $table->string('google_id')->nullable();
             $table->string('profile_picture')->nullable();
+            $table->integer('credits')->default(0);
+            $table->integer('current_plan_id')->nullable();
+            $table->dateTime('plan_expiry_date')->nullable();
             $table->timestamps();
         });
 

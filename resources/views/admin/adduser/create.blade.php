@@ -24,7 +24,7 @@
                             <div class="mb-3 col-8">
                                 <label for="name" class="form-label">Profile Image</label>
                                 <input type="file" name="profileImage" class="form-control" placeholder="Enter name"
-                                    value="{{ old('name') }}" required>
+                                    value="{{ old('profileImage') }}" required>
                                 @error('name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -40,7 +40,7 @@
                             <div class="mb-3 col-6">
                                 <label for="name" class="form-label">User Name</label>
                                 <input type="text" name="user_name" class="form-control" placeholder="Enter User Name"
-                                    value="{{ old('name') }}" required>
+                                    value="{{ old('user_name') }}" required>
                                 @error('name')
                                     <span class="text-danger">{{ $message }}</span>
                                 @enderror
@@ -74,13 +74,13 @@
 
                             <div class="mb-3 col-6">
                                 <label for="user_type" class="form-label">User Type</label>
-                                <select name="user_type" class="form-select" required>
+                                <select name="user_role" class="form-select" required>
                                     <option value="">-- Select User Type --</option>
                                     <option value="admin" {{ old('user_role') == 'admin' ? 'selected' : '' }}>Admin
                                     </option>
                                     <option value="manager" {{ old('user_role') == 'manager' ? 'selected' : '' }}>Manager
                                     </option>
-                                    <option value="client" {{ old('user_role') == 'user' ? 'selected' : '' }}>User
+                                    <option value="user" {{ old('user_role') == 'user' ? 'selected' : '' }}>User
                                     </option>
                                 </select>
                                 @error('user_role')
@@ -95,4 +95,13 @@
             </div>
         </div>
     </div>
+
+
+    @if(session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
 @endsection

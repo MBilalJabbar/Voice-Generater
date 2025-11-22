@@ -309,7 +309,7 @@
 
                         <!-- Forgot Password Link -->
                         <div class="d-flex justify-content-end mb-4">
-                            <a href="#" class="forgot-password-link">Forgot Password</a>
+                            <a href="{{ url('/password-reset') }}" class="forgot-password-link">Forgot Password</a>
                         </div>
 
                         <!-- Login Button -->

@@ -350,6 +350,18 @@
                                 @enderror
                         </div>
 
+                         <!-- Date of Birth Field -->
+                        <div class="form-group mt-4">
+                            <label>Enter your Date of Birth</label>
+                            <input type="date" class="form-control @error('dob')
+                                is-invalid
+                            @enderror" name="dob" style="height: 50px; border: 1px solid #4285F4;"
+                                placeholder="Enter your date of birth" required>
+                                @error('dob')
+                                    <div class="text-danger">{{ $message }}</div>
+                                @enderror
+                        </div>
+
                         <!-- Password Field -->
                         <div class="form-group mt-4">
                             <label>Enter your Password</label>

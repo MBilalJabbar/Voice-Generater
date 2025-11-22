@@ -36,7 +36,7 @@
                  </li>
 
                  <li class="slide mt-2">
-                     <a href="{{ url('voices') }}" class="side-menu__item">
+                     <a href="{{ url('voices-Page') }}" class="side-menu__item">
                          <i class="fa-solid fa-volume-high side-menu__icon"></i>
                          <span class="side-menu__label">Voices</span>
                      </a>
