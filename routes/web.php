@@ -3,6 +3,7 @@
 use App\Http\Controllers\AddUserAdminController;
 use App\Http\Controllers\GoogleController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\PaymentProof;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VoiceGeneratorController;
 use Illuminate\Support\Facades\Route;
@@ -144,4 +145,8 @@ Route::post('/progressCheckout', [Subscription::class, 'progressCheckout']);
 Route::get('/binancePay', [PaymentController::class, 'binancePay']);
 
 //Patment Proof
-Route::get('/fetchPlan/{id}', [AdminController::class, 'fetchPlan']);
+Route::get('/fetchPlan/{id}', [PaymentProof::class, 'fetchPlan']);
+Route::post('/PlanStatusUpdate/{id}', [PaymentProof::class, 'PlanStatusUpdate'])->name('PlanStatusUpdate');
+Route::post('/deleteProofPlan/{id}', [PaymentProof::class, 'deleteProofPlan'])->name('deleteProofPlan');
+// show character count
+// Route::get('/index', [PaymentProof::class, 'CharacterCount']);

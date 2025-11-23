@@ -70,8 +70,8 @@
                                         <td>
                                             @if ($paymentProof->status == 'pending')
                                                 <span class="badge bg-warning">Pending</span>
-                                            @elseif ($paymentProof->status == 'active')
-                                                <span class="badge bg-success">Active</span>
+                                            @elseif ($paymentProof->status == 'approved')
+                                                <span class="badge bg-success">Approved</span>
                                             @else
                                                 <span class="badge bg-danger">Expired</span>
                                             @endif
@@ -90,7 +90,7 @@
                                                     <i class="fa fa-eye text-primary"></i>
                                                 </button>
 
-                                                <button class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
+                                                <button id="deletePlan" data-id="{{ $paymentProof->id }}" class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
                                                         class="fa fa-trash text-danger"></i></button>
                                             </div>
                                         </td>
@@ -108,18 +108,34 @@
 
     <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 50vw; height: 50vh;">
-            <div class="modal-content border-0 shadow-sm rounded-3" style="height: 60%;">
+            <div class="modal-content border-0 shadow-sm rounded-3" style="height: 80%;">
                 <!-- Header -->
                 <div class="modal-header border-0 pb-0">
                     <h5 class="modal-title fw-bold text-dark px-3" id="taskModalLabel">Plan Details</h5>
                     <button type="button" class="btn-close btn-close-white btn-lg" data-bs-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
+
                 <!-- Body -->
                 <div class="modal-body">
                     <div class="card border-0 p-4 rounded-3">
                         <!-- Task Information -->
                         <h6 class="fw-bold text-primary mb-3" style="color: #003E78 !important;">Plan Information</h6>
+                        <form id="subscriptionForm" method="POST">
+                            @csrf
+                            <div class="my-4">
+                                <label for="status" style="color:#47739E;">Status</label>
+                                <select name="status" id="status" style="padding: 8px;">
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="expired">Expired</option>
+                                </select>
+                            </div>
+                            <div class="col-md-12 small">
+                                <button type="button" id="saveStatus" class="btn float-end" style="background: #47739E; color: #fff; padding: 10px 24px; border-radius: 8px;">Save</button>
+                            </div>
+                        </form>
+
                         <div class="row mb-4">
                             <div class="col-md-6 small">
                                 <p><strong style="color:#47739E;">Status:</strong><br> <span id="modalStatus"></span></p>
@@ -146,7 +162,6 @@
                                 </p>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </div>
@@ -173,10 +188,55 @@
                 $('#modalPlanName').text(s.plan.name ?? 'N/A');
                 $('#modalRemaningday').text(s.days_remaining ?? '0');
                 $('#modalCreated').text(s.created_at ?? 'N/A');
+                $('#status').val(s.status).data('id', s.id);
+                $('#subscriptionForm').data('id', s.id);
             }
         }
     });
 });
+
+$('#saveStatus').on('click', function() {
+    let status = $('#status').val();
+    let id = $('#subscriptionForm').data('id'); // subscription ID
+
+    $.ajax({
+        url: `{{ url('PlanStatusUpdate') }}/${id}`, // <-- full URL
+        type: 'POST',
+        data: { status: status, _token: '{{ csrf_token() }}' },
+        success: function(res){
+            Swal.fire('Updated!', 'Subscription status updated.', 'success');
+            $('#taskModal').modal('hide');
+            location.reload(); // refresh table
+        }
+    });
+});
+
+$('#deletePlan').on('click', function(){
+    let id = $(this).data('id');
+
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `{{ url('deleteProofPlan') }}/${id}`,
+                type: 'POST',
+                data: { _token: '{{ csrf_token() }}' },
+                success: function(res){
+                    Swal.fire('Deleted!', 'Subscription has been deleted.', 'success');
+                    location.reload(); // refresh table
+                }
+            });
+        }
+    });
+})
+
 
     </script>
 @endsection
