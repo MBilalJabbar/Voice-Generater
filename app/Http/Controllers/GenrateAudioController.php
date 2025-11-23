@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BulkVoices;
+use App\Models\Subscription;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Auth;
@@ -47,10 +48,49 @@ class GenrateAudioController extends Controller
         if (!$texts || !is_array($texts)) {
             return response()->json(['success' => false, 'message' => 'No texts provided']);
         }
+        $user = Auth::user();
+        $currentSubscription = Subscription::where('user_id', $user->user_id)
+            ->where('status', 'approved')
+            ->whereHas('plan', function ($query) {
+                $query->where('expires', '>=', now());
+            })
+            ->with('plan')
+            ->first();
+        if (!$currentSubscription) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Your subscription is not approved or expired.'
+            ]);
+        }
+
+        $planCharacters = $currentSubscription->plan->characters ?? 0;
+        $userCredits = $user->credits ?? 0;
 
         $results = [];
 
         foreach ($texts as $textItem) {
+            $requiredCredits = mb_strlen($textItem);
+
+            if ($user->credits < $requiredCredits) {
+                $results[] = [
+                    'text' => $textItem,
+                    'success' => false,
+                    'message' => 'Insufficient credits. Please upgrade your plan.',
+                    'remaining_credits' => $user->credits,
+                    'required' => $requiredCredits
+                ];
+                continue;
+            }
+            // if ($user->credits < $requiredCredits) {
+            //     return response()->json([
+            //         'success' => false,
+            //         'message' => 'Insufficient credits. Please upgrade your plan.',
+            //         'remaining_credits' => $user->credits,
+            //         'required' => $requiredCredits
+            //     ]);
+            // }
+
+
             try {
                 // 1. Create TTS Task
                 $taskResponse = Http::withHeaders([
@@ -140,6 +180,9 @@ class GenrateAudioController extends Controller
                 $voice->status = 'completed';
                 $voice->save();
 
+                $user->credits -= $requiredCredits;
+                $user->save();
+
                 $results[] = [
                     'text' => $textItem,
                     'success' => true,
@@ -154,8 +197,5 @@ class GenrateAudioController extends Controller
 
         return response()->json($results);
     }
-
-
-
 
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subscription;
 use App\Models\VoiceGenerate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -105,14 +106,45 @@ public function fetchGenAIVoices()
     // }
 
     // give me late response but work good function
-public function generateAudioVoices(Request $request)
-{
+public function generateAudioVoices(Request $request){
     $apiKey = env('GENAIPRO_API_KEY');
     $voiceId = $request->voice_id ?? 'uju3wxzG5OhpWcoi3SMy';
     $text = $request->text;
 
     if (!$text) {
         return response()->json(['success' => false, 'message' => 'No text provided']);
+    }
+    $user = Auth::user();
+    $currentSubscription = Subscription::where('user_id', $user->user_id)
+        ->where('status', 'approved')
+        ->whereHas('plan', function ($query) {
+            $query->where('expires', '>=', now());
+        })
+        ->with('plan')
+        ->first();
+
+    if (!$currentSubscription) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Your subscription is not approved or expired.'
+        ]);
+    }
+
+    // Get plan characters
+    $planCharacters = $currentSubscription->plan->characters ?? 0;
+
+    // Get user credits
+    $userCredits = $user->credits ?? 0;
+
+     //  Check Character Credits
+    $wordCount = mb_strlen($text);
+    $requiredCredits = $wordCount;
+
+    if ($user->credits < $requiredCredits) {
+        return response()->json([
+            'success' => false,
+            'message' => 'Insufficient credits. Please upgrade your plan.'
+        ]);
     }
 
     try {
@@ -218,6 +250,13 @@ public function generateAudioVoices(Request $request)
         $voice->completed_time = now();
         $voice->status = 'completed';
         $voice->save();
+
+
+        // ✅ Deduct Credits
+        $user->credits -= $requiredCredits;
+        $user->save();
+        // $user->credits = $currentSubscription->plan->characters;
+        // $user->save();
 
 
         // ✅ 5. Return To Frontend

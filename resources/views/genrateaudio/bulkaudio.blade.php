@@ -879,7 +879,32 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             success: function(data) {
                 $(".generate-audio").prop("disabled", false).text("Generate Audio");
-                Swal.close();
+            Swal.close();
+
+            // FIX: If backend returned an error object instead of array
+            if (!Array.isArray(data)) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: data.message || 'Unknown error occurred'
+                });
+                return;
+            }
+
+            // Now data is safe ARRAY, so .some() will not break
+            let hasError = data.some(item => item.success === false);
+
+            if (hasError) {
+                let errorItem = data.find(item => item.success === false);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Insufficient Credits',
+                    text: errorItem.message
+                });
+
+                return;
+            }
 
                 let index = 0;
                 $(".text-input").each(function() {

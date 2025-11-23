@@ -65,30 +65,6 @@ class AdminController extends Controller
         return view('admin.payment.index', compact('paymentProofs'));
     }
 
-    public function fetchPlan($id){
-        $subscription = Subscription::with(['user', 'plan'])->find($id);
-
-        if (!$subscription) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Subscription not found'
-            ], 404);
-        }
-
-        // Calculate remaining days
-        $end = \Carbon\Carbon::parse($subscription->plan->expires);
-        $daysRemaining = now()->startOfDay()->diffInDays($end->startOfDay(), false);
-
-        // Attach remaining days to response
-        $subscription->days_remaining = $daysRemaining > 0 ? $daysRemaining : 0;
-
-        return response()->json([
-            'success' => true,
-            'data' => $subscription
-        ]);
-    }
-
-
     public function plansIndex()
     {
         return view('admin.plans.index');
