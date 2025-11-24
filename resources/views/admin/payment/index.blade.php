@@ -107,7 +107,7 @@
     </div>
 
     <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered" style="max-width: 50vw; height: 50vh;">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 50vw;">
             <div class="modal-content border-0 shadow-sm rounded-3" style="height: 80%;">
                 <!-- Header -->
                 <div class="modal-header border-0 pb-0">
@@ -158,6 +158,10 @@
                                 </p>
                             </div>
                             <div class="col-md-6 small">
+                                <p><strong style="color:#47739E;">Payment Method:</strong><br> <span id="modalPaymentMethod"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-6 small">
                                 <p><strong style="color:#47739E;">Plan Day Remaining:</strong><br> <span id="modalRemaningday"></span>
                                 </p>
                             </div>
@@ -189,6 +193,7 @@
                 $('#modalRemaningday').text(s.days_remaining ?? '0');
                 $('#modalCreated').text(s.created_at ?? 'N/A');
                 $('#status').val(s.status).data('id', s.id);
+                $('#modalPaymentMethod').text(s.payment_method ?? 'N/A');
                 $('#subscriptionForm').data('id', s.id);
             }
         }

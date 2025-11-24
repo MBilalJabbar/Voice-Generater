@@ -16,9 +16,8 @@ class Subscription extends Controller
         ]);
         $plan = Plan::findOrFail($request->plan_id);
 
-    $start = now();
-    $end = now()->addDays($plan->duration ?? 30);
-
+        $start = now();
+        $end = now()->addDays($plan->duration ?? 30);
     // CREATE subscription record
     $subscription = ModelsSubscription::create([
         'user_id' => Auth::id(),
@@ -33,7 +32,7 @@ class Subscription extends Controller
 
     // BINANCE PAYMENT
     if ($request->payment_method === 'binance') {
-        return redirect('crypto/binance/'.$subscription->id);
+        return redirect('binancePay/'.$subscription->id);
     }
 
     // USDT PAYMENT

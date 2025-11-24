@@ -30,23 +30,37 @@
 
 <body>
     <div class="container my-5">
-        <h2><strong>Pay with Binance</strong></h2>
-        <p>Pay with Binance app</p>
+        <h2><strong>Pay with USDT</strong></h2>
+        <p>Pay with USDT</p>
     </div>
     <div class="container mt-5">
         <div class="row g-4"> <!-- GAP FIXED HERE -->
+            <!-- RIGHT CARD -->
+            <div class="col-12 col-md-6">
+                <div class="p-4 border rounded"> <!-- PROPER CARD SPACING -->
+                    <h4>QR Code Payment</h4>
+                    <p class="text-danger">
+                        Use Crypto wallet to pay. Blockchain Network: BSC - Binance Smart Chain (BEP20)
+                    </p>
+
+                    <div class="text-center">
+                        <img src="{{ asset('download.png') }}" style="border: 2px solid #fafafa; margin-block: 32px; border-radius: 12px;" width="226" alt="binance-note">
+                    </div>
+                    <p class="text-center">Scan QR code or pay according to the information next to it</p>
+                </div>
+            </div>
 
             <!-- LEFT CARD -->
             <div class="col-12 col-md-6">
                 <div class="p-4 border rounded"> <!-- PROPER CARD SPACING -->
                     <h3>Transfer Information</h3>
-                    <p>Use Binance app to transfer according to the information below</p>
+                    <p>Transfer according to the information below</p>
 
                     <div class="row mb-3">
                         <div class="col-6">
-                            <p>Currency:</p>
-                            <p>Binance User ID:</p>
-                            <p>Note:</p>
+                            <p>Cryptocurrency type:</p>
+                            <p>Network:</p>
+                            <p>Wallet address:</p>
                         </div>
 
                         <div class="col-6 text-end">
@@ -70,21 +84,7 @@
 
                     <div class="mt-3 p-3 border rounded text-danger bg-light">
                         <h6><b>Important Note</b></h6>
-                        <p>Please enter the correct transfer information and select the correct token.</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- RIGHT CARD -->
-            <div class="col-12 col-md-6">
-                <div class="p-4 border rounded"> <!-- PROPER CARD SPACING -->
-                    <h4>IMPORTANT NOTE</h4>
-                    <p class="text-danger">
-                        Make sure to fill in complete note information for automatic transaction confirmation.
-                    </p>
-
-                    <div class="text-center">
-                        <img src="{{ asset('binance_note.jpg') }}" class="my-2" width="226" alt="binance-note">
+                        <p>Please select the correct network and token. We will not be responsible if you send to the wrong network or wrong token.</p>
                     </div>
                 </div>
             </div>

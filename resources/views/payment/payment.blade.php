@@ -20,7 +20,7 @@
 </head>
 
 <body>
-    <div class="container mt-4">
+    <div class="container my-4">
         <div class="row">
 
             <!-- LEFT SIDE: Summary -->
@@ -57,17 +57,34 @@
                 <!-- Binance Payment -->
                 <div class="d-flex justify-content-center flex-column align-items-center mb-3">
                     <div class="col-8 my-3">
-                        <a href="{{ url('binancePay') }}?plan_id={{ $fatchPlan->id }}" class="btn btn-primary w-100 pay-button">
-                            <img src="{{ asset('binance-svgrepo-com.svg') }}" width="20">
-                            Pay With Binance
-                        </a>
+                        <form action="{{ url('progressCheckout') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="plan_id" value="{{ $fatchPlan->id }}">
+                            <input type="hidden" name="payment_method" value="binance">
+
+                            <button class="btn btn-primary w-100 pay-button">
+                                <img src="{{ asset('binance-svgrepo-com.svg') }}" width="20">
+                                Pay With Binance
+                            </button>
+                        </form>
+
                     </div>
 
                     <div class="col-8">
-                        <a href="{{ url('usdtPayPage') }}?plan_id={{ $fatchPlan->id }}" class="btn btn-primary w-100 pay-button">
+                        <form action="{{ url('progressCheckout') }}" method="POST">
+                            @csrf
+                            <input type="hidden" name="plan_id" value="{{ $fatchPlan->id }}">
+                            <input type="hidden" name="payment_method" value="usdt">
+
+                            <button class="btn btn-primary w-100 pay-button">
+                                <img src="{{ asset('bitcoin-money-cryptocurrency-svgrepo-com.svg') }}" width="20">
+                                    Pay With USDT
+                            </button>
+                        </form>
+                        {{-- <a href="{{ url('usdtPayPage') }}?plan_id={{ $fatchPlan->id }}" class="btn btn-primary w-100 pay-button">
                             <img src="{{ asset('bitcoin-money-cryptocurrency-svgrepo-com.svg') }}" width="20">
                             Pay With USDT
-                        </a>
+                        </a> --}}
                     </div>
                 </div>
 
