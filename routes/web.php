@@ -142,7 +142,8 @@ Route::post('/reset-user-password', [UserController::class, 'submitConfirmPasswo
 // Payment Routes
 Route::get('/viewCheckout/{id}', [PaymentController::class, 'viewCheckout']);
 Route::post('/progressCheckout', [Subscription::class, 'progressCheckout']);
-Route::get('/binancePay', [PaymentController::class, 'binancePay']);
+Route::get('/binancePay/{id}', [PaymentController::class, 'binancePay']);
+Route::get('crypto/usdt/{id}', [PaymentController::class, 'usdtPay']);
 
 //Patment Proof
 Route::get('/fetchPlan/{id}', [PaymentProof::class, 'fetchPlan']);

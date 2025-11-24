@@ -41,7 +41,11 @@ class User extends Authenticatable
         'profile_picture',
         'password',
         'google_id',
+        'plan_expiry_date',
+        'plan_id',
     ];
+
+
 
     /**
      * The attributes that should be hidden for serialization.
