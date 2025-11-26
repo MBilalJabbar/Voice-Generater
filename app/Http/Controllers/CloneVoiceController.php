@@ -321,7 +321,7 @@ public function getCloneVoices()
 
             // If no preview URL exists, you might want to generate one using text-to-speech
             // or use a default preview based on the voice
-            if (empty($previewUrl) {
+            if (empty($previewUrl)) {
                 // You can create a preview using the preview_text with TTS
                 $previewText = $voice['preview_text'] ?? 'Hello, this is a voice preview';
                 // Note: You might need to call a TTS endpoint here to generate audio

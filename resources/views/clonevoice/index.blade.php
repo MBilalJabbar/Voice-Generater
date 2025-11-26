@@ -107,8 +107,12 @@
                                     required>
 
                                 <!-- This triggers file input click -->
-                                <button type="button" class="btn btn-light btn-md"
-                                    onclick="document.getElementById('fileInput').click()">Upload</button>
+                                {{-- <button type="button" class="btn btn-light btn-md"
+                                    onclick="document.getElementById('fileInput').click()">Upload</button> --}}
+                                <button type="button" class="btn btn-light btn-md upload-btn">
+                                    Upload
+                                </button>
+
                             </div>
                         </div>
 
@@ -153,43 +157,44 @@
                 <!-- Right: Saved Voices -->
                 <div class="col-lg-6 col-md-12" style="overflow: auto;">
                     <h5 class="fw-bold mb-3 pl-5">Cloned Voices</h5>
-@foreach ($VoiceClone as $clone)
-    <div class="d-flex align-items-center justify-content-between mb-3 voice-item">
-        <div class="d-flex align-items-center voice-info">
-            <img src="{{ asset('assets/images/profile.png') }}" alt="logo" class="desktop-logo me-3">
-            <div>
-                <h6 class="fw-semibold mb-0">{{ $clone->name }}</h6>
-                <small class="text-muted">English Female</small>
-            </div>
-        </div>
+                    @foreach ($VoiceClone as $clone)
+                        <div class="d-flex align-items-center justify-content-between mb-3 voice-item">
+                            <div class="d-flex align-items-center voice-info">
+                                <img src="{{ asset('assets/images/profile.png') }}" alt="logo"
+                                    class="desktop-logo me-3">
+                                <div>
+                                    <h6 class="fw-semibold mb-0">{{ $clone->name }}</h6>
+                                    <small class="text-muted">English Female</small>
+                                </div>
+                            </div>
 
-        <div class="d-flex align-items-center">
-            @php
-                $audioSrc = null;
-                if ($clone->last_generated_audio) {
-                    $audioSrc = $clone->last_generated_audio;
-                } elseif ($clone->file_path && Storage::disk('public')->exists($clone->file_path)) {
-                    $audioSrc = Storage::url($clone->file_path);
-                }
+                            <div class="d-flex align-items-center">
+                                @php
+                                    $audioSrc = null;
+                                    if ($clone->last_generated_audio) {
+                                        $audioSrc = $clone->last_generated_audio;
+                                    } elseif ($clone->file_path && Storage::disk('public')->exists($clone->file_path)) {
+                                        $audioSrc = Storage::url($clone->file_path);
+                                    }
 
-            @endphp
+                                @endphp
 
-            @if($audioSrc)
-                <audio class="voice-audio" src="{{ $audioSrc }}"></audio>
-                <button type="button" class="btn btn-light btn-sm me-2 play-btn">
-                    <i class="fa fa-play text-success"></i>
-                </button>
-            @else
-                <span class="text-danger">Audio not available</span>
-            @endif
+                                @if ($audioSrc)
+                                    <audio class="voice-audio" src="{{ $audioSrc }}"></audio>
+                                    <button type="button" class="btn btn-light btn-sm me-2 play-btn">
+                                        <i class="fa fa-play text-success"></i>
+                                    </button>
+                                @else
+                                    <span class="text-danger">Audio not available</span>
+                                @endif
 
-            <button type="button" class="btn btn-light btn-sm rounded-circle border delete-btn"
-                data-id="{{ $clone->id }}" title="Delete">
-                <i class="fa fa-trash text-danger"></i>
-            </button>
-        </div>
-    </div>
-@endforeach
+                                <button type="button" class="btn btn-light btn-sm rounded-circle border delete-btn"
+                                    data-id="{{ $clone->id }}" title="Delete">
+                                    <i class="fa fa-trash text-danger"></i>
+                                </button>
+                            </div>
+                        </div>
+                    @endforeach
 
 
 
@@ -214,35 +219,57 @@
         const uploadArea = document.getElementById('upload-area');
         const fileInput = document.getElementById('fileInput');
 
+        // CLICKING ON UPLOAD AREA OPENS FILE DIALOG
         uploadArea.addEventListener('click', () => fileInput.click());
 
+        // PREVENT DOUBLE POPUP (IMPORTANT)
+        document.querySelector('#upload-area .upload-btn').addEventListener('click', function(e) {
+            e.stopPropagation(); // Stop bubbling
+            fileInput.click(); // Open file dialog
+        });
+
+        // DRAG OVER
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
             uploadArea.classList.add('bg-primary', 'bg-opacity-10');
         });
 
+        // DRAG LEAVE
         uploadArea.addEventListener('dragleave', () => {
             uploadArea.classList.remove('bg-primary', 'bg-opacity-10');
         });
 
+        // DROP FILE
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('bg-primary', 'bg-opacity-10');
+
             const file = e.dataTransfer.files[0];
             if (file) {
-                uploadArea.innerHTML = `
-                <i class="fa-solid fa-file-audio mb-3 upload-icon"></i>
-                <p class="fw-semibold text-dark mb-0">${file.name}</p>
-                <p class="text-muted small">File ready for upload</p>`;
+                updateUploadBox(file.name);
+                fileInput.files = e.dataTransfer.files; // Set file into input
             }
         });
-    </script>
-    <script>
-        document.getElementById('fileInput').addEventListener('change', function() {
-            const fileName = this.files[0]?.name || "No file chosen";
-            document.querySelector('#upload-area p.mb-1').textContent = fileName;
+
+        // FILE PICKED VIA DIALOG
+        fileInput.addEventListener('change', function() {
+            const fileName = this.files[0]?.name || "";
+            if (fileName) {
+                updateUploadBox(fileName);
+            }
         });
+
+        // Update UI
+        function updateUploadBox(name) {
+            uploadArea.innerHTML = `
+            <i class="fa-solid fa-file-audio mb-3 upload-icon"></i>
+            <p class="fw-semibold text-dark mb-0">${name}</p>
+            <p class="text-muted small">File ready for upload</p>
+            <button type="button" class="btn btn-light btn-md upload-btn">Change File</button>
+        `;
+        }
     </script>
+
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -298,55 +325,53 @@
     </script>
 
 
-<script>
-    let currentAudio = null;
-    let currentBtn = null;
+    <script>
+        let currentAudio = null;
+        let currentBtn = null;
 
-    document.querySelectorAll('.play-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const audio = this.previousElementSibling;
-            const icon = this.querySelector('i');
+        document.querySelectorAll('.play-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const audio = this.previousElementSibling;
+                const icon = this.querySelector('i');
 
-            if (!audio || !audio.src) {
-                alert('Audio not available or invalid source.');
-                return;
-            }
+                if (!audio || !audio.src) {
+                    alert('Audio not available or invalid source.');
+                    return;
+                }
 
-            // Pause the previously playing audio
-            if (currentAudio && currentAudio !== audio) {
-                currentAudio.pause();
-                currentBtn.querySelector('i').classList.remove('fa-pause', 'text-warning');
-                currentBtn.querySelector('i').classList.add('fa-play', 'text-success');
-            }
+                // Pause the previously playing audio
+                if (currentAudio && currentAudio !== audio) {
+                    currentAudio.pause();
+                    currentBtn.querySelector('i').classList.remove('fa-pause', 'text-warning');
+                    currentBtn.querySelector('i').classList.add('fa-play', 'text-success');
+                }
 
-            // Toggle play/pause
-            if (audio.paused) {
-                audio.play().catch(err => {
-                    console.error('Playback failed:', err);
-                    alert('Audio cannot be played.');
-                });
-                icon.classList.remove('fa-play', 'text-success');
-                icon.classList.add('fa-pause', 'text-warning');
-                currentAudio = audio;
-                currentBtn = this;
-            } else {
-                audio.pause();
-                icon.classList.remove('fa-pause', 'text-warning');
-                icon.classList.add('fa-play', 'text-success');
-                currentAudio = null;
-                currentBtn = null;
-            }
+                // Toggle play/pause
+                if (audio.paused) {
+                    audio.play().catch(err => {
+                        console.error('Playback failed:', err);
+                        alert('Audio cannot be played.');
+                    });
+                    icon.classList.remove('fa-play', 'text-success');
+                    icon.classList.add('fa-pause', 'text-warning');
+                    currentAudio = audio;
+                    currentBtn = this;
+                } else {
+                    audio.pause();
+                    icon.classList.remove('fa-pause', 'text-warning');
+                    icon.classList.add('fa-play', 'text-success');
+                    currentAudio = null;
+                    currentBtn = null;
+                }
 
-            // Reset icon when audio ends
-            audio.onended = () => {
-                icon.classList.remove('fa-pause', 'text-warning');
-                icon.classList.add('fa-play', 'text-success');
-                currentAudio = null;
-                currentBtn = null;
-            };
+                // Reset icon when audio ends
+                audio.onended = () => {
+                    icon.classList.remove('fa-pause', 'text-warning');
+                    icon.classList.add('fa-play', 'text-success');
+                    currentAudio = null;
+                    currentBtn = null;
+                };
+            });
         });
-    });
-</script>
-
-
+    </script>
 @endsection
