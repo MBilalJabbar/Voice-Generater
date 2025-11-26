@@ -36,9 +36,9 @@ class GoogleController extends Controller
 
 
             Auth::login($newUser);
-            // if(empty($newUser->phone_number)) {
-            //     return redirect()->route('complete-profile')->with('info', 'Please complete your profile by adding your phone number.');
-            // }
+            if(empty($newUser->phone_number)) {
+                return redirect()->route('complete-profile')->with('info', 'Please complete your profile by adding your phone number.');
+            }
 
             return redirect()->route('dashboard.index');
         }

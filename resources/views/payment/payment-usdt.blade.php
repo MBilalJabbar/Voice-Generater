@@ -72,8 +72,8 @@
                                 12801280 <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
 
-                            <p class="copy-item cursor-pointer" onclick="copyText('Speechly Studio')">
-                                Speechly Studio <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
+                            <p class="copy-item cursor-pointer" onclick="copyText('{{ $users->user_name }}')">
+                                {{ $users->user_name }} <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
                         </div>
                     </div>
@@ -153,7 +153,7 @@
             const text = `
             Currency: USDT
             Binance User ID: 12801280
-            Note: Speechly Studio
+            Note: {{ $users->user_name }}
                     `.trim();
 
             navigator.clipboard.writeText(text).then(() => {

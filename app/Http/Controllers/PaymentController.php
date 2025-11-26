@@ -19,10 +19,12 @@ class PaymentController extends Controller
         return view('payment.payment', compact('fatchPlan'));
     }
     public function binancePay(){
-        return view('payment.payment-binance');
+        $users = Auth::user();
+        return view('payment.payment-binance', compact('users'));
     }
 
     public function usdtPay(){
-        return view('payment.payment-usdt');
+        $users = Auth::user();
+        return view('payment.payment-usdt', compact('users'));
     }
 }

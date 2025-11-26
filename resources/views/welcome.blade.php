@@ -19,7 +19,7 @@
             /* 1. ENABLE SMOOTH SCROLLING */
             scroll-behavior: smooth;
             /* 2. ADD PADDING TO PREVENT FIXED NAVBAR FROM HIDING TOP CONTENT */
-            padding-top: 100px; /* Adjust this value if your navbar height changes */
+            padding-top: 10px; /* Adjust this value if your navbar height changes */
         }
 
         /* ---------- Navbar ---------- */
@@ -27,8 +27,8 @@
             background-color: #fff;
             padding: 1rem 0;
             /* 3. FIX THE NAVBAR AT THE TOP */
-            position: fixed;
-            top: 0;
+            /* position: fixed;
+            top: 0; */
             width: 100%;
             /* Ensure it stays on top of other elements */
             z-index: 1030;
@@ -130,8 +130,8 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-light p-0">
         <div class="container">
-            <a class="navbar-brand mt-3" href="#home-section">
-                    <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}" alt="Logo" width="90">
+            <a class="navbar-brand mt-3 mr-4" href="#home-section">
+                    <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}" alt="Logo" width="115">
                 {{-- <img src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="Logo" width="80"> --}}
                 <br>
             </a>
@@ -142,7 +142,7 @@
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto ml-3">
+                <ul class="navbar-nav mr-auto ml-5">
                     <li class="nav-item active">
                         <a class="nav-link" href="#home-section">Home <span class="sr-only">(current)</span></a>
                     </li>
@@ -152,7 +152,7 @@
                 </ul>
 
                 <div class="ml-auto d-flex align-items-center">
-                    <a href="{{ route('login') }}" class="btn btn-outline btn-rounded mr-3">Sign In</a>
+                    <a href="{{ route('login') }}" class="btn btn-outline btn-rounded mr-3">Log In</a>
                     <a href="{{ route('register') }}" class="btn btn-primary-custom btn-rounded">Sign Up</a>
                 </div>
             </div>
