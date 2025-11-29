@@ -314,10 +314,10 @@
                         <div class="form-group mb-3 custom-select-wrapper">
                             <label for="model">Model*</label>
                             <select id="model" class="form-control">
-                                <option>Standard</option>
-                                <option>Professional</option>
-                                <option>Casual</option>
-                                <option>Expressive</option>
+                                <option>Multilingual v2</option>
+                                <option>Turbo v2.5</option>
+                                <option>Flash v2.5</option>
+                                <option>v3 (alpha - unstable)</option>
                             </select>
                             <i class="fa-solid fa-caret-down select-icon"></i>
                         </div>

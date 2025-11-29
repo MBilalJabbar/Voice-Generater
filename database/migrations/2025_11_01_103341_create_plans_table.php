@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->decimal('price', 10, 2)->default(0);
-            $table->string('currency')->default('PKR');
+            $table->string('currency')->default('USD');
             $table->string('duration')->default('30 days')->nullable();
             $table->date('expires')->nullable();
 

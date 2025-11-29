@@ -277,7 +277,9 @@
                                     <i class="fa-solid fa-caret-down"></i>
                                 </button>
                             </div>
-                            <input type="hidden" class="voice-id" value="">
+                            <input type="hidden" name="voice_name" class="voice-name">
+                            <input type="hidden" name="voice_id" class="voice-id" value="">
+                            {{-- <input type="hidden" class="voice-id" value=""> --}}
                         </div>
 
                         <!-- Clone Voice -->
@@ -296,6 +298,7 @@
                                         <i class="fa-solid fa-caret-down"></i>
                                     </button>
                                 </div>
+                                <input type="hidden" class="voice-name" value="">
                                 <input type="hidden" class="voice-id" value="">
                             </div>
                         @endif
@@ -303,11 +306,11 @@
 
                         <div class="form-group mb-3 custom-select-wrapper">
                             <label for="model">Model*</label>
-                            <select id="model" class="form-control">
-                                <option>Standard</option>
-                                <option>Professional</option>
-                                <option>Casual</option>
-                                <option>Expressive</option>
+                            <select id="model" class="form-control" name="model">
+                                <option value="Multilingual v2">Multilingual v2</option>
+                                <option value="Turbo v2.5">Turbo v2.5</option>
+                                <option value="Flash v2.5">Flash v2.5</option>
+                                <option value="v3 (alpha - unstable)">v3 (alpha - unstable)</option>
                             </select>
                             <i class="fa-solid fa-caret-down select-icon"></i>
                         </div>
@@ -365,6 +368,27 @@
             </div>
         </div>
     </div>
+
+<script>
+$(document).ready(function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const voiceId = urlParams.get("voice_id");
+    const voiceName = urlParams.get("voice_name");
+
+    if (voiceId && voiceName) {
+        // Find the correct form group
+        const formGroup = $(".voice-input[data-type='normal']").closest('.form-group');
+
+        // Update visible input
+        formGroup.find(".voice-input[data-type='normal']").val(voiceName).addClass("active");
+
+        // Update hidden fields
+        formGroup.find(".voice-id").val(voiceId);
+        formGroup.find(".voice-name").val(voiceName);
+    }
+});
+
+</script>
 
 
     {{-- Fatch Voices --}}
@@ -739,168 +763,176 @@
     <div id="audio-container"></div>
 
     <script>
-        $(document).ready(function() {
-            let currentAudioUrl = null;
+$(document).ready(function() {
+    let currentAudioUrl = null;
 
-            // 🎚 Slider style update
-            $("input[type=range]").each(function() {
-                let slider = $(this);
+    // 🎚 Slider style update
+    $("input[type=range]").each(function() {
+        let slider = $(this);
 
-                function updateTrack() {
-                    let value = (slider.val() - slider.attr("min")) / (slider.attr("max") - slider.attr(
-                        "min")) * 100;
-                    slider.css("background",
-                        `linear-gradient(to right, #003E78 ${value}%, #E7EAE9 ${value}%)`);
-                }
-                slider.on("input", updateTrack);
-                updateTrack();
-            });
+        function updateTrack() {
+            let value = (slider.val() - slider.attr("min")) / (slider.attr("max") - slider.attr("min")) * 100;
+            slider.css("background", `linear-gradient(to right, #003E78 ${value}%, #E7EAE9 ${value}%)`);
+        }
 
-            // 🎚 Display slider values
-            function updateLabels() {
-                $("#speed-value").text($("#speed").val() + 'x');
-                $("#style-value").text($("#style").val());
-                $("#similarity-value").text($("#similarity").val());
-                $("#stability-value").text($("#stability").val());
+        slider.on("input", updateTrack);
+        updateTrack();
+    });
+
+    // 🎚 Display slider values
+    function updateLabels() {
+        $("#speed-value").text($("#speed").val() + 'x');
+        $("#style-value").text($("#style").val());
+        $("#similarity-value").text($("#similarity").val());
+        $("#stability-value").text($("#stability").val());
+    }
+
+    $("input[type=range]").on("input", updateLabels);
+    updateLabels();
+
+    // 🎯 Update text info (char/word count)
+    function updateTextInfo() {
+        let text = $("#user_text").val();
+        let charCount = text.length;
+        let wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
+        $("#char-count").text(charCount);
+        $("#word-count").text(wordCount);
+    }
+
+    $("#user_text").on("input", updateTextInfo);
+    updateTextInfo();
+
+    // 🎤 Handle Generate Audio
+    $("#generate-audio").on("click", function(e) {
+        e.preventDefault();
+
+        let text = $("#user_text").val().trim();
+        if (!text) {
+            alert("Please enter text before generating.");
+            return;
+        }
+
+        // ✅ Determine which voice input to use
+        let activeInput = $(".voice-input.active");
+        if (!activeInput.length) {
+            // fallback: clone if selected, otherwise normal
+            if ($(".voice-input[data-type='clone']").val() !== "Select Clone Voice") {
+                activeInput = $(".voice-input[data-type='clone']");
+            } else {
+                activeInput = $(".voice-input[data-type='normal']");
             }
+        }
 
-            $("input[type=range]").on("input", updateLabels);
-            updateLabels();
+        let wrapper = activeInput.closest('.form-group');
+        let voiceId = wrapper.find('.voice-id').val() || '';
+        let voiceName = wrapper.find('.voice-name').val() || '';
 
-            function updateTextInfo() {
-                let text = $("#user_text").val();
-                let charCount = text.length;
-                let wordCount = text.trim() === "" ? 0 : text.trim().split(/\s+/).length;
-                $("#char-count").text(charCount);
-                $("#word-count").text(wordCount);
-            }
-            $("#user_text").on("input", updateTextInfo);
-            updateTextInfo();
+        let stability = parseFloat($("#stability").val()) / 100;
+        let similarity = parseFloat($("#similarity").val()) / 100;
+        let style = parseFloat($("#style").val()) / 100;
+        let speed = parseFloat($("#speed").val());
 
-            // 🎤 Handle Generate Audio
-            $("#generate-audio").on("click", function(e) {
-                e.preventDefault();
-
-                let text = $("#user_text").val().trim();
-                // Get the currently active (selected) input field
-                let activeInput = $(".voice-input[data-type='normal']");
-                if ($(".voice-input[data-type='clone']").val() !== "Select Clone Voice") {
-                    activeInput = $(".voice-input[data-type='clone']");
-                }
-                let voiceId = activeInput.closest('.form-group').find('.voice-id').val();
-                let voiceName = activeInput.val() || "Generated Voice";
-
-
-                if (!text) {
-                    alert("Please enter text before generating.");
-                    return;
-                }
-
-                let stability = parseFloat($("#stability").val()) / 100;
-                let similarity = parseFloat($("#similarity").val()) / 100;
-                let style = parseFloat($("#style").val()) / 100;
-                let speed = parseFloat($("#speed").val());
-
-                $.ajax({
-                    url: "{{ route('generateAudioVoice') }}",
-                    type: "POST",
-                    dataType: "json",
-                    data: {
-                        text: text,
-                        voice_id: voiceId,
-                        voice_name: voiceName,
-                        model: $("#model").val(),
-                        best_voice: $("#best-voices").val(),
-                        stability: stability,
-                        similarity: similarity,
-                        style: style,
-                        speed: speed,
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-                    beforeSend: function() {
-                        $("#generate-audio").prop("disabled", true).text("Generating...");
-                        Swal.fire({
-                            title: 'Generating Voice...',
-                            text: 'Please wait a moment while we process your request.',
-                            allowOutsideClick: false,
-                            didOpen: () => Swal.showLoading()
-                        });
-                    },
-                    success: function(data) {
-                        $("#generate-audio").prop("disabled", false).text("Generate Audio");
-                        Swal.close();
-
-                        if (data.success) {
-                            currentAudioUrl = data.audio_url;
-                            const audioHtml = `
-                    <audio controls class="w-100 mt-3">
-                        <source src="${data.audio_url}" type="audio/mpeg">
-                    </audio>
-                `;
-                            $("#audio-container").html(audioHtml);
-
-                            // Play programmatically
-                            const audioElement = $("#audio-container audio")[0];
-                            audioElement.load();
-                            audioElement.play().catch(e => {
-                                console.error("Autoplay blocked", e);
-                                Swal.fire({
-                                    icon: 'info',
-                                    title: 'Click Play',
-                                    text: 'Browser blocked autoplay. Click the play button to listen.'
-                                });
-                            });
-
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Voice Generated!',
-                                text: 'Your audio is ready 🎉'
-                            });
-
-                        } else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Generation Failed',
-                                text: data.message || 'Unknown error'
-                            });
-                        }
-                    },
-                    error: function(xhr) {
-                        $("#generate-audio").prop("disabled", false).text("Generate Audio");
-                        Swal.close();
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Server Error',
-                            text: 'Something went wrong. Check console for details.'
-                        });
-                        console.error("AJAX Error:", xhr.responseText);
-                    }
+        $.ajax({
+            url: "{{ route('generateAudioVoice') }}",
+            type: "POST",
+            dataType: "json",
+            data: {
+                text: text,
+                voice_id: voiceId,
+                voice_name: voiceName,
+                model: $("#model").val(),
+                best_voice: $("#best-voices").val(),
+                stability: stability,
+                similarity: similarity,
+                style: style,
+                speed: speed,
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            beforeSend: function() {
+                $("#generate-audio").prop("disabled", true).text("Generating...");
+                Swal.fire({
+                    title: 'Generating Voice...',
+                    text: 'Please wait a moment while we process your request.',
+                    allowOutsideClick: false,
+                    didOpen: () => Swal.showLoading()
                 });
-            });
+            },
+            success: function(data) {
+                $("#generate-audio").prop("disabled", false).text("Generate Audio");
+                Swal.close();
 
-             // Download audio
-            $("#download-audio").on("click", function(e) {
-                e.preventDefault();
+                if (data.success) {
+                    currentAudioUrl = data.audio_url;
 
-                if (!currentAudioUrl) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'No Audio',
-                        text: 'Please generate a voice first before downloading.'
+                    const audioHtml = `
+                        <audio controls class="w-100 mt-3">
+                            <source src="${data.audio_url}" type="audio/mpeg">
+                        </audio>
+                    `;
+                    $("#audio-container").html(audioHtml);
+
+                    // Play programmatically
+                    const audioElement = $("#audio-container audio")[0];
+                    audioElement.load();
+                    audioElement.play().catch(e => {
+                        console.error("Autoplay blocked", e);
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Click Play',
+                            text: 'Browser blocked autoplay. Click the play button to listen.'
+                        });
                     });
-                    return;
-                }
 
-                // Create temporary link and trigger download
-                const link = document.createElement('a');
-                link.href = currentAudioUrl;
-                link.download = 'generated_voice.mp3'; // default file name
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-            });
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Voice Generated!',
+                        text: 'Your audio is ready 🎉'
+                    });
+
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Generation Failed',
+                        text: data.message || 'Unknown error'
+                    });
+                }
+            },
+            error: function(xhr) {
+                $("#generate-audio").prop("disabled", false).text("Generate Audio");
+                Swal.close();
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Server Error',
+                    text: 'Something went wrong. Check console for details.'
+                });
+                console.error("AJAX Error:", xhr.responseText);
+            }
         });
-    </script>
+    });
+
+    // 🎵 Download audio
+    $("#download-audio").on("click", function(e) {
+        e.preventDefault();
+
+        if (!currentAudioUrl) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'No Audio',
+                text: 'Please generate a voice first before downloading.'
+            });
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.href = currentAudioUrl;
+        link.download = 'generated_voice.mp3';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+});
+</script>
+
 
 
     {{-- upload-audio file --}}
@@ -976,27 +1008,52 @@
   `;
 
             // ✅ Click: Select voice
+            // item.addEventListener('click', (e) => {
+            //     if (e.target.closest('.voice-play-icon')) return;
+            //     if (!activeInput) return;
+
+            //     const wrapper = activeInput.closest('.form-group');
+            //     const formControl = wrapper.querySelector('.form-control');
+            //     const voiceIdInput = wrapper.querySelector('.voice-id');
+            //     const voiceNameInput = wrapper.querySelector('.voice-name');
+
+            //     const selectedName = item.dataset.name;
+            //     const selectedId = item.dataset.id;
+
+            //     // Update visible & hidden fields
+            //     if (formControl) formControl.value = selectedName;
+            //     if (voiceIdInput) voiceIdInput.value = selectedId;
+            //     if (voiceNameInput) voiceNameInput.value = selectedName;
+
+            //     // Add 'active' class to mark current selection
+            //     document.querySelectorAll('.voice-input').forEach(el => el.classList.remove('active'));
+            //     activeInput.classList.add('active');
+
+            //     closeSidebar();
+            // });
+
             item.addEventListener('click', (e) => {
-                if (e.target.closest('.voice-play-icon')) return;
+                if (e.target.closest('.voice-play-icon')) return; // ignore click on play
                 if (!activeInput) return;
 
                 const wrapper = activeInput.closest('.form-group');
-                const formControl = wrapper.querySelector('.form-control');
-                const voiceIdInput = wrapper.querySelector('.voice-id');
+                const formControl = wrapper.querySelector('.form-control'); // visible input
+                const voiceIdInput = wrapper.querySelector('.voice-id');    // hidden input for ID
+                const voiceNameInput = wrapper.querySelector('.voice-name'); // hidden input for name
 
-                const selectedName = item.dataset.name;
-                const selectedId = item.dataset.id;
+                // Update visible input and hidden inputs
+                if (formControl) formControl.value = item.dataset.name;
+                if (voiceIdInput) voiceIdInput.value = item.dataset.id;
+                if (voiceNameInput) voiceNameInput.value = item.dataset.name;
 
-                // Update visible & hidden fields
-                if (formControl) formControl.value = selectedName;
-                if (voiceIdInput) voiceIdInput.value = selectedId;
-
-                // Add 'active' class to mark current selection
+                // Add 'active' class to current input
                 document.querySelectorAll('.voice-input').forEach(el => el.classList.remove('active'));
-                activeInput.classList.add('active');
+                formControl.classList.add('active');
 
                 closeSidebar();
             });
+
+
 
             // ✅ Click: Play preview
             const playIcon = item.querySelector('.voice-play-icon');

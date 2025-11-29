@@ -284,7 +284,7 @@
                     <!-- Sign In Header and Account Link -->
                     <h3 class="d-inline-block">Sign Up</h3>
                     <div class="account-link-container" style="color:#8D8D8D;">
-                        Have an Account?<a href="#"><br> Sign in</a>
+                        Have an Account?<a href="{{ url('/login') }}"><br> Sign in</a>
                     </div>
 
                     <hr class="d-none d-lg-block my-3 border-0"> <!-- Separator for better spacing on large screens -->
