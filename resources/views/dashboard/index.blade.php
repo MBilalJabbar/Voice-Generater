@@ -164,7 +164,6 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @if ($voices && $voices->count() > 0)
                                         @foreach ($voices as $voice)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
@@ -197,9 +196,7 @@
                                             @endif
                                         </td>
                                         <td>
-                                            <span class="voice-time" data-time="{{ $voice->started_time }}">
-                                                Loading...
-                                            </span>
+                                            {{ \Carbon\Carbon::parse($voice->started_time)->format('d M, Y, h:i A') }}
                                         </td>
 
                                         <td class="text-center">
@@ -220,11 +217,6 @@
                                         </td>
                                     </tr>
                                      @endforeach
-                                        @else
-                                        <tr>
-                                            <td colspan="6" class="text-center">No recent generations found.</td>
-                                        </tr>
-                                    @endif
 
                                     <!-- more rows -->
                                 </tbody>
@@ -254,10 +246,10 @@
                         <div class="row mb-4">
                             <div class="col-md-4 small">
                                 <p><strong style="color:#47739E;">Status:</strong><br> <span id="modalStatus"></span></p>
-                                <p>
+                                {{-- <p>
                                     <strong style="color:#47739E;">Completed:</strong><br>
                                     <span id="modalCompleted"></span>
-                                </p>
+                                </p> --}}
                                 <p><strong style="color:#47739E;">Filename:</strong><br><span id="modalFilename"></span></p>
                                 <p><strong style="color:#47739E;">Model ID:</strong><br> <span id="modalModel"></span></p>
                                 <p><strong style="color:#47739E;">Languages:</strong><br> <span id="modalLanguage"></span></p>
@@ -625,24 +617,17 @@ $(document).ready(function() {
 <script>
 document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll('.voice-time').forEach(el => {
-        const utcTime = el.dataset.time;
-        if (utcTime) {
-            // Convert UTC time string to local time
-            const localDate = new Date(utcTime + ' UTC');
+        const utcDate = new Date(utcTime + ' UTC');
+utcDate.setHours(utcDate.getHours() + 5); // add 5 hours for PKT
+el.textContent = utcDate.toLocaleString('en-US', {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+});
 
-            // Format it nicely for the user (e.g., "Oct 27, 2025, 4:35 PM")
-            const formatted = localDate.toLocaleString(undefined, {
-                year: 'numeric',
-                month: 'short',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-
-            // Replace placeholder with local time
-            el.textContent = formatted;
-        }
     });
 });
 </script>

@@ -107,6 +107,11 @@ public function fetchGenAIVoices()
 
     // give me late response but work good function
 public function generateAudioVoices(Request $request){
+    $request->validate([
+        'text' => 'required|string',
+        'voice_id' => 'nullable|string',
+        'voice_name' => 'nullable|string',
+    ]);
     $apiKey = env('GENAIPRO_API_KEY');
     $voiceId = $request->voice_id ?? 'uju3wxzG5OhpWcoi3SMy';
     $text = $request->text;
@@ -235,7 +240,7 @@ public function generateAudioVoices(Request $request){
         $voice->voice_name = $request->voice_name ?? 'Generated Voice';
         $voice->text = $text;
         $voice->language = $request->language ?? 'en-US';
-        $voice->model = "eleven_multilingual_v2";
+        $voice->model = $request->model ?? "eleven_multilingual_v2";
 
         $voice->voice_settings = json_encode([
             'style' => $request->style ?? 0.5,

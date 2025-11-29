@@ -122,6 +122,9 @@
         }
         .play-btn{
             color: #ffffff;
+            background-color: #003E78;
+        }
+        .btn-light:hover{
             background-color: #8C52FF;
         }
 
@@ -139,7 +142,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: #003E78;
+            background: #f1f1f1;
             /* dark overlay */
             border-radius: 50%;
             opacity: 1;
@@ -154,6 +157,10 @@
 
         .play-btn i {
             font-size: 18px;
+        }
+        .add-voice-btn i{
+            font-size: 16px;
+            margin-top: 16px;
         }
     </style>
     <div class="container-fluid mt-4">
@@ -345,14 +352,23 @@
         <span class="mt-1 d-flex align-items-center" style="font-size:0.85rem;">${metaLine}</span>
       </div>
       <div class="voice-actions">
-        <button type="button" class="btn btn-sm text-dark p-0 me-2" title="Add"><i class="fa-solid fa-plus-circle"></i></button>
-        <button type="button" class="btn btn-sm text-dark p-0" title="More Options"><i class="fa-solid fa-ellipsis-h"></i></button>
+        <button
+            type="button"
+            class="btn btn-sm text-dark p-0 me-2 add-voice-btn"
+            title="Add"
+            data-voice-id="${voice.voice_id || voice.id}"
+            data-voice-name="${voice.voice_name || voice.name}"
+        >
+            <i class="fa-solid fa-plus-circle"></i>
+        </button>
+
+
       </div>
     </div>
     </div>
   </div>
 </div>`;
-            }
+            }//<button type="button" class="btn btn-sm text-dark p-0" title="More Options"><i class="fa-solid fa-ellipsis-h"></i></button>
 
             function fetchVoices(sort = 'trending') {
                 currentSort = sort || currentSort;
@@ -495,5 +511,23 @@
             fetchVoices(currentSort);
 
         });
+    </script>
+
+    <script>
+        $(document).on("click", ".add-voice-btn", function (e) {
+    e.stopPropagation();
+
+    const voiceId = $(this).data("voice-id");
+    const voiceName = $(this).data("voice-name");
+
+    if (!voiceId || !voiceName) {
+        alert("Voice data missing!");
+        return;
+    }
+
+    // Redirect to Generate Voice page and pass selected values
+    window.location.href = "/genrate-audio?voice_id=" + voiceId + "&voice_name=" + encodeURIComponent(voiceName);
+});
+
     </script>
 @endsection

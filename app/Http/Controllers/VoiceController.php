@@ -23,7 +23,7 @@ class VoiceController extends Controller
             // ✅ Build API query
             $query = [
                 'page'       => 0,
-                'page_size'  => 20,
+                'page_size'  => 100,
                 'sort'       => $sort,
             ];
 
@@ -62,7 +62,7 @@ class VoiceController extends Controller
                 'voices'     => $voices,
                 'total'      => count($voices), // Since API returns array directly
                 'page'       => 0,
-                'page_size'  => 20,
+                'page_size'  => 100,
                 'debug'      => [ // Keep debug for now
                     'api_status' => $response->status(),
                     'data_type' => gettype($data),
