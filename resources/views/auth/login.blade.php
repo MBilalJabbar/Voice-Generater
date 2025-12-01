@@ -293,7 +293,7 @@
                         <img class="mr-1" src="{{ asset('assets/images/google logo.png') }}" alt="" width="20px"> Sign in with Google
                     </button>
 
-                    <form action="/LoginUser" method="post">
+                    <form id="userLogin">
                         @csrf
                         <!-- Email Field -->
                         <div class="form-group mt-4">
@@ -338,10 +338,46 @@
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-{{--
+
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  $(document).ready(function(){
+    $('#userLogin').on('submit', function(e){
+        e.preventDefault();
 
+        $.ajax({
+            url: '/LoginUser',
+            method: 'POST',
+            data: {
+                _token: $('input[name="_token"]').val(),
+                email: $('input[name="email"]').val(),
+                password: $('input[name="password"]').val(),
+            },
+            success: function(response){
+                Swal.fire({
+                    title: 'Login Successful!',
+                    text: response.message,
+                    icon: 'success',
+                    confirmButtonText: 'Continue'
+                }).then(() => {
+                    window.location.href = response.redirect;
+                });
+            },
+            error: function(xhr){
+                Swal.fire({
+                    title: 'Login Failed!',
+                    text: xhr.responseJSON?.message || 'Invalid login.',
+                    icon: 'error'
+                });
+            }
+        });
+    });
+});
+</script>
+
+
+{{--
 <script>
 $.ajaxSetup({
     headers: {

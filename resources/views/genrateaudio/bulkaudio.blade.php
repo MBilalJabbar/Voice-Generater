@@ -188,14 +188,14 @@
             <input type="search" class="form-control" placeholder="Search Voices...">
         </div>
 
-        <div class="form-group mb-3 custom-select-wrapper">
+        {{-- <div class="form-group mb-3 custom-select-wrapper">
             <label for="best-voices">Best Voices for V3</label>
             <select id="best-voices" class="form-control form-control-sm">
                 <option selected>V3</option>
                 <option>V4</option>
             </select>
             <i class="fa-solid fa-caret-down select-icon"></i>
-        </div>
+        </div> --}}
 
         <div class="voice-list">
             <div class="voice-list-item">
@@ -301,7 +301,7 @@
                         <div class="form-group mb-3">
                             <label for="voice-trigger">Voice*</label>
                             <div class="input-group">
-                                <input type="text" id="selected-voice-name-main" class="form-control voice-input" value="Zara" readonly
+                                <input type="text" id="selected-voice-name-main" class="form-control voice-input" value="Select Voices" readonly
                                     style="cursor: pointer;">
                                 <button class="btn btn-outline-secondary voice-trigger" type="button">
                                     <i class="fa-solid fa-caret-down"></i>
@@ -314,10 +314,10 @@
                         <div class="form-group mb-3 custom-select-wrapper">
                             <label for="model">Model*</label>
                             <select id="model" class="form-control">
-                                <option>Multilingual v2</option>
-                                <option>Turbo v2.5</option>
-                                <option>Flash v2.5</option>
-                                <option>v3 (alpha - unstable)</option>
+                                <option value="Multilingual v2">Multilingual v2</option>
+                                <option value="Turbo v2.5">Turbo v2.5</option>
+                                <option value="Flash v2.5">Flash v2.5</option>
+                                <option value="v3 (alpha - unstable)">v3 (alpha - unstable)</option>
                             </select>
                             <i class="fa-solid fa-caret-down select-icon"></i>
                         </div>
@@ -364,7 +364,7 @@
 
                             <button class="btn btn-sm text-white" id="download-audio"
                                 style="background: #28a745; border-radius: 15px; padding: 0.4rem 0.8rem;">
-                                <i class="fa-solid fa-download me-2"></i> Download Audio
+                                <i class="fa-solid fa-download me-2"></i> Download All Audio
                             </button>
                         </div>
 

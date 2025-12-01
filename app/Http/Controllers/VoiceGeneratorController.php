@@ -25,7 +25,11 @@ public function fetchGenAIVoices()
 {
     $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . env('GENAIPRO_API_KEY'),
-    ])->get('https://genaipro.vn/api/v1/labs/voices');
+    ])->get('https://genaipro.vn/api/v1/labs/voices',[
+        'page'       => 0,
+        'page_size'  => 100,
+        'sort'       => 'trending',
+    ]);
 
     if ($response->failed()) {
         return response()->json(['error' => 'Failed to connect or invalid API key'], 500);

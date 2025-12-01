@@ -25,7 +25,11 @@ class GenrateAudioController extends Controller
     public function fetchGenAIBulkVoices(){
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . env('GENAIPRO_API_KEY'),
-        ])->get('https://genaipro.vn/api/v1/labs/voices');
+        ])->get('https://genaipro.vn/api/v1/labs/voices',[
+            'page' => 0,
+            'page_size' => 100,
+            'sort' => 'trending',
+        ]);
 
         if ($response->failed()) {
             return response()->json(['error' => 'Failed to connect or invalid API key'], 500);
@@ -166,7 +170,7 @@ class GenrateAudioController extends Controller
                 $voice->voice_name = $request->voice_name ?? 'Generated Voice';
                 $voice->text = $textItem;
                 $voice->language = $request->language ?? 'en-US';
-                $voice->model = "eleven_multilingual_v2";
+                $voice->model = $request->model ?? 'eleven_multilingual_v2';
                 $voice->voice_settings = json_encode([
                     'style' => $request->style ?? 0.5,
                     'speed' => $request->speed ?? 1.0,

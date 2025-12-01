@@ -258,8 +258,10 @@
                         style="border-radius:25px; border:1px solid #eee;">
                         <div class="" style="color:#231D4F;">
                             <h2 class="fw-bold mb-2" style="font-size:26px; font-weight:800">{{ $webplans->name }}</h2>
-                            <h3 class="fw-bold mb-2" style="font-size:22px; font-weight:700">{{ rtrim(rtrim(number_format($webplans->price, 2, '.', ''), '0'), '.') }}
- {{ $webplans->currency }} <small
+                            <h3 class="fw-bold mb-2" style="font-size:22px; font-weight:700">
+                                {{ $webplans->currency }}
+                                {{ rtrim(rtrim(number_format($webplans->price, 2, '.', ''), '0'), '.') }}
+                            <small
                                     style="font-size:16px; font-weight:600;">/{{ $webplans->duration }}</small></h3>
                             {{-- <h4 style="font-size:18px; color:#231D4F;font-weight:600">{{ $webplans->price }}</h4> --}}
                         </div>
