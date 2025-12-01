@@ -37,7 +37,7 @@
         /* This container establishes the dark indigo background for the top half of the screen */
         .top-half-bg {
             background-color: var(--primary-indigo);
-            height: 380px;
+            height: 320px;
             /* Define the height of the blue band */
             width: 100%;
             position: absolute;
@@ -259,6 +259,10 @@
                 box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
             }
         }
+
+        .signup-margin-top{
+            margin-top: -150px;
+        }
     </style>
 </head>
 
@@ -395,7 +399,7 @@
 
         <!-- --- Lower Text Section (Appears below the blue band on the left) --- -->
         <div class="row">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-6 signup-margin-top">
                 <div class="sign-in-text-block">
                     <h1 style="color: #003E78; font-weight:700;margin-top:-90%">Sign Up to </h1>
                     <h1 style="font-weight:300">Speechly Studio</h1>

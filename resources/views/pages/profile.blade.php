@@ -97,18 +97,19 @@
                                     <div class="col-12 profile-detail-row">
                                         <div class="row align-items-center">
                                             <div class="col-sm-4 detail-label">Date of Birth</div>
-                                            <div class="col-sm-8 detail-value">15 Aug 1995</div>
+                                            <div class="col-sm-8 detail-value">{{ \Carbon\Carbon::parse(Auth::user()->dob)->format('d M, Y') }}</div>
+
                                         </div>
                                     </div>
 
-                                    <div class="col-12 profile-detail-row">
+                                    {{-- <div class="col-12 profile-detail-row">
                                         <div class="row align-items-center">
                                             <div class="col-sm-4 detail-label">Account Type</div>
                                             <div class="col-sm-8 detail-value">
                                                 <span class="badge bg-primary text-white p-2">Premium</span>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div> --}}
 
                                 </div>
                             </div>

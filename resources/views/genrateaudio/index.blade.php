@@ -199,14 +199,14 @@
             <input type="search" class="form-control" placeholder="Search Voices...">
         </div>
 
-        <div class="form-group mb-3 custom-select-wrapper">
+        {{-- <div class="form-group mb-3 custom-select-wrapper">
             <label for="best-voices">Best Voices for V3</label>
             <select id="best-voices" class="form-control form-control-sm">
                 <option selected>V3</option>
                 <option>V4</option>
             </select>
             <i class="fa-solid fa-caret-down select-icon"></i>
-        </div>
+        </div> --}}
 
         <div class="voice-list">
             <div class="voice-list-item">

@@ -55,19 +55,18 @@ class UserController extends Controller
         foreach ($admin as $admins){
             Mail::to($admins->email)->send(new LoginNotificationMail(Auth::user()));
         }
-        if (Auth::user()->user_role == 'admin' || Auth::user()->user_role == 'manager'){
-            $request->session()->regenerate();
-            return redirect()->route('admin.dashboard.index');
-        }else{
-            $request->session()->regenerate();
-            return redirect()->route('dashboard.index');
-        }
+        return response()->json([
+            'message' => 'Login Successful',
+            'redirect' => Auth::user()->user_role == 'admin' || Auth::user()->user_role == 'manager'
+                ? route('admin.dashboard.index')
+                : route('dashboard.index')
+        ]);
     }
 
     // Login failed — show error message or redirect back
-    return back()->withErrors([
-        'email' => 'Invalid credentials. Please try again.',
-    ]);
+    return response()->json([
+        'message' => 'Invalid credentials'
+    ], 401);
 }
 
 

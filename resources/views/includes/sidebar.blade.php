@@ -56,16 +56,16 @@
                      </a>
                  </li>
 
-                 <li class="slide mt-2">
+                 {{-- <li class="slide mt-2">
                      <a href="{{ url('clone-voice') }}" class="side-menu__item">
                          <i class="fa-solid fa-clone side-menu__icon"></i>
                          <span class="side-menu__label">Clone Your Voice</span>
                      </a>
-                 </li>
+                 </li> --}}
 
                  <li class="slide mt-2">
                      <a href="{{ url('/ ') }}" class="side-menu__item">
-                         <i class="fas fa-layer-group side-menu__icon"></i>
+                         <i class="fa-solid fa-clone side-menu__icon"></i>
                          <span class="side-menu__label">View Plans</span>
                      </a>
                  </li>
