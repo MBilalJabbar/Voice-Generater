@@ -17,6 +17,7 @@ class VoiceController extends Controller
             // ✅ Get filters
             $language = strtolower($request->input('language', ''));
             $gender   = strtolower($request->input('gender', ''));
+            $age = strtolower($request->input('age', ''));
             $sort     = strtolower($request->input('sort', 'trending'));
             $search   = trim($request->input('search', ''));
 
@@ -29,6 +30,7 @@ class VoiceController extends Controller
 
             if ($language !== '') $query['language'] = $language;
             if ($gender !== '')   $query['gender']   = $gender;
+            if ($age !== '')      $query['age']      = $age;
             if ($search !== '')   $query['search']   = $search;
 
             // ✅ Make API Request

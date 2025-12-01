@@ -201,20 +201,37 @@
                             </div>
                             <div class="dropdown-menu filter-menu" style="display:none; padding:10px;">
                                 <select id="languageFilter" class="form-select mb-2">
-                                    <option value="">All Languages</option>
-                                    <option value="en">English</option>
-                                    <option value="vi">Vietnamese</option>
-                                    <option value="fr">French</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="jp">Japanese</option>
-                                    <!-- Add as many as supported by API -->
-                                </select>
+    <option value="">All Languages</option>
+    <option value="en">English</option>
+    <option value="hi">Hindi</option>
+    <option value="it">Italian</option>
+    <option value="de">German</option>
+    <option value="es">Spanish</option>
+    <option value="fr">French</option>
+    <option value="pl">Polish</option>
+    <option value="ru">Russian</option>
+    <option value="ar">Arabic</option>
+    <option value="pt">Portuguese</option>
+    <option value="tr">Turkish</option>
+    <option value="nl">Dutch</option>
+    <option value="sv">Swedish</option>
+    <option value="zh">Chinese</option>
+    <option value="ja">Japanese</option>
+    <option value="ko">Korean</option>
+    <option value="vi">Vietnamese</option>
+</select>
 
-                                </select>
                                 <select id="genderFilter" class="form-select mb-2">
                                     <option value="">All Genders</option>
                                     <option value="male">Male</option>
                                     <option value="female">Female</option>
+                                </select>
+
+                                <select id="ageFilter" class="form-select mb-2">
+                                    <option value="">Age</option>
+                                    <option value="young">Young</option>
+                                    <option value="middle">Middle Aged</option>
+                                    <option value="old">Old</option>
                                 </select>
                                 <button id="applyFilters" class="btn btn-primary w-100">Apply</button>
                             </div>
@@ -330,7 +347,7 @@
                 const imgUrl = voice.cover_url || voice.avatar_url || voice.image_url ||
                     '{{ asset("assets/images/Ellipse 22.png") }}';
 
-                const metaLine = `${voice.gender || 'N/A'} • ${fullLanguage} • ${accentText} `;
+                const metaLine = `${voice.gender || 'N/A'} • ${voice.age} • ${fullLanguage} • ${accentText} `;
 
                 return `
 <div class="col-xxl-4 col-lg-4 col-md-6 col-sm-12 mb-4">
@@ -375,6 +392,7 @@
 
                 const language = ($('#languageFilter').val() || '').toLowerCase();
                 const gender = ($('#genderFilter').val() || '').toLowerCase();
+                const age = ($('#ageFilter').val() || '').toLowerCase();
                 const search = ($('#searchFilter').val() || '').trim();
 
                 $.ajax({
@@ -383,6 +401,7 @@
                     data: {
                         language: language,
                         gender: gender,
+                        age: age,
                         sort: currentSort,
                         search: search
                     },
