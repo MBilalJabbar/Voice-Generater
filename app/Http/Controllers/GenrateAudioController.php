@@ -22,13 +22,15 @@ class GenrateAudioController extends Controller
 
 
     // Bulk Voices Generate
-    public function fetchGenAIBulkVoices(){
+    public function fetchGenAIBulkVoices(Request $request){
+        $search = $request->query('search', '');
         $response = Http::withHeaders([
             'Authorization' => 'Bearer ' . env('GENAIPRO_API_KEY'),
         ])->get('https://genaipro.vn/api/v1/labs/voices',[
             'page' => 0,
             'page_size' => 100,
             'sort' => 'trending',
+            'search' => $search,
         ]);
 
         if ($response->failed()) {
@@ -128,7 +130,7 @@ class GenrateAudioController extends Controller
 
                 // 2. Poll task status
                 $audioUrl = null;
-                $maxAttempts = 40;
+                $maxAttempts = 900;
                 for ($i = 0; $i < $maxAttempts; $i++) {
                     sleep(2);
                     $statusResponse = Http::withHeaders([

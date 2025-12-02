@@ -21,6 +21,9 @@ class VoiceController extends Controller
             $sort     = strtolower($request->input('sort', 'trending'));
             $search   = trim($request->input('search', ''));
 
+            $validSorts = ['trending', 'created_date', 'cloned_by_count', 'usage_character_count_1y'];
+            $sort = in_array($sort, $validSorts) ? $sort : 'trending';
+
             // ✅ Build API query
             $query = [
                 'page'       => 0,

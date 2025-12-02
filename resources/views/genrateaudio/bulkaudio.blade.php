@@ -185,7 +185,7 @@
         </div>
 
         <div class="mb-3">
-            <input type="search" class="form-control" placeholder="Search Voices...">
+            <input id="voice-search" type="search" class="form-control" placeholder="Search Voices...">
         </div>
 
         {{-- <div class="form-group mb-3 custom-select-wrapper">
@@ -242,7 +242,7 @@
                     <div class="col-12 text-card-col" data-card-id="1">
                         <div class="card shadow-sm p-4 mb-4"
                             style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
-                            <textarea name="user_text" id="user_text" cols="90" rows="10" class="form-control mb-3 text-input">Loreum Ipsum</textarea>
+                            <textarea name="user_text" id="user_textloop" cols="90" rows="10" class="form-control mb-3 text-input">Loreum Ipsum</textarea>
 
 
 
@@ -546,6 +546,29 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
+
+
+// ========== AUTO SAVE TEXT TO LOCALSTORAGE ==========
+const textAreaLoop = document.getElementById("user_textloop");
+
+window.addEventListener("DOMContentLoaded", () => {
+    const savedTextLoop = localStorage.getItem("savedTextLoop");
+    if (savedTextLoop) {
+        textAreaLoop.value = savedTextLoop;
+        updateTextInfo(); // if needed
+    }
+});
+
+textAreaLoop.addEventListener("input", () => {
+    const currentText = textAreaLoop.value;
+    if (currentText.trim() === "") {
+        localStorage.removeItem("savedTextLoop");
+    } else {
+        localStorage.setItem("savedTextLoop", currentText);
+    }
+    updateTextInfo();
+});
+
     </script>
 
 
@@ -555,20 +578,16 @@ document.addEventListener('DOMContentLoaded', () => {
     <img id="default-voice-avatar" src="{{ asset('assets/images/profile.png') }}" style="display:none;"
         alt="default avatar">
 
-    <script>
+<script>
 (() => {
     const overlay = document.getElementById('voice-sidebar-overlay');
     const sidebar = document.getElementById('voice-sidebar');
-    const voiceList = document.querySelector('.voice-list');
-    const defaultAvatarEl = document.getElementById('default-voice-avatar');
-    const DEFAULT_AVATAR = defaultAvatarEl?.src || '/assets/images/profile.png';
-
+    const voiceList = sidebar.querySelector('.voice-list');
+    const DEFAULT_AVATAR = '/assets/images/profile.png';
     let voicesCache = null;
-    let cloneVoicesCache = null;
     let isLoading = false;
     let currentAudio = null;
     let activeInput = null;
-    let activeType = 'normal'; // 'normal' or 'clone'
 
     function openSidebar() {
         overlay.style.display = 'block';
@@ -577,9 +596,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function closeSidebar() {
         sidebar.classList.remove('open');
-        setTimeout(() => {
-            overlay.style.display = 'none';
-        }, 300);
+        setTimeout(() => overlay.style.display = 'none', 300);
     }
 
     function setLoadingState(state) {
@@ -588,6 +605,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showMessage(html) {
         voiceList.innerHTML = `<p style="padding:1rem;margin:0;text-align:center;">${html}</p>`;
+    }
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str).replace(/&/g, '&amp;')
+                          .replace(/</g, '&lt;')
+                          .replace(/>/g, '&gt;')
+                          .replace(/"/g, '&quot;')
+                          .replace(/'/g, '&#039;');
     }
 
     function createVoiceItem(voice) {
@@ -611,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         // Select voice
-        item.addEventListener('click', (e) => {
+        item.addEventListener('click', e => {
             if (e.target.closest('.voice-play-icon')) return;
             if (!activeInput) return;
 
@@ -630,7 +656,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Play preview
         const playIcon = item.querySelector('.voice-play-icon');
-        playIcon.addEventListener('click', (e) => {
+        playIcon.addEventListener('click', e => {
             e.stopPropagation();
             const previewUrl = playIcon.dataset.preview;
             if (!previewUrl) return;
@@ -647,61 +673,51 @@ document.addEventListener('DOMContentLoaded', () => {
                     .then(() => playIcon.className = 'fa-solid fa-pause voice-play-icon')
                     .catch(() => playIcon.className = 'fa-solid fa-play voice-play-icon');
 
-                currentAudio.onended = () => {
-                    playIcon.className = 'fa-solid fa-play voice-play-icon';
-                };
+                currentAudio.onended = () => playIcon.className = 'fa-solid fa-play voice-play-icon';
             }
         });
 
         return item;
     }
 
-    async function fetchVoices(type) {
-        let cache = type === 'clone' ? cloneVoicesCache : voicesCache;
-        if (cache) return cache;
-
-        const endpoint = type === 'clone' ? '/clone-voices' : '/fetchGenAIBulkVoices';
+    async function fetchVoices(searchQuery = '') {
         setLoadingState(true);
         showMessage('Loading voices...');
 
         try {
             const controller = new AbortController();
             const timeout = setTimeout(() => controller.abort(), 10000);
-            const res = await fetch(endpoint, { signal: controller.signal });
+
+            const url = new URL('/fetchGenAIBulkVoices', window.location.origin);
+            if (searchQuery) url.searchParams.append('search', searchQuery);
+
+            const res = await fetch(url, { signal: controller.signal });
             clearTimeout(timeout);
 
             if (!res.ok) throw new Error(`HTTP ${res.status}`);
             const data = await res.json();
+            voicesCache = Array.isArray(data) ? data : (Array.isArray(data.voices) ? data.voices : []);
+            return voicesCache;
 
-            let voices = Array.isArray(data) ? data :
-                         Array.isArray(data.voices) ? data.voices :
-                         Array.isArray(data.data) ? data.data : [];
-
-            if (type === 'clone') cloneVoicesCache = voices;
-            else voicesCache = voices;
-
-            return voices;
         } catch (err) {
-            console.error(`Error fetching ${type} voices:`, err);
-            showMessage(`Error loading ${type} voices.`);
+            console.error('Error fetching voices:', err);
+            showMessage('Error loading voices.');
             return [];
         } finally {
             setLoadingState(false);
         }
     }
 
-    async function openAndLoadVoices(inputEl, type) {
+    async function openAndLoadVoices(inputEl) {
         if (isLoading) return;
 
         activeInput = inputEl;
-        activeType = type;
         openSidebar();
 
-        let cache = type === 'clone' ? cloneVoicesCache : voicesCache;
-        if (cache?.length) return renderVoiceList(cache);
-
-        const voices = await fetchVoices(type);
-        if (!voices.length) showMessage('No voices available.');
+        const searchQuery = document.querySelector('#voice-search')?.value.trim() || '';
+        voicesCache = null; // reset cache for fresh search
+        const voices = await fetchVoices(searchQuery);
+        if (!voices.length) showMessage('No voices found.');
         else renderVoiceList(voices);
     }
 
@@ -712,78 +728,44 @@ document.addEventListener('DOMContentLoaded', () => {
         voiceList.appendChild(fragment);
     }
 
-    function escapeHtml(str) {
-        if (!str) return '';
-        return String(str)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
-    }
-
-    // Initialize event listeners for both existing and future voice-input elements
     function initializeEventListeners() {
-        document.addEventListener('click', (e) => {
-            // Voice input click
-            if (e.target.classList.contains('voice-input')) {
-                const type = e.target.dataset.type || 'normal';
-                openAndLoadVoices(e.target, type);
-            }
+        document.addEventListener('click', e => {
+            if (e.target.classList.contains('voice-input')) openAndLoadVoices(e.target);
 
-            // Voice trigger button click
             if (e.target.closest('.voice-trigger')) {
                 const trigger = e.target.closest('.voice-trigger');
-                const formGroup = trigger.closest('.form-group');
-                const inputField = formGroup?.querySelector('.voice-input');
-                if (inputField) openAndLoadVoices(inputField, inputField.dataset.type || 'normal');
+                const inputField = trigger.closest('.form-group')?.querySelector('.voice-input');
+                if (inputField) openAndLoadVoices(inputField);
             }
         });
 
-        // Close sidebar
         document.getElementById('close-voice-sidebar')?.addEventListener('click', closeSidebar);
         overlay?.addEventListener('click', closeSidebar);
+
+        const searchInput = document.querySelector('#voice-search');
+        if (searchInput) {
+            searchInput.addEventListener('input', async () => {
+                voicesCache = null; // clear old cache
+                const query = searchInput.value.trim();
+                const voices = await fetchVoices(query);
+                renderVoiceList(voices);
+            });
+        }
     }
 
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initializeEventListeners);
-    } else {
-        initializeEventListeners();
-    }
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initializeEventListeners);
+    else initializeEventListeners();
 
     window.addEventListener('beforeunload', () => {
-        if (currentAudio) {
-            currentAudio.pause();
-            currentAudio = null;
-        }
+        if (currentAudio) { currentAudio.pause(); currentAudio = null; }
     });
 
     window.voiceManager = {
-        clearCache: () => { voicesCache = null; cloneVoicesCache = null; },
-        getCache: () => ({ normal: voicesCache, clone: cloneVoicesCache })
+        clearCache: () => { voicesCache = null; },
+        getCache: () => ({ normal: voicesCache })
     };
 })();
-
-
- // ✅ Filter voices by search input
-        const searchInput = document.querySelector('#voice-sidebar input[type="search"]');
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase();
-
-                document.querySelectorAll('.voice-list-item').forEach(item => {
-                    const name = item.querySelector('.voice-info h6')?.textContent.toLowerCase() || '';
-                    const category = item.querySelector('.voice-info small')?.textContent.toLowerCase() || '';
-
-                    if (name.includes(query) || category.includes(query)) {
-                        item.style.display = ''; // show
-                    } else {
-                        item.style.display = 'none'; // hide
-                    }
-                });
-            });
-        }
-    </script>
+</script>
 
 
 
