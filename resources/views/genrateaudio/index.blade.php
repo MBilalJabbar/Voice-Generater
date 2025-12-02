@@ -196,7 +196,7 @@
         </div>
 
         <div class="mb-3">
-            <input type="search" class="form-control" placeholder="Search Voices...">
+            <input id="userSearch" type="search" class="form-control" placeholder="Search Voices...">
         </div>
 
         {{-- <div class="form-group mb-3 custom-select-wrapper">
@@ -386,6 +386,34 @@ $(document).ready(function() {
         formGroup.find(".voice-id").val(voiceId);
         formGroup.find(".voice-name").val(voiceName);
     }
+});
+
+
+// ========== AUTO SAVE TEXT TO LOCALSTORAGE ==========
+const textArea = document.getElementById("user_text");
+
+// Load saved text when page opens
+window.addEventListener("DOMContentLoaded", () => {
+    const savedText = localStorage.getItem("savedText");
+    if (savedText) {
+        textArea.value = savedText;
+        updateTextInfo(); // update count or any UI info
+    }
+});
+
+// Save text automatically on typing
+textArea.addEventListener("input", () => {
+    const currentText = textArea.value;
+
+    // If the text is empty, clear localStorage
+    if (currentText.trim() === "") {
+        localStorage.removeItem("savedText");
+    } else {
+        // Save the latest text
+        localStorage.setItem("savedText", currentText);
+    }
+
+    updateTextInfo(); // update count or UI info
 });
 
 </script>
@@ -701,28 +729,92 @@ $(document).ready(function() {
                 })
             };
         })();
-
-
-        // ✅ Filter voices by search input
-        const searchInput = document.querySelector('#voice-sidebar input[type="search"]');
-        if (searchInput) {
-            searchInput.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase();
-
-                document.querySelectorAll('.voice-list-item').forEach(item => {
-                    const name = item.querySelector('.voice-info h6')?.textContent.toLowerCase() || '';
-                    const category = item.querySelector('.voice-info small')?.textContent.toLowerCase() || '';
-
-                    if (name.includes(query) || category.includes(query)) {
-                        item.style.display = ''; // show
-                    } else {
-                        item.style.display = 'none'; // hide
-                    }
-                });
-            });
-        }
-
     </script>
+
+
+{{-- // ✅ Filter voices by search input --}}
+<script>
+(() => {
+    const searchInput = document.getElementById('userSearch');
+    if (!searchInput) return;
+
+    let typingTimer;
+    const debounceDelay = 500; // wait 500ms after typing stops
+
+    searchInput.addEventListener('input', () => {
+        clearTimeout(typingTimer);
+        typingTimer = setTimeout(async () => {
+            const query = searchInput.value.trim();
+            const voiceList = document.querySelector('.voice-list');
+            if (!voiceList) return;
+
+            voiceList.innerHTML = `<p style="padding:1rem;margin:0;text-align:center;">Searching...</p>`;
+
+            try {
+                const res = await fetch(`/fetchGenAIBulkVoices?search=${encodeURIComponent(query)}`);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const data = await res.json();
+                const voices = Array.isArray(data) ? data : (Array.isArray(data.voices) ? data.voices : []);
+
+                if (!voices.length) {
+                    voiceList.innerHTML = `<p style="padding:1rem;margin:0;text-align:center;">No voices found.</p>`;
+                    return;
+                }
+
+                // Render voices
+                voiceList.innerHTML = '';
+                voices.forEach(voice => {
+                    const item = document.createElement('div');
+                    item.className = 'voice-list-item';
+
+                    const avatar = voice.avatar_url || '/assets/images/profile.png';
+                    const name = voice.name || 'Unknown Voice';
+                    const category = voice.category || 'General Voice';
+                    const preview = voice.preview_url || '';
+
+                    item.innerHTML = `
+                        <img src="${avatar}" alt="Voice Avatar" onerror="this.src='/assets/images/profile.png'">
+                        <div class="voice-info">
+                            <h6>${name}</h6>
+                            <small>${category}</small>
+                        </div>
+                        <div class="voice-actions">
+                            <i class="fa-solid fa-play voice-play-icon" data-preview="${preview}" title="Play Preview"></i>
+                        </div>
+                    `;
+
+                    // Select voice on click
+                    item.addEventListener('click', () => {
+                        const activeInput = document.querySelector('.voice-input.active') || document.querySelector('.voice-input');
+                        if (!activeInput) return;
+
+                        const formGroup = activeInput.closest('.form-group');
+                        const voiceIdInput = formGroup.querySelector('.voice-id');
+
+                        activeInput.value = name;
+                        activeInput.classList.add('active');
+                        if (voiceIdInput) voiceIdInput.value = voice.voice_id || voice.id || '';
+                    });
+
+                    // Play preview
+                    const playIcon = item.querySelector('.voice-play-icon');
+                    playIcon.addEventListener('click', e => {
+                        e.stopPropagation();
+                        const audio = new Audio(preview);
+                        audio.play();
+                        audio.onended = () => { playIcon.className = 'fa-solid fa-play voice-play-icon'; };
+                    });
+
+                    voiceList.appendChild(item);
+                });
+            } catch (err) {
+                console.error('Error fetching voices:', err);
+                voiceList.innerHTML = `<p style="padding:1rem;margin:0;text-align:center;">Error fetching voices.</p>`;
+            }
+        }, debounceDelay);
+    });
+})();
+</script>
 
 
 
@@ -860,8 +952,13 @@ $(document).ready(function() {
             success: function(data) {
                 $("#generate-audio").prop("disabled", false).text("Generate Audio");
                 Swal.close();
-
+                // remove text area of text
                 if (data.success) {
+                    localStorage.removeItem("savedText");
+                    $("#user_text").val("");
+                    updateTextInfo();
+
+
                     currentAudioUrl = data.audio_url;
 
                     const audioHtml = `

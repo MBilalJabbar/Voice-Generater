@@ -19,7 +19,7 @@
                     data-bs-toggle="sidebar" href="javascript:void(0);">
                     <span></span>
                 </a>
-                <h5 class="mt-3" style="font-weight: 400;">
+                <h5 class="mt-3" style="font-weight: 400;" id="creditsDisplay">
                     👋 Hello! @if (Auth::check())
                     {{ Auth::user()->user_name }}
                     @else

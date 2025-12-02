@@ -21,14 +21,16 @@ class VoiceGeneratorController extends Controller
     //     return response()->json(json_decode($response->body(), true));
     // }
 
-public function fetchGenAIVoices()
+public function fetchGenAIVoices(Request $request)
 {
+    $search = $request->query('search', '');
     $response = Http::withHeaders([
         'Authorization' => 'Bearer ' . env('GENAIPRO_API_KEY'),
     ])->get('https://genaipro.vn/api/v1/labs/voices',[
         'page'       => 0,
         'page_size'  => 100,
         'sort'       => 'trending',
+        'search' => $search,
     ]);
 
     if ($response->failed()) {
@@ -189,7 +191,7 @@ public function generateAudioVoices(Request $request){
 
         // ✅ 2. Poll Until Audio is Ready
         $audioUrl = null;
-        $maxAttempts = 40;  // ✅ supports long audio (1 hour)
+        $maxAttempts = 900;  // 40 ✅ supports long audio (1 hour)
 
         for ($i = 0; $i < $maxAttempts; $i++) {
 

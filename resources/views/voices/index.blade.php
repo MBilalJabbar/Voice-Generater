@@ -120,11 +120,17 @@
         .play-btn i {
             font-size: 18px;
         }
-        .play-btn{
+
+        .play-btn {
             color: #ffffff;
             background-color: #003E78;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
         }
-        .btn-light:hover{
+
+        .btn-light:hover {
             background-color: #8C52FF;
         }
 
@@ -158,7 +164,8 @@
         .play-btn i {
             font-size: 18px;
         }
-        .add-voice-btn i{
+
+        .add-voice-btn i {
             font-size: 16px;
             margin-top: 16px;
         }
@@ -187,8 +194,9 @@
                             </div>
                             <div class="dropdown-menu trending-menu" style="display:none; padding:10px;">
                                 <button class="dropdown-item filter-sort" data-sort="trending">Trending</button>
-                                <button class="dropdown-item filter-sort" data-sort="latest">Latest</button>
-                                <button class="dropdown-item filter-sort" data-sort="mostusers">Most Users</button>
+                                <button class="dropdown-item filter-sort" data-sort="created_date">Latest</button>
+                                <button class="dropdown-item filter-sort" data-sort="cloned_by_count">Most Users</button>
+
                             </div>
                         </div>
                     </div>
@@ -201,25 +209,25 @@
                             </div>
                             <div class="dropdown-menu filter-menu" style="display:none; padding:10px;">
                                 <select id="languageFilter" class="form-select mb-2">
-    <option value="">All Languages</option>
-    <option value="en">English</option>
-    <option value="hi">Hindi</option>
-    <option value="it">Italian</option>
-    <option value="de">German</option>
-    <option value="es">Spanish</option>
-    <option value="fr">French</option>
-    <option value="pl">Polish</option>
-    <option value="ru">Russian</option>
-    <option value="ar">Arabic</option>
-    <option value="pt">Portuguese</option>
-    <option value="tr">Turkish</option>
-    <option value="nl">Dutch</option>
-    <option value="sv">Swedish</option>
-    <option value="zh">Chinese</option>
-    <option value="ja">Japanese</option>
-    <option value="ko">Korean</option>
-    <option value="vi">Vietnamese</option>
-</select>
+                                    <option value="">All Languages</option>
+                                    <option value="en">English</option>
+                                    <option value="hi">Hindi</option>
+                                    <option value="it">Italian</option>
+                                    <option value="de">German</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                    <option value="pl">Polish</option>
+                                    <option value="ru">Russian</option>
+                                    <option value="ar">Arabic</option>
+                                    <option value="pt">Portuguese</option>
+                                    <option value="tr">Turkish</option>
+                                    <option value="nl">Dutch</option>
+                                    <option value="sv">Swedish</option>
+                                    <option value="zh">Chinese</option>
+                                    <option value="ja">Japanese</option>
+                                    <option value="ko">Korean</option>
+                                    <option value="vi">Vietnamese</option>
+                                </select>
 
                                 <select id="genderFilter" class="form-select mb-2">
                                     <option value="">All Genders</option>
@@ -257,6 +265,7 @@
 
     </div>
 
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
     <script>
         let currentAudio = null;
@@ -303,7 +312,7 @@
 
 
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 
     <script>
         $(function() {
@@ -345,7 +354,7 @@
 
                 const audioUrl = voice.sample_audio || voice.audio_url || voice.preview_url || '';
                 const imgUrl = voice.cover_url || voice.avatar_url || voice.image_url ||
-                    '{{ asset("assets/images/Ellipse 22.png") }}';
+                    '{{ asset('assets/images/Ellipse 22.png') }}';
 
                 const metaLine = `${voice.gender || 'N/A'} • ${voice.age} • ${fullLanguage} • ${accentText} `;
 
@@ -385,7 +394,7 @@
     </div>
   </div>
 </div>`;
-            }//<button type="button" class="btn btn-sm text-dark p-0" title="More Options"><i class="fa-solid fa-ellipsis-h"></i></button>
+            } //<button type="button" class="btn btn-sm text-dark p-0" title="More Options"><i class="fa-solid fa-ellipsis-h"></i></button>
 
             function fetchVoices(sort = 'trending') {
                 currentSort = sort || currentSort;
@@ -429,7 +438,7 @@
                         console.error('AJAX Error:', err);
                         $('#voicesContainer').html(
                             '<div class="col-12"><div class="text-center p-4"><p class="text-danger">Failed to fetch voices</p></div></div>'
-                            );
+                        );
                     }
                 });
             }
@@ -458,16 +467,30 @@
             });
 
             // --- Sorting buttons (Trending / Latest / Most Users) ---
-            $(document).on('click', '.filter-sort', function(e) {
-                e.stopPropagation();
-                const sortType = $(this).data('sort') || 'trending';
-                currentSort = sortType;
-                // optionally show UI active state:
-                $('.filter-sort').removeClass('active');
-                $(this).addClass('active');
-                $('.trending-menu').hide();
-                fetchVoices(currentSort);
-            });
+           // Sorting buttons (Trending / Latest / Most Users)
+$(document).on('click', '.filter-sort', function(e) {
+    e.stopPropagation();
+
+    const sortType = $(this).data('sort') || 'trending';
+    console.log("Sort clicked:", sortType); // debug
+
+    // Update global sort variable
+    currentSort = sortType;
+
+    // Update UI active states
+    $('.filter-sort').removeClass('active');
+    $(this).addClass('active');
+
+    // Update the main trending button text
+    $('.trending-btn').html($(this).text() + ' <i class="fa-solid fa-chart-line me-2" style="color:#003E78;"></i>');
+
+    // Hide dropdown
+    $('.trending-menu').hide();
+
+    // Fetch voices with new sort
+    fetchVoices(currentSort);
+});
+
 
             // --- Apply filters button ---
             $('#applyFilters').on('click', function(e) {
@@ -533,20 +556,20 @@
     </script>
 
     <script>
-        $(document).on("click", ".add-voice-btn", function (e) {
-    e.stopPropagation();
+        $(document).on("click", ".add-voice-btn", function(e) {
+            e.stopPropagation();
 
-    const voiceId = $(this).data("voice-id");
-    const voiceName = $(this).data("voice-name");
+            const voiceId = $(this).data("voice-id");
+            const voiceName = $(this).data("voice-name");
 
-    if (!voiceId || !voiceName) {
-        alert("Voice data missing!");
-        return;
-    }
+            if (!voiceId || !voiceName) {
+                alert("Voice data missing!");
+                return;
+            }
 
-    // Redirect to Generate Voice page and pass selected values
-    window.location.href = "/genrate-audio?voice_id=" + voiceId + "&voice_name=" + encodeURIComponent(voiceName);
-});
-
+            // Redirect to Generate Voice page and pass selected values
+            window.location.href = "/genrate-audio?voice_id=" + voiceId + "&voice_name=" + encodeURIComponent(
+                voiceName);
+        });
     </script>
 @endsection

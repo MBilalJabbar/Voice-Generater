@@ -282,25 +282,25 @@
                         <ul class="list-unstyled text-start mt-3 mb-4"
                             style="color:rgba(132,129,153,1); font-size:16.96px; line-height:29.4px;">
                                 <li class="mt-2">
-                                    @if (!empty($webplans->minutes))
-                                        <i class="fas fa-check me-2"
-                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
-                                        {{$webplans->minutes}} Characters
-                                    @else
-                                        <i class="fas fa-times me-2"
-                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
-                                         {{ $webplans->minutes }} Characters
-                                    @endif
-                                </li>
-                                <li class="mt-2">
                                     @if (!empty($webplans->characters))
                                         <i class="fas fa-check me-2"
                                         style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
-                                        {{$webplans->characters}} Minutes
+                                        {{$webplans->characters}} Characters
                                     @else
                                         <i class="fas fa-times me-2"
                                         style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
-                                         {{ $webplans->characters }} Minutes
+                                         {{ $webplans->characters }} Characters
+                                    @endif
+                                </li>
+                                <li class="mt-2">
+                                    @if (!empty($webplans->minutes))
+                                        <i class="fas fa-check me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                        {{$webplans->minutes}} Minutes
+                                    @else
+                                        <i class="fas fa-times me-2"
+                                        style="background:rgba(82,67,194,0.1);padding:6px;border-radius:50%;color:#003E78;"></i>
+                                         {{ $webplans->minutes }} Minutes
                                     @endif
                                 </li>
 
