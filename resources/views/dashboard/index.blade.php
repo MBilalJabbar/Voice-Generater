@@ -82,7 +82,7 @@
                                             <i class="fas fa-tasks fa-lg" style="color:#003E78;"></i>
                                         </span>
                                         <div class="flex-fill ms-3">
-                                            <h5 class="fw-semibold mb-0 lh-1">12</h5>
+                                            <h5 class="fw-semibold mb-0 lh-1">{{ $voices->count(10) }}</h5>
                                             <p class="mb-0 fs-10 text-muted fw-semibold">Recent Tasks</p>
                                         </div>
                                     </div>
@@ -100,7 +100,7 @@
                                             <i class="fas fa-check-circle fa-lg" style="color:#003E78;"></i>
                                         </span>
                                         <div class="flex-fill ms-3">
-                                            <h5 class="fw-semibold mb-0 lh-1">8</h5>
+                                            <h5 class="fw-semibold mb-0 lh-1">{{ $voices->count() }}</h5>
                                             <p class="mb-0 fs-10 text-muted fw-semibold">Completed Tasks</p>
                                         </div>
                                     </div>
@@ -118,8 +118,14 @@
                                             <i class="fas fa-sync-alt fa-lg" style="color:#003E78;"></i>
                                         </span>
                                         <div class="flex-fill ms-3">
-                                            <h5 class="fw-semibold mb-0 lh-1">3</h5>
-                                            <p class="mb-0 fs-10 text-muted fw-semibold">Processing Tasks</p>
+                                            <h5 class="fw-semibold mb-0 lh-1">
+                                        @if(Auth::user()->plan_name)
+                                            {{ Auth::user()->plan_name }}
+                                        @else
+                                            No Plan
+                                        @endif
+                                    </h5>
+                                            <p class="mb-0 fs-10 text-muted fw-semibold">Your Current Plan Status</p>
                                         </div>
                                     </div>
                                 </div>
@@ -136,8 +142,32 @@
                                             <i class="fas fa-times-circle fa-lg" style="color:#003E78;"></i>
                                         </span>
                                         <div class="flex-fill ms-3">
-                                            <h5 class="fw-semibold mb-0 lh-1">1</h5>
-                                            <p class="mb-0 fs-10 text-muted fw-semibold">Failed Tasks</p>
+@php
+use Illuminate\Support\Str;
+use Carbon\Carbon;
+
+$user = Auth::user();
+$today = Carbon::now();
+$expiry = $user->plan_expiry_date ? Carbon::parse($user->plan_expiry_date) : null;
+
+$remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
+@endphp
+
+
+<div class="flex-fill ms-3">
+    <h5 class="fw-semibold mb-0 lh-1">
+        @if($remainingDays > 0)
+            ({{ $remainingDays }} {{ Str::plural('day', $remainingDays) }} )
+        @elseif($remainingDays === 0)
+            (Expires today)
+        @else
+            <a href="{{ url('plans') }}" class="btn btn-sm btn-primary">Buy Now</a>
+        @endif
+
+    </h5>
+    <p class="mb-0 fs-10 text-muted fw-semibold">Remaining Days</p>
+</div>
+
                                         </div>
                                     </div>
                                 </div>

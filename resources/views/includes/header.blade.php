@@ -40,7 +40,7 @@
                             </h5>
                         @else
                             <h5 class="available-credits">
-                                Available Credits: 0
+                                Available Credits: {{ Auth::user()->credits ?? 0 }}
                             </h5>
                         @endif
 

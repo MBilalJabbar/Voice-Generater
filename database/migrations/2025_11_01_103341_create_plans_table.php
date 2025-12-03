@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name');
             $table->decimal('price', 10, 2)->default(0);
             $table->string('currency')->default('$');
-            $table->string('duration')->default('30 days')->nullable();
+            $table->string('duration')->default('30')->nullable();
             $table->date('expires')->nullable();
 
             // Usage limits

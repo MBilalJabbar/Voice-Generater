@@ -12,8 +12,10 @@ class DashbaordController extends Controller
 {
     public function index(Request $request)
     {
-        $voices = VoiceGenerate::where('user_id', Auth::id())
-        ->orderBy('created_at', 'Desc')->get();
+        $voices = VoiceGenerate::with('user')
+                        ->where('user_id', Auth::id())
+                        ->orderBy('created_at', 'Desc')
+                        ->get();
         return view('dashboard.index', compact('voices'));
     }
 

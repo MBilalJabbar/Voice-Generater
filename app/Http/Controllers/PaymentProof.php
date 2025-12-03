@@ -19,11 +19,11 @@ class PaymentProof extends Controller
         }
 
         // Calculate remaining days
-        $end = \Carbon\Carbon::parse($subscription->plan->expires);
-        $daysRemaining = now()->startOfDay()->diffInDays($end->startOfDay(), false);
+        $end = \Carbon\Carbon::parse($subscription->user->plan_expiry_date); // corrected column name
+    $daysRemaining = now()->startOfDay()->diffInDays($end->startOfDay(), false);
 
-        // Attach remaining days to response
-        $subscription->days_remaining = $daysRemaining > 0 ? $daysRemaining : 0;
+    // Attach remaining days to response
+    $subscription->days_remaining = $daysRemaining > 0 ? $daysRemaining : 0;
 
         return response()->json([
             'success' => true,
@@ -45,7 +45,11 @@ class PaymentProof extends Controller
 
             $user->credits = $plan->characters;
             $user->current_plan_id = $plan->id;
-            $user->plan_expiry_date = $plan->expires;
+            $user->plan_name = $plan->name;
+
+            $durationDays = (int) $plan->duration; // convert to integer
+            $user->plan_expiry_date = now()->addDays($durationDays)->endOfDay();
+
             $user->save();
         }
 

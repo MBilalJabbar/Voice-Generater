@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Plan;
 use App\Models\Subscription as ModelsSubscription;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,7 +18,8 @@ class Subscription extends Controller
         $plan = Plan::findOrFail($request->plan_id);
 
         $start = now();
-        $end = now()->addDays($plan->duration ?? 30);
+        $durationDays = (int) $plan->duration; // convert string to integer
+        $end = now()->addDays($durationDays);
     // CREATE subscription record
     $subscription = ModelsSubscription::create([
         'user_id' => Auth::id(),
@@ -93,6 +95,40 @@ class Subscription extends Controller
         ]);
 
         return redirect('/thank-you')->with('success', 'USDT hash submitted. Admin will verify soon.');
+    }
+
+    public function FreePlanActive($id){
+        $plan_id = base64_decode($id);
+        $plan = Plan::find($plan_id);
+        if(!$plan){
+            return redirect()->back()->with('error', 'Plan not found');
+        }
+
+        $user = Auth::user();
+        if(!$user){
+            return redirect('/login');
+        }
+
+        $alreadyUsed = User::where('email', $user->email)
+                            ->where('free_plan_used', true)
+                            ->exists();
+        if($plan->price == 0 && $alreadyUsed){
+            return redirect('/')->with('error', 'You already used the free plan.');
+        }
+
+        $user->credits = $plan->characters;
+        $user->current_plan_id = $plan->id;
+        $user->plan_name = $plan->name;
+        $user->plan_expiry_date = now()->addDays((int)$plan->duration)->endOfDay();
+
+        if($plan->price == 0){
+            $user->free_plan_used = true;
+        }
+
+        $user->save();
+
+
+        return redirect('/index')->with('success', 'Free plan activated successfully!');
     }
 
 }

@@ -65,7 +65,7 @@ class UserController extends Controller
 
     // Login failed — show error message or redirect back
     return response()->json([
-        'message' => 'Invalid credentials'
+        'message' => 'Invalid Email Or Password'
     ], 401);
 }
 

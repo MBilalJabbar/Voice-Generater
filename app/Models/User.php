@@ -38,11 +38,15 @@ class User extends Authenticatable
         'status',
         'email',
         'phone',
-        'profile_picture',
+        'dob',
         'password',
+        'profile_picture',
         'google_id',
         'plan_expiry_date',
-        'plan_id',
+        'current_plan_id',
+        'plan_name',
+        'credits',
+        'free_plan_used',
     ];
 
 
