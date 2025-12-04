@@ -153,3 +153,7 @@ Route::post('/PlanStatusUpdate/{id}', [PaymentProof::class, 'PlanStatusUpdate'])
 Route::post('/deleteProofPlan/{id}', [PaymentProof::class, 'deleteProofPlan'])->name('deleteProofPlan');
 // show character count
 // Route::get('/index', [PaymentProof::class, 'CharacterCount']);
+
+
+// User Dashboard Plan
+Route::get('/UserDashboardPlans', [PlanController::class, 'UserDashboardPlans']);

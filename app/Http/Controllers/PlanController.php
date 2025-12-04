@@ -87,4 +87,9 @@ class PlanController extends Controller
         $plans = Plan::all();
         return view('welcome', compact('plans'));
     }
+
+    public function UserDashboardPlans(){
+        $plans = Plan::all();
+        return view('plan.userPlanPage', compact('plans'));
+    }
 }
