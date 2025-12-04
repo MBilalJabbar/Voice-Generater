@@ -33,9 +33,9 @@
                 <div class="d-flex align-items-center">
 
                     <div class="me-2">
-                        {{-- <h5 class="available-credits">
-                            Available Credits: 50000
-                        </h5> --}}
+                        <h5 class="available-credits">
+                            Available Credits: {{ $totalCredits }} / Expire Plan: {{ $nextExpire }}
+                        </h5>
                     </div>
 
                     <a href="javascript:void(0);" class="header-link me-2">

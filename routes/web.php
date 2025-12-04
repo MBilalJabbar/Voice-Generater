@@ -17,6 +17,7 @@ use App\Http\Controllers\PlanController;
 use App\Http\Controllers\CloneVoiceController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Subscription;
+use App\Models\Subscription as ModelsSubscription;
 
 Route::get('/index', [DashbaordController::class, 'index'])->name('dashboard.index');
 Route::get('/subscription', [PlanController::class, 'index'])->name('subscriptions.index');
@@ -140,6 +141,7 @@ Route::post('/reset-user-password', [UserController::class, 'submitConfirmPasswo
 
 
 // Payment Routes
+Route::get('FreePlanActive/{id}', [Subscription::class, 'FreePlanActive']);
 Route::get('/viewCheckout/{id}', [PaymentController::class, 'viewCheckout']);
 Route::post('/progressCheckout', [Subscription::class, 'progressCheckout']);
 Route::get('/binancePay/{id}', [PaymentController::class, 'binancePay']);
@@ -151,3 +153,11 @@ Route::post('/PlanStatusUpdate/{id}', [PaymentProof::class, 'PlanStatusUpdate'])
 Route::post('/deleteProofPlan/{id}', [PaymentProof::class, 'deleteProofPlan'])->name('deleteProofPlan');
 // show character count
 // Route::get('/index', [PaymentProof::class, 'CharacterCount']);
+
+
+// User Dashboard Plan
+Route::get('/UserDashboardPlans', [PlanController::class, 'UserDashboardPlans']);
+
+
+// GenAi Credit Details
+// Route::get('/GenAiCreditDetails', [AdminController::class, 'GenAiCreditDetails']);

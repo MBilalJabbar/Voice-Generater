@@ -179,7 +179,7 @@
             font-weight: 600;
             font-size: 1rem;
             transition: background-color 0.2s;
-            margin-top: 20px;
+            margin-block: 42px;
         }
 
         .login-btn {
@@ -289,9 +289,13 @@
                     <hr class="d-none d-lg-block my-3 border-0"> <!-- Separator for better spacing on large screens -->
 
                     <!-- Sign in with Google Button -->
-                    <button class="google-btn mb-4">
-                        <img class="mr-1" src="{{ asset('assets/images/google logo.png') }}" alt="" width="20px"> Sign in with Google
-                    </button>
+                    <div class="google-btn">
+                    <a href="{{ route('google.login') }}" class="d-flex justify-content-center" >
+                        <img class="mr-1" src="{{ asset('assets/images/google logo.png') }}" alt=""
+                            width="20px"> Sign in with Google
+
+                    </a>
+                    </div>
 
                     <form id="userLogin">
                         @csrf

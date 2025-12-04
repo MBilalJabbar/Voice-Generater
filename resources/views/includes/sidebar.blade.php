@@ -64,7 +64,7 @@
                  </li> --}}
 
                  <li class="slide mt-2">
-                     <a href="{{ url('/ ') }}" class="side-menu__item">
+                     <a href="{{ url('/UserDashboardPlans ') }}" class="side-menu__item">
                          <i class="fa-solid fa-clone side-menu__icon"></i>
                          <span class="side-menu__label">View Plans</span>
                      </a>

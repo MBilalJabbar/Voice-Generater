@@ -37,10 +37,11 @@
                         @if($headerSubscription)
                             <h5 class="available-credits">
                                 Available Credits: {{ $headerSubscription->user->credits ?? 0 }}
+                                 {{-- / Plan Expire Date: {{ ($headerSubscription->user)->plan_expiry_date ?? 0 }} --}}
                             </h5>
                         @else
                             <h5 class="available-credits">
-                                Available Credits: 0
+                                Available Credits: {{ Auth::user()->credits ?? 0 }}
                             </h5>
                         @endif
 

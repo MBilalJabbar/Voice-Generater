@@ -42,9 +42,17 @@
                             </thead>
                             <tbody>
                                 @foreach ($paymentProofs as $paymentProof)
-                                    @php
-                                        $end = \Carbon\Carbon::parse($paymentProof->plan->expires);
-                                        $daysRemaining = now()->startOfDay()->diffInDays($end->startOfDay());
+                @php
+                // Use the user's subscription expiry date
+                $expiry = $paymentProof->user->plan_expiry_date
+                        ? \Carbon\Carbon::parse($paymentProof->user->plan_expiry_date)
+                        : null;
+
+                if ($expiry) {
+                    $daysRemaining = now()->startOfDay()->diffInDays($expiry->startOfDay(), false);
+                } else {
+                    $daysRemaining = 0;
+                }
 
                                         if ($daysRemaining <= 0 && $paymentProof->status != 'expired') {
                                             // Update status to expired

@@ -8,6 +8,7 @@ use App\Models\VoicesModel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Http;
 
 class AdminController extends Controller
 {
@@ -21,6 +22,35 @@ class AdminController extends Controller
 
         return view('admin.dashboard.index', compact('users', 'userCount'));
     }
+
+//     public function GenAiCreditDetails()
+// {
+//     $response = Http::withHeaders([
+//         'Authorization' => 'Bearer ' . env('GENAIPRO_API_KEY'),
+//         'Accept' => 'application/json',
+//     ])->get('https://genaipro.vn/api/v1/me');
+
+//     if ($response->successful()) {
+//         $data = $response->json();
+
+//         // Extract user info and credits
+//         $username = $data['username'] ?? 'N/A';
+//         $balance = $data['balance'] ?? 0;
+//         $credits = $data['credits'] ?? [];
+
+//         // Calculate total and next expiration (optional)
+//         $totalCredits = array_sum(array_column($credits, 'amount'));
+//         $nextExpire = $credits[0]['expire_at'] ?? null;
+
+//         return view('admin.dashboard.index', compact('username', 'balance', 'totalCredits', 'credits', 'nextExpire'));
+//     }
+
+//     return view('admin.dashboard.index')->withErrors([
+//         'msg' => 'Failed to fetch GenAi credit details.'
+//     ]);
+// }
+
+
 
     // get user information with graph
     public function usersStats(Request $request){

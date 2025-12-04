@@ -22,4 +22,9 @@ class VoiceGenerate extends Model
         'completed_time',
         'duration',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'user_id');
+    }
 }
