@@ -62,6 +62,39 @@ class VoiceController extends Controller
                 $voices = [];
             }
 
+            if (!empty($voices)) {
+            switch ($sort) {
+                case 'created_date': // Latest first
+                    usort($voices, function ($a, $b) {
+                        $aDate = isset($a['created_at']) ? strtotime($a['created_at']) : 0;
+                        $bDate = isset($b['created_at']) ? strtotime($b['created_at']) : 0;
+                        return $bDate <=> $aDate;
+                    });
+                    break;
+
+                case 'cloned_by_count': // Most users first
+                    usort($voices, function ($a, $b) {
+                        $aCount = $a['cloned_by_count'] ?? 0;
+                        $bCount = $b['cloned_by_count'] ?? 0;
+                        return $bCount <=> $aCount;
+                    });
+                    break;
+
+                case 'usage_character_count_1y': // Most usage first
+                    usort($voices, function ($a, $b) {
+                        $aUsage = $a['usage_character_count_1y'] ?? 0;
+                        $bUsage = $b['usage_character_count_1y'] ?? 0;
+                        return $bUsage <=> $aUsage;
+                    });
+                    break;
+
+                case 'trending': // Default, keep API order
+                default:
+                    // no local sort needed
+                    break;
+            }
+        }
+
             // ✅ Return clean JSON
             return response()->json([
                 'voices'     => $voices,

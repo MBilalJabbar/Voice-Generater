@@ -208,41 +208,43 @@
                                 <i class="fa-solid fa-filter me-2" style="color:#003E78;"></i> Filter
                             </div>
                             <div class="dropdown-menu filter-menu" style="display:none; padding:10px;">
-                                <select id="languageFilter" class="form-select mb-2">
-                                    <option value="">All Languages</option>
-                                    <option value="en">English</option>
-                                    <option value="hi">Hindi</option>
-                                    <option value="it">Italian</option>
-                                    <option value="de">German</option>
-                                    <option value="es">Spanish</option>
-                                    <option value="fr">French</option>
-                                    <option value="pl">Polish</option>
-                                    <option value="ru">Russian</option>
-                                    <option value="ar">Arabic</option>
-                                    <option value="pt">Portuguese</option>
-                                    <option value="tr">Turkish</option>
-                                    <option value="nl">Dutch</option>
-                                    <option value="sv">Swedish</option>
-                                    <option value="zh">Chinese</option>
-                                    <option value="ja">Japanese</option>
-                                    <option value="ko">Korean</option>
-                                    <option value="vi">Vietnamese</option>
-                                </select>
+    <select id="languageFilter" class="form-select mb-2">
+        <option value="">All Languages</option>
+        <option value="en">English</option>
+        <option value="hi">Hindi</option>
+        <option value="it">Italian</option>
+        <option value="de">German</option>
+        <option value="es">Spanish</option>
+        <option value="fr">French</option>
+        <option value="pl">Polish</option>
+        <option value="ru">Russian</option>
+        <option value="ar">Arabic</option>
+        <option value="pt">Portuguese</option>
+        <option value="tr">Turkish</option>
+        <option value="nl">Dutch</option>
+        <option value="sv">Swedish</option>
+        <option value="zh">Chinese</option>
+        <option value="ja">Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="vi">Vietnamese</option>
+    </select>
 
-                                <select id="genderFilter" class="form-select mb-2">
-                                    <option value="">All Genders</option>
-                                    <option value="male">Male</option>
-                                    <option value="female">Female</option>
-                                </select>
+    <select id="genderFilter" class="form-select mb-2">
+        <option value="">All Genders</option>
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+    </select>
 
-                                <select id="ageFilter" class="form-select mb-2">
-                                    <option value="">Age</option>
-                                    <option value="young">Young</option>
-                                    <option value="middle">Middle Aged</option>
-                                    <option value="old">Old</option>
-                                </select>
-                                <button id="applyFilters" class="btn btn-primary w-100">Apply</button>
-                            </div>
+    <select id="ageFilter" class="form-select mb-2">
+        <option value="">All Ages</option>
+        <option value="young">Young</option>
+        <option value="middle">Middle Aged</option>
+        <option value="old">Old</option>
+    </select>
+
+    <button id="applyFilters" class="btn btn-primary w-100">Apply</button>
+</div>
+
                         </div>
                     </div>
                 </div>
@@ -266,310 +268,192 @@
     </div>
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+$(function() {
+    // --- Variables ---
+    let currentAudio = null;
+    let currentButton = null;
+    let currentSort = 'trending';
+    let searchDebounceTimer = null;
+    const DEBOUNCE_MS = 400;
 
-    <script>
-        let currentAudio = null;
-        let currentButton = null;
+    const languageMap = {
+        en: "English", hi: "Hindi", it: "Italian", de: "German", es: "Spanish",
+        fr: "French", pl: "Polish", ru: "Russian", ar: "Arabic", pt: "Portuguese",
+        tr: "Turkish", nl: "Dutch", sv: "Swedish", zh: "Chinese", ja: "Japanese",
+        ko: "Korean", vi: "Vietnamese"
+    };
 
-        $(document).on('click', '.play-btn', function() {
-            const audioUrl = $(this).data('audio');
-            if (!audioUrl) {
-                alert('No sample audio available for this voice.');
-                return;
-            }
+    // --- Render a single voice card ---
+    function renderVoiceCard(voice) {
+        const fullLanguage = languageMap[voice.language] || voice.language || 'Unknown';
+        const accentText = Array.isArray(voice.accent) ? voice.accent.join(', ') : (voice.accent || 'No accent');
+        const audioUrl = voice.sample_audio || voice.audio_url || voice.preview_url || '';
+        const imgUrl = voice.cover_url || voice.avatar_url || voice.image_url || '{{ asset("assets/images/Ellipse 22.png") }}';
+        const metaLine = `${voice.gender || 'N/A'} • ${voice.age || 'N/A'} • ${fullLanguage} • ${accentText}`;
 
-            // If the same button is already playing, pause it
-            if (currentButton === $(this)[0] && currentAudio && !currentAudio.paused) {
-                currentAudio.pause();
-                $(this).html('<i class="fa-solid fa-play"></i>');
-                currentAudio = null;
-                currentButton = null;
-                return;
-            }
-
-            // Stop currently playing audio (if any)
-            if (currentAudio) {
-                currentAudio.pause();
-                if (currentButton) $(currentButton).html('<i class="fa-solid fa-play"></i>');
-            }
-
-            // Play new audio
-            const audio = new Audio(audioUrl);
-            audio.play();
-
-            currentAudio = audio;
-            currentButton = $(this)[0];
-            $(this).html('<i class="fa-solid fa-pause"></i>');
-
-            // When audio ends → revert icon
-            audio.addEventListener('ended', () => {
-                $(this).html('<i class="fa-solid fa-play"></i>');
-                currentAudio = null;
-                currentButton = null;
-            });
-        });
-    </script>
-
-
-
-
-
-    <script>
-        $(function() {
-
-            let currentAudio = null;
-            let currentButton = null;
-            let currentSort = 'trending';
-            let searchDebounceTimer = null;
-            const DEBOUNCE_MS = 400;
-
-            // Language map (optional - keep if you already have it)
-            const languageMap = {
-                en: "English",
-                hi: "Hindi",
-                it: "Italian",
-                de: "German",
-                es: "Spanish",
-                fr: "French",
-                pl: "Polish",
-                ru: "Russian",
-                ar: "Arabic",
-                pt: "Portuguese",
-                tr: "Turkish",
-                nl: "Dutch",
-                sv: "Swedish",
-                zh: "Chinese",
-                ja: "Japanese",
-                ko: "Korean",
-                vi: "Vietnamese"
-            };
-
-            // Safe template renderer for a single voice
-            function renderVoiceCard(voice) {
-                const fullLanguage = languageMap[voice.language] || voice.language || 'Unknown';
-                const accentText = Array.isArray(voice.accent) ? voice.accent.join(', ') : (voice.accent ||
-                    'No accent');
-                const useCasesText = Array.isArray(voice.use_cases) ? voice.use_cases.join(', ') : (voice
-                    .use_cases || 'No use cases');
-
-                const audioUrl = voice.sample_audio || voice.audio_url || voice.preview_url || '';
-                const imgUrl = voice.cover_url || voice.avatar_url || voice.image_url ||
-                    '{{ asset('assets/images/Ellipse 22.png') }}';
-
-                const metaLine = `${voice.gender || 'N/A'} • ${voice.age} • ${fullLanguage} • ${accentText} `;
-
-                return `
+        return `
 <div class="col-xxl-4 col-lg-4 col-md-6 col-sm-12 mb-4">
   <div class="card custom-card shadow-sm" style="border-radius:10px; border:2px solid rgba(231,234,233,1); overflow:hidden;">
     <div class="card-body d-flex align-items-center p-3">
-        <div style="width:30%;">
-            <div class="voice-avatar-wrapper position-relative" style="width:100px; height:100px;">
-
-                <div class="play-overlay d-flex justify-content-center align-items-center">
-                <button class="btn btn-light rounded-circle play-btn" data-audio="${audioUrl}" style="width:40px; height:40px;">
-                    <i class="fa-solid fa-play"></i>
-                </button>
-                </div>
-            </div>
+      <div style="width:30%;">
+        <div class="voice-avatar-wrapper position-relative" style="width:100px; height:100px;">
+          <div class="play-overlay d-flex justify-content-center align-items-center">
+            <button class="btn btn-light rounded-circle play-btn" data-audio="${audioUrl}" style="width:40px; height:40px;">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
         </div>
-        <div style="width:70%;">
-      <div class="flex-fill ms-3">
-        <h5 class="fw-semibold mb-1 lh-1" style="font-size:1rem;">${voice.voice_name || voice.name || 'Unnamed Voice'}</h5>
-        <span class="mt-1 d-flex align-items-center" style="font-size:0.85rem;">${metaLine}</span>
       </div>
-      <div class="voice-actions">
-        <button
-            type="button"
-            class="btn btn-sm text-dark p-0 me-2 add-voice-btn"
-            title="Add"
-            data-voice-id="${voice.voice_id || voice.id}"
-            data-voice-name="${voice.voice_name || voice.name}"
-        >
+      <div style="width:70%;">
+        <div class="flex-fill ms-3">
+          <h5 class="fw-semibold mb-1 lh-1" style="font-size:1rem;">${voice.voice_name || voice.name || 'Unnamed Voice'}</h5>
+          <span class="mt-1 d-flex align-items-center" style="font-size:0.85rem;">${metaLine}</span>
+        </div>
+        <div class="voice-actions">
+          <button type="button" class="btn btn-sm text-dark p-0 me-2 add-voice-btn"
+                  data-voice-id="${voice.voice_id || voice.id}"
+                  data-voice-name="${voice.voice_name || voice.name}" title="Add">
             <i class="fa-solid fa-plus-circle"></i>
-        </button>
-
-
+          </button>
+        </div>
       </div>
-    </div>
     </div>
   </div>
 </div>`;
-            } //<button type="button" class="btn btn-sm text-dark p-0" title="More Options"><i class="fa-solid fa-ellipsis-h"></i></button>
+    }
 
-            function fetchVoices(sort = 'trending') {
-                currentSort = sort || currentSort;
+    // --- Fetch voices via AJAX ---
+    function fetchVoices(sort = currentSort) {
+        const language = ($('#languageFilter').val() || '').toLowerCase();
+        const gender = ($('#genderFilter').val() || '').toLowerCase();
+        const age = ($('#ageFilter').val() || '').toLowerCase();
+        const search = ($('#searchFilter').val() || '').trim();
 
-                const language = ($('#languageFilter').val() || '').toLowerCase();
-                const gender = ($('#genderFilter').val() || '').toLowerCase();
-                const age = ($('#ageFilter').val() || '').toLowerCase();
-                const search = ($('#searchFilter').val() || '').trim();
-
-                $.ajax({
-                    url: "{{ route('voices.filter') }}",
-                    type: "GET",
-                    data: {
-                        language: language,
-                        gender: gender,
-                        age: age,
-                        sort: currentSort,
-                        search: search
-                    },
-                    success: function(res) {
-                        console.log('API Response:', res);
-                        let html = '';
-
-                        if (res && Array.isArray(res.voices) && res.voices.length > 0) {
-                            res.voices.forEach(v => {
-                                html += renderVoiceCard(v);
-                            });
-                        } else {
-                            html = `
-                      <div class="col-12">
-                        <div class="text-center p-4">
-                          <p class="text-muted">No voices found</p>
-                          <small class="text-muted">${res && res.debug ? JSON.stringify(res.debug) : ''}</small>
-                        </div>
-                      </div>`;
-                        }
-
-                        $('#voicesContainer').html(html);
-                    },
-                    error: function(err) {
-                        console.error('AJAX Error:', err);
-                        $('#voicesContainer').html(
-                            '<div class="col-12"><div class="text-center p-4"><p class="text-danger">Failed to fetch voices</p></div></div>'
-                        );
-                    }
-                });
+        $.ajax({
+            url: "{{ route('voices.filter') }}",
+            type: "GET",
+            data: { language, gender, age, sort, search },
+            success: function(res) {
+                let html = '';
+                if (res && Array.isArray(res.voices) && res.voices.length > 0) {
+                    res.voices.forEach(v => html += renderVoiceCard(v));
+                } else {
+                    html = `<div class="col-12 text-center p-4 text-muted">No voices found</div>`;
+                }
+                $('#voicesContainer').html(html);
+            },
+            error: function(err) {
+                console.error(err);
+                $('#voicesContainer').html('<div class="col-12 text-center p-4 text-danger">Failed to fetch voices</div>');
             }
+        });
+    }
 
-            // --- Dropdown toggle + outside click handling ---
-            $('.trending-btn').on('click', function(e) {
-                e.stopPropagation();
-                $('.trending-menu').toggle();
-                $('.filter-menu').hide();
-            });
+    // --- Sorting buttons ---
+    $(document).on('click', '.filter-sort', function(e) {
+        e.stopPropagation();
+        currentSort = $(this).data('sort') || 'trending';
 
-            $('.filter-btn').on('click', function(e) {
-                e.stopPropagation();
-                $('.filter-menu').toggle();
-                $('.trending-menu').hide();
-            });
+        $('.filter-sort').removeClass('active');
+        $(this).addClass('active');
 
-            // Hide menus on outside click
-            $(document).on('click', function() {
-                $('.trending-menu, .filter-menu').hide();
-            });
+        $('.trending-btn').html(`
+            <i class="fa-solid fa-chart-line me-2" style="color:#003E78;"></i>
+            ${$(this).text()}
+            <i class="fa-solid fa-chevron-down ms-2" style="color:#003E78; font-size:0.8rem;"></i>
+        `);
 
-            // Prevent clicks inside menu from closing it
-            $('.trending-menu, .filter-menu').on('click', function(e) {
-                e.stopPropagation();
-            });
+        $('.trending-menu').hide();
+        fetchVoices(currentSort);
+    });
 
-            // --- Sorting buttons (Trending / Latest / Most Users) ---
-           // Sorting buttons (Trending / Latest / Most Users)
-$(document).on('click', '.filter-sort', function(e) {
-    e.stopPropagation();
+    // --- Apply Filters button ---
+    $('#applyFilters').on('click', function(e) {
+        e.preventDefault();
+        fetchVoices(currentSort);
+        $('.filter-menu').hide();
+    });
 
-    const sortType = $(this).data('sort') || 'trending';
-    console.log("Sort clicked:", sortType); // debug
+    // --- Search input ---
+    $('#searchFilter').on('input', function() {
+        clearTimeout(searchDebounceTimer);
+        searchDebounceTimer = setTimeout(() => fetchVoices(currentSort), DEBOUNCE_MS);
+    });
 
-    // Update global sort variable
-    currentSort = sortType;
+    $('#searchFilter').on('keypress', function(e) {
+        if (e.which === 13) {
+            e.preventDefault();
+            clearTimeout(searchDebounceTimer);
+            fetchVoices(currentSort);
+        }
+    });
 
-    // Update UI active states
-    $('.filter-sort').removeClass('active');
-    $(this).addClass('active');
+    // --- Audio play/pause ---
+    $(document).on('click', '.play-btn', function(e) {
+        e.stopPropagation();
+        const audioUrl = $(this).data('audio');
+        if (!audioUrl) return;
 
-    // Update the main trending button text
-    $('.trending-btn').html($(this).text() + ' <i class="fa-solid fa-chart-line me-2" style="color:#003E78;"></i>');
+        const btn = $(this);
+        if (currentButton === this && currentAudio && !currentAudio.paused) {
+            currentAudio.pause();
+            btn.html('<i class="fa-solid fa-play"></i>');
+            currentAudio = null; currentButton = null;
+            return;
+        }
 
-    // Hide dropdown
-    $('.trending-menu').hide();
+        if (currentAudio) {
+            currentAudio.pause();
+            if (currentButton) $(currentButton).html('<i class="fa-solid fa-play"></i>');
+        }
 
-    // Fetch voices with new sort
+        const audio = new Audio(audioUrl);
+        audio.play();
+        currentAudio = audio; currentButton = this;
+        btn.html('<i class="fa-solid fa-pause"></i>');
+
+        audio.addEventListener('ended', () => {
+            btn.html('<i class="fa-solid fa-play"></i>');
+            currentAudio = null; currentButton = null;
+        });
+    });
+
+    // --- Add voice button ---
+    $(document).on('click', '.add-voice-btn', function(e) {
+        e.stopPropagation();
+        const voiceId = $(this).data('voice-id');
+        const voiceName = $(this).data('voice-name');
+        if (!voiceId || !voiceName) return alert('Voice data missing!');
+        window.location.href = "/genrate-audio?voice_id=" + voiceId + "&voice_name=" + encodeURIComponent(voiceName);
+    });
+
+    // --- Dropdown toggles ---
+    $('.trending-btn').on('click', function(e) {
+        e.stopPropagation();
+        $('.trending-menu').toggle();
+        $('.filter-menu').hide();
+    });
+
+    $('.filter-btn').on('click', function(e) {
+        e.stopPropagation();
+        $('.filter-menu').toggle();
+        $('.trending-menu').hide();
+    });
+
+    // --- Prevent closing filter menu when clicking inside it ---
+    $('.filter-menu').on('click', function(e) {
+        e.stopPropagation();
+    });
+
+    // --- Click outside closes dropdowns ---
+    $(document).on('click', function() {
+        $('.trending-menu, .filter-menu').hide();
+    });
+
+    // --- Initial load ---
     fetchVoices(currentSort);
 });
+</script>
 
-
-            // --- Apply filters button ---
-            $('#applyFilters').on('click', function(e) {
-                e.preventDefault();
-                fetchVoices(currentSort);
-                $('.filter-menu').hide();
-            });
-
-            // --- Search: debounce for typing, and enter key handler ---
-            $('#searchFilter').on('input', function() {
-                clearTimeout(searchDebounceTimer);
-                searchDebounceTimer = setTimeout(function() {
-                    fetchVoices(currentSort);
-                }, DEBOUNCE_MS);
-            });
-
-            $('#searchFilter').on('keypress', function(e) {
-                if (e.which === 13) { // Enter key
-                    e.preventDefault();
-                    clearTimeout(searchDebounceTimer);
-                    fetchVoices(currentSort);
-                }
-            });
-
-            // --- Play audio handling ---
-            $(document).on('click', '.play-btn', function(e) {
-                e.stopPropagation();
-                const audioUrl = $(this).data('audio');
-                if (!audioUrl) return;
-
-                // If same button and playing -> pause
-                if (currentButton === $(this)[0] && currentAudio && !currentAudio.paused) {
-                    currentAudio.pause();
-                    $(this).html('<i class="fa-solid fa-play"></i>');
-                    currentAudio = null;
-                    currentButton = null;
-                    return;
-                }
-
-                // Pause previous
-                if (currentAudio) {
-                    currentAudio.pause();
-                    if (currentButton) $(currentButton).innerHTML = '<i class="fa-solid fa-play"></i>';
-                }
-
-                const audio = new Audio(audioUrl);
-                audio.play();
-                currentAudio = audio;
-                currentButton = $(this)[0];
-                $(this).html('<i class="fa-solid fa-pause"></i>');
-
-                audio.addEventListener('ended', () => {
-                    $(this).html('<i class="fa-solid fa-play"></i>');
-                    currentAudio = null;
-                    currentButton = null;
-                });
-            });
-
-            // Initial load
-            fetchVoices(currentSort);
-
-        });
-    </script>
-
-    <script>
-        $(document).on("click", ".add-voice-btn", function(e) {
-            e.stopPropagation();
-
-            const voiceId = $(this).data("voice-id");
-            const voiceName = $(this).data("voice-name");
-
-            if (!voiceId || !voiceName) {
-                alert("Voice data missing!");
-                return;
-            }
-
-            // Redirect to Generate Voice page and pass selected values
-            window.location.href = "/genrate-audio?voice_id=" + voiceId + "&voice_name=" + encodeURIComponent(
-                voiceName);
-        });
-    </script>
 @endsection

@@ -12,7 +12,7 @@ class Subscription extends Controller
 {
     public function progressCheckout(Request $request){
         $request->validate([
-            'payment_method' => 'required|string|in:binance,usdt,card',
+            'payment_method' => 'required|string|in:binance,usdt,card,easypaisa,jazzcash',
             'plan_id' => 'required|integer|exists:plans,id',
         ]);
         $plan = Plan::findOrFail($request->plan_id);
@@ -46,6 +46,24 @@ class Subscription extends Controller
     if ($request->payment_method === 'card') {
         return redirect('card/pay/'.$subscription->id);
     }
+
+     if ($request->payment_method === 'jazzcash') {
+
+        $adminNumber = "923266213619"; // WhatsApp Number
+
+                $msg = urlencode("
+        New JazzCash Payment Request
+        User: " . Auth::user()->name . "
+        Email: " . Auth::user()->email . "
+        Plan: {$plan->name}
+        Amount: {$plan->price} USD
+        Subscription ID: {$subscription->id}
+
+        Please send payment screenshot here.
+                ");
+
+                return redirect()->away("https://wa.me/{$adminNumber}?text={$msg}");
+            }
 
     return back()->with('error', 'Invalid payment method selected.');
 

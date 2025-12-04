@@ -52,7 +52,7 @@
             </div>
 
             <!-- RIGHT SIDE: Payment -->
-            <div class="col-md-6">
+            <div class="col-md-6 align-content-center">
 
                 <!-- Binance Payment -->
                 <div class="d-flex justify-content-center flex-column align-items-center mb-3">
@@ -86,10 +86,26 @@
                             Pay With USDT
                         </a> --}}
                     </div>
+
+                    <div class="col-8 my-3">
+                        <form action="{{ url('progressCheckout') }}" method="POST">
+                            @csrf
+
+                            <input type="hidden" name="plan_id" value="{{ $fatchPlan->id }}">
+                            <input type="hidden" name="payment_method" value="jazzcash">  <!-- FIXED -->
+
+                            <button class="btn btn-primary w-100 pay-button">
+                                <img src="{{ asset('binance-svgrepo-com.svg') }}" width="20">
+                                JazzCash / Easypaisa Pay
+                            </button>
+                        </form>
+                    </div>
+
+
                 </div>
 
                 <!-- Card Payment Form -->
-                <h2><strong>Pay With Card</strong></h2>
+                {{-- <h2><strong>Pay With Card</strong></h2>
 
                 <form class="row g-3" action="{{ url('progressCheckout') }}" method="POST">
                     @csrf
@@ -136,7 +152,7 @@
                     <div class="col-12">
                         <button type="submit" class="btn btn-primary w-100 pay-button">Subscribe</button>
                     </div>
-                </form>
+                </form> --}}
             </div>
 
         </div>

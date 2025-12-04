@@ -157,3 +157,7 @@ Route::post('/deleteProofPlan/{id}', [PaymentProof::class, 'deleteProofPlan'])->
 
 // User Dashboard Plan
 Route::get('/UserDashboardPlans', [PlanController::class, 'UserDashboardPlans']);
+
+
+// GenAi Credit Details
+// Route::get('/GenAiCreditDetails', [AdminController::class, 'GenAiCreditDetails']);
