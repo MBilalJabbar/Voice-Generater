@@ -350,6 +350,14 @@
     $('#userLogin').on('submit', function(e){
         e.preventDefault();
 
+        let loginBtn = $('.login-btn');
+        let originalText = loginBtn.text();
+
+        // Disable button + show loader
+        loginBtn.prop('disabled', true).html(`
+            <span class="spinner-border spinner-border-sm"></span> Logging in...
+        `);
+
         $.ajax({
             url: '/LoginUser',
             method: 'POST',
@@ -374,11 +382,15 @@
                     text: xhr.responseJSON?.message || 'Invalid login.',
                     icon: 'error'
                 });
+
+                // Reset button
+                loginBtn.prop('disabled', false).text(originalText);
             }
         });
     });
 });
 </script>
+
 
 
 {{--

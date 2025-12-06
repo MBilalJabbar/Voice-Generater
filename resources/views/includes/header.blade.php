@@ -57,8 +57,14 @@
                         <div class="d-flex align-items-center">
 
                             <span class="me-1">
-                                <img src="{{ Auth::user()->profile_picture ? asset(Auth::user()->profile_picture) : asset('assets/images/profile.png') }}" alt="img" width="32"
-                                    height="32" class="rounded-circle">
+       @if(Auth::check())
+    <img src="{{ Auth::user()->profile_picture ? asset(Auth::user()->profile_picture) : asset('assets/images/profile.png') }}"
+         alt="Profile" width="32" height="32" class="rounded-circle">
+@else
+    <img src="{{ asset('assets/images/profile.png') }}" alt="Profile" width="32" height="32" class="rounded-circle">
+@endif
+
+
                             </span>
 
                             <span class="d-sm-block d-none ms-1">

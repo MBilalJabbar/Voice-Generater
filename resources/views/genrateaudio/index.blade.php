@@ -794,6 +794,12 @@ textArea.addEventListener("input", () => {
                         activeInput.value = name;
                         activeInput.classList.add('active');
                         if (voiceIdInput) voiceIdInput.value = voice.voice_id || voice.id || '';
+
+                         const sidebar = document.getElementById('voice-sidebar');
+                        const overlay = document.getElementById('voice-sidebar-overlay');
+                        if (sidebar) sidebar.classList.remove('open');
+                        if (overlay) overlay.style.display = 'none';
+
                     });
 
                     // Play preview
