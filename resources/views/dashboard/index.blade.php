@@ -161,7 +161,7 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
         @elseif($remainingDays === 0)
             (Expires today)
         @else
-            <a href="{{ url('plans') }}" class="btn btn-sm btn-primary">Buy Now</a>
+            <a href="{{ url('/UserDashboardPlans') }}" class="btn btn-sm btn-primary">Plan Buy Now</a>
         @endif
 
     </h5>

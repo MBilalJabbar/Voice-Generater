@@ -141,7 +141,7 @@ Route::post('/reset-user-password', [UserController::class, 'submitConfirmPasswo
 
 
 // Payment Routes
-Route::get('FreePlanActive/{id}', [Subscription::class, 'FreePlanActive']);
+Route::get('FreePlanActive/{id}', [PaymentProof::class, 'FreePlanActive']);
 Route::get('/viewCheckout/{id}', [PaymentController::class, 'viewCheckout']);
 Route::post('/progressCheckout', [Subscription::class, 'progressCheckout']);
 Route::get('/binancePay/{id}', [PaymentController::class, 'binancePay']);

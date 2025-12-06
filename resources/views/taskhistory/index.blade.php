@@ -64,16 +64,27 @@
         }
     </style>
     <div class="container-fluid">
-        <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+        {{-- <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
             <nav>
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item">Home</li>
-                    <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+                    <li class="breadcrumb-item active" aria-current="page">Task History</li>
                 </ol>
             </nav>
-        </div>
+        </div> --}}
+
+        {{-- <div class="d-md-flex d-block align-items-center justify-content-between my-4 ">
+            <nav>
+                <ul class=" mb-0">
+                    <li class="">Home</li>
+                    <li class=" active" aria-current="page">Task History</li>
+                </ul>
+            </nav>
+        </div> --}}
+
+
         <div class="row">
-            <div class="row" style="padding: 15px">
+            {{-- <div class="row" style="padding: 15px">
 
                 <!-- Recent Tasks -->
                 <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
@@ -142,13 +153,13 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
             <div class="col-xl-12">
                 <div class="card custom-card">
                     <!-- Table -->
                     <div class="card-header justify-content-between">
-                        <div class="card-title">Recent Generation</div>
+                        <div class="card-title">Your Deleted Task History</div>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
