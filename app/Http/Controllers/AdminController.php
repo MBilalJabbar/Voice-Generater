@@ -20,7 +20,17 @@ class AdminController extends Controller
                         ->get();
         $userCount = $users->count();
 
-        return view('admin.dashboard.index', compact('users', 'userCount'));
+        $FreePlansCount = Subscription::where('payment_method', 'free')
+                                    ->where('status', 'approved')->count();
+
+        $PaidPlansCount = Subscription::where('payment_method', '!=', 'free')
+                                    ->where('status', 'approved')->count();
+
+        $TotalRevenue = Subscription::where('payment_method', '!=', 'free')
+                                    ->where('status', 'approved')
+                                    ->sum('amount');
+
+        return view('admin.dashboard.index', compact('users', 'userCount','FreePlansCount', 'PaidPlansCount', 'TotalRevenue'));
     }
 
 //     public function GenAiCreditDetails()

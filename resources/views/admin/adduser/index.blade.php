@@ -37,7 +37,7 @@
                     <th style="background: #003E78; color:white">Email</th>
                     <th style="background: #003E78; color:white">Phone Number</th>
                     <th style="background: #003E78; color:white">Plan</th>
-                    <th style="background: #003E78; color:white">Plan Day Remaining</th>
+                    <th style="background: #003E78; color:white">Plan Expire Date</th>
                     <th style="background: #003E78; color:white">Action</th>
                 </tr>
             </thead>
@@ -51,8 +51,8 @@
                     <td>{{ $user->user_name }}</td>
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->phone }}</td>
-                    <td>Premium</td>
-                    <td>25 days</td>
+                    <td>{{ $user->plan_name ?? 'No Plan Buy' }}</td>
+                    <td>{{ $user->plan_expiry_date ?? 'No Plan Buy' }}</td>
                     <td>
                         <div class="d-flex gap-1">
                             <button class="btn btn-sm viewUser" data-bs-toggle="modal" data-bs-target="#taskModal"
