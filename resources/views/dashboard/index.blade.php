@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Dashboard
+    Speechly Studio - User Dashboard
 @endsection
 
 @section('body')

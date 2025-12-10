@@ -38,7 +38,7 @@
                         </h5>
                     </div>
 
-                    <a href="javascript:void(0);" class="header-link me-2">
+                    <a href="{{ url('/support/get') }}" class="header-link me-2">
                         <i class="fa-solid fa-bell fs-4"></i>
                     </a>
 

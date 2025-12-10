@@ -790,29 +790,25 @@
 
                             // Select voice on click
                             item.addEventListener('click', () => {
-                                const activeInput = document.querySelector(
-                                        '.voice-input.active') || document
-                                    .querySelector('.voice-input');
-                                if (!activeInput) return;
+    const activeInput = document.querySelector('.voice-input.active') || document.querySelector('.voice-input');
+    if (!activeInput) return;
 
-                                const formGroup = activeInput.closest(
-                                '.form-group');
-                                const voiceIdInput = formGroup.querySelector(
-                                    '.voice-id');
+    const formGroup = activeInput.closest('.form-group');
+    const voiceIdInput = formGroup.querySelector('.voice-id');
+    const voiceNameInput = formGroup.querySelector('.voice-name'); // <-- ADD THIS
 
-                                activeInput.value = name;
-                                activeInput.classList.add('active');
-                                if (voiceIdInput) voiceIdInput.value = voice
-                                    .voice_id || voice.id || '';
+    activeInput.value = name;
+    activeInput.classList.add('active');
 
-                                const sidebar = document.getElementById(
-                                    'voice-sidebar');
-                                const overlay = document.getElementById(
-                                    'voice-sidebar-overlay');
-                                if (sidebar) sidebar.classList.remove('open');
-                                if (overlay) overlay.style.display = 'none';
+    if (voiceIdInput) voiceIdInput.value = voice.voice_id || voice.id || '';
+    if (voiceNameInput) voiceNameInput.value = name; // <-- ADD THIS
 
-                            });
+    const sidebar = document.getElementById('voice-sidebar');
+    const overlay = document.getElementById('voice-sidebar-overlay');
+    if (sidebar) sidebar.classList.remove('open');
+    if (overlay) overlay.style.display = 'none';
+});
+
 
                             // Play preview
                             const playIcon = item.querySelector('.voice-play-icon');

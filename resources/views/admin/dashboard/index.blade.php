@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    Dashboard
+    Speechly Studio - Admin Dashboard
 @endsection
 
 @section('body')
@@ -26,7 +26,7 @@
                         padding:42px;">
                     <div class="card-body d-flex flex-column justify-content-center">
                         <h5 class="text-white mb-2" style="font-weight: 200">Free Plan</h5>
-                        <h3 class="text-white r">3,671</h3>
+                        <h3 class="text-white r">{{ $FreePlansCount }}</h3>
                     </div>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                         padding:42px;">
                     <div class="card-body d-flex flex-column justify-content-center">
                         <h5 class="text-white mb-2" style="font-weight: 200">Paid Plan</h5>
-                        <h3 class="text-white r">156</h3>
+                        <h3 class="text-white r">{{ $PaidPlansCount }}</h3>
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                         padding:42px;">
                     <div class="card-body d-flex flex-column justify-content-center">
                         <h5 class="text-white mb-2" style="font-weight: 200">Total Revenue</h5>
-                        <h3 class="text-white r">156</h3>
+                        <h3 class="text-white r"> $ {{ number_format($TotalRevenue ?? 0, 2) }}</h3>
                     </div>
                 </div>
             </div>

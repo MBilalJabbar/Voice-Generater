@@ -12,7 +12,7 @@
                 <div class="card shadow-sm" style="border-radius: 15px; border: 2px solid rgba(231, 234, 233, 1);">
                     <div class="card-body p-4 p-md-5">
                         <h4 style="font-weight: 800">Contact Us</h4>
-                        <form action="/contact" method="POST">
+                        <form action="{{ route('contactSupport') }}" id="ContactSupport" method="POST">
                             @csrf
 
                             <!-- Row 1: Full Name and Email -->
@@ -30,7 +30,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="fullName" class="text-muted small">Last Name</label>
-                                        <input type="text" class="form-control" id="fullName" name="full_name"
+                                        <input type="text" class="form-control" id="lastName" name="last_name"
                                             placeholder="Enter Last Name" required
                                             style="border-radius: 8px; height: 45px; border: 1px solid #ced4da;">
                                     </div>
@@ -87,4 +87,63 @@
             </div>
         </div>
     </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#ContactSupport').submit(function(e) {
+                e.preventDefault();
+
+                var form = this;
+
+                $.ajax({
+                    url: $(form).attr('action'),
+                    method: $(form).attr('method'),
+                    data: new FormData(form),
+                    processData: false,
+                    contentType: false,
+                    dataType: 'json',
+
+                    beforeSend: function() {
+                        $(form).find('span.error-text').text('');
+                    },
+
+                    success: function(data) {
+
+                        // Validation errors
+                        if (data.status == 0) {
+                            $.each(data.error, function(prefix, val) {
+                                $(form).find('span.' + prefix + '_error').text(val[0]);
+                            });
+                        } else {
+
+                            // Reset the form
+                            $(form)[0].reset();
+
+                            // SweetAlert Success Popup
+                            Swal.fire({
+                                title: 'Success!',
+                                text: data.msg,
+                                icon: 'success',
+                                confirmButtonText: 'OK'
+                            });
+                        }
+                    },
+
+                    error: function(xhr) {
+                        // Unexpected errors
+                        Swal.fire({
+                            title: 'Error!',
+                            text: 'Something went wrong. Try again later.',
+                            icon: 'error',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AddUserController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\CloneVoiceController;
+use App\Http\Controllers\ContactSupprotController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\Subscription;
 use App\Models\Subscription as ModelsSubscription;
@@ -161,3 +162,7 @@ Route::get('/UserDashboardPlans', [PlanController::class, 'UserDashboardPlans'])
 
 // GenAi Credit Details
 // Route::get('/GenAiCreditDetails', [AdminController::class, 'GenAiCreditDetails']);
+Route::post('/contactSupport', [ContactSupprotController::class, 'contactSupport'])->name('contactSupport');
+
+Route::get('/support/get', [ContactSupprotController::class, 'showSupportPage']);
+
