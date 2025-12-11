@@ -25,6 +25,9 @@
             border-radius: 12px;
             padding: 12px;
         }
+        .copy-item{
+            cursor: pointer !important;
+        }
     </style>
 </head>
 
@@ -40,11 +43,11 @@
                 <div class="p-4 border rounded"> <!-- PROPER CARD SPACING -->
                     <h4>QR Code Payment</h4>
                     <p class="text-danger">
-                        Use Crypto wallet to pay. Blockchain Network: BSC - Binance Smart Chain (BEP20)
+                        Use Crypto wallet to pay. Blockchain Network: TRC - Binance Smart Chain (TRC20)
                     </p>
 
                     <div class="text-center">
-                        <img src="{{ asset('download.png') }}" style="border: 2px solid #fafafa; margin-block: 32px; border-radius: 12px;" width="226" alt="binance-note">
+                        <img src="{{ asset('WhatsApp Image 2025-12-10 at 23.23.23_c3f573c6.jpg') }}" style="border: 2px solid #fafafa; margin-block: 32px; border-radius: 12px;" width="242" alt="binance-note">
                     </div>
                     <p class="text-center">Scan QR code or pay according to the information next to it</p>
                 </div>
@@ -57,23 +60,24 @@
                     <p>Transfer according to the information below</p>
 
                     <div class="row mb-3">
-                        <div class="col-6">
+                        <div class="col-4">
                             <p>Cryptocurrency type:</p>
                             <p>Network:</p>
                             <p>Wallet address:</p>
                         </div>
 
-                        <div class="col-6 text-end">
+                        <div class="col-8 text-end">
                             <p class="copy-item cursor-pointer" onclick="copyText('USDT')">
                                 USDT <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
 
-                            <p class="copy-item cursor-pointer" onclick="copyText('12801280')">
-                                12801280 <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
+                            <p class="copy-item cursor-pointer" onclick="copyText('TRC20')">
+                                TRC20 <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
 
-                            <p class="copy-item cursor-pointer" onclick="copyText('{{ $users->user_name }}')">
-                                {{ $users->user_name }} <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
+                            <p class="copy-item cursor-pointer"
+                            onclick="copyText('TMcAamuSPZxJ2vu5j9WKCmR6hnNTLn6bt3')">
+                                TMcAamuSPZxJ2vu5j9WKCmR6hnNTLn6bt3 <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
                         </div>
                     </div>
@@ -151,9 +155,9 @@
         // Copy ALL fields
         function copyAll() {
             const text = `
-            Currency: USDT
-            Binance User ID: 12801280
-            Note: {{ $users->user_name }}
+            USDT: USDT
+            Network: TRC20
+            Wallet address: TMcAamuSPZxJ2vu5j9WKCmR6hnNTLn6bt3
                     `.trim();
 
             navigator.clipboard.writeText(text).then(() => {

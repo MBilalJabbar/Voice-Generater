@@ -25,6 +25,9 @@
             border-radius: 12px;
             padding: 12px;
         }
+        .copy-item{
+            cursor: pointer !important;
+        }
     </style>
 </head>
 
@@ -54,8 +57,8 @@
                                 USDT <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
 
-                            <p class="copy-item cursor-pointer" onclick="copyText('12801280')">
-                                12801280 <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
+                            <p class="copy-item cursor-pointer" onclick="copyText('509696357')">
+                                509696357 <img src="{{ asset('copy-svgrepo-com.svg') }}" width="18">
                             </p>
 
                             <p class="copy-item cursor-pointer" onclick="copyText('{{ $users->user_name }}')">
@@ -80,7 +83,9 @@
                 <div class="p-4 border rounded"> <!-- PROPER CARD SPACING -->
                     <h4>IMPORTANT NOTE</h4>
                     <p class="text-danger">
-                        Make sure to fill in complete note information for automatic transaction confirmation.
+                        Please provide complete note information when submitting your payment. Otherwise, the website owner cannot claim or verify your payment.
+
+                        {{-- Make sure to fill in complete note information for automatic transaction confirmation. --}}
                     </p>
 
                     <div class="text-center">
@@ -152,7 +157,7 @@
         function copyAll() {
             const text = `
             Currency: USDT
-            Binance User ID: 12801280
+            Binance User ID: 509696357
             Note: {{ $users->user_name  }}
                     `.trim();
 
