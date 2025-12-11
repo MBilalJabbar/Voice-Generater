@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speechly Studio - Register</title>
+    <title>Speechly Studio - Index</title>
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
@@ -132,8 +132,10 @@
     <nav class="navbar navbar-expand-lg navbar-light p-0">
         <div class="container">
             <a class="navbar-brand mt-3 mr-4" href="#home-section">
+                <a href="{{ url('/') }}">
                 <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}"
                     alt="Logo" width="115">
+                    </a>
                 {{-- <img src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="Logo" width="80"> --}}
                 <br>
             </a>

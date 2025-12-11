@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Speechly Studio Sign In</title>
+    <title>Speechly Studio - Login</title>
     <!-- Load Bootstrap 4 CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Load Font Awesome for the Google icon -->
@@ -272,7 +272,9 @@
             <!-- Left Branding Column (col-lg-6) -->
             <div class="col-12 col-lg-6">
                 <div class="left-branding">
-                    <img class="mt-5" src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="" width="50%">
+                    <a href="{{ url('/') }}">
+                        <img class="mt-5" src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="" width="50%">
+                    </a>
                 </div>
             </div>
 

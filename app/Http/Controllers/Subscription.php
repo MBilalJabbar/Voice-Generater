@@ -49,7 +49,7 @@ class Subscription extends Controller
 
      if ($request->payment_method === 'jazzcash') {
 
-        $adminNumber = "923266213619"; // WhatsApp Number
+        $adminNumber = "923037126663"; // WhatsApp Number
 
                 $msg = urlencode("
         New JazzCash Payment Request
