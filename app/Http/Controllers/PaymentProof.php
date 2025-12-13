@@ -45,12 +45,16 @@ class PaymentProof extends Controller
             $user = $subscription->user;
             $plan = $subscription->plan;
 
-            $user->credits = $plan->characters;
+            $user->credits =  ($user->credits ?? 0) + $plan->characters;
             $user->current_plan_id = $plan->id;
             $user->plan_name = $plan->name;
 
             $durationDays = (int) $plan->duration; // convert to integer
-            $user->plan_expiry_date = now()->addDays($durationDays)->endOfDay();
+            $user->plan_expiry_date = \Carbon\Carbon::parse(
+                $user->plan_expiry_date ?? now()
+            )->addDays($durationDays)->endOfDay();
+
+            // $user->plan_expiry_date = now()->addDays($durationDays)->endOfDay();
 
             $user->save();
         }
