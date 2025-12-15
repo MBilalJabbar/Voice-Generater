@@ -46,15 +46,24 @@ Route::get('/admin/voices/index', [AdminController::class, 'addvoices'])->name('
 // });
 
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+//     'verified',
+// ])->group(function () {
+//     Route::get('/dashboard', function () {
+//         return view('dashboard');
+//     })->name('dashboard');
+// });
+
+// Route::middleware([
+//     'auth:sanctum',
+//     config('jetstream.auth_session'),
+// ])->group(function () {
+//     Route::get('/index', [DashbaordController::class, 'index'])
+//         ->name('dashboard.index');
+// });
+
 
 /*
 < -- =========================================Backend User Management====================================== -->

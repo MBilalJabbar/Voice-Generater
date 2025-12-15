@@ -4,7 +4,6 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Auth;
 
 class CheckSession
@@ -16,11 +15,20 @@ class CheckSession
      */
      public function handle(Request $request, Closure $next)
     {
-        if (Auth::check() && !session()->has('_token')) {
+        // Allow login/register pages and AJAX requests
+        if (!Auth::check() && !$request->is('login', 'register', '/') && !$request->ajax()) {
+            // Session expired → logout user
             Auth::logout();
-            return redirect('/')
-                ->with('error', 'Your session expired. Please login again.');
+
+            // Session cleanup
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            // Redirect to login page with message
+            return redirect('/login')->with('message', 'Your session has expired. Please login again.');
         }
+
         return $next($request);
     }
+
 }
