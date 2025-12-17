@@ -52,7 +52,21 @@
                     <td>{{ $user->email }}</td>
                     <td>{{ $user->phone }}</td>
                     <td>{{ $user->plan_name ?? 'No Plan Buy' }}</td>
-                    <td>{{ $user->plan_expiry_date ?? 'No Plan Buy' }}</td>
+                    <td>
+    @php
+        $latestCredit = $user->creditHistories->sortByDesc('created_at')->first();
+        $expiry = $latestCredit ? \Carbon\Carbon::parse($latestCredit->expiry_date) : null;
+
+        $daysRemaining = 0;
+        if ($expiry) {
+            $daysRemaining = now()->startOfDay()->diffInDays($expiry->startOfDay(), false);
+            if ($daysRemaining < 0) $daysRemaining = 0;
+        }
+    @endphp
+
+    {{ $daysRemaining }} days
+</td>
+
                     <td>
                         <div class="d-flex gap-1">
                             <button class="btn btn-sm viewUser" data-bs-toggle="modal" data-bs-target="#taskModal"

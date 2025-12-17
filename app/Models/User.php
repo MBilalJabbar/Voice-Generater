@@ -29,6 +29,9 @@ class User extends Authenticatable
     public function voices(){
         return $this->hasMany(VoiceGenerate::class, 'user_id', 'user_id');
     }
+    public function creditHistories(){
+        return $this->hasMany(CreditHistory::class, 'user_id', 'user_id');
+    }
     protected $primaryKey = 'user_id';
     protected $fillable = [
         'full_name',

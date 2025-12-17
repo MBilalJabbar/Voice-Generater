@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CreditHistory;
 use App\Models\Subscription;
 use App\Models\VoiceGenerate;
 use Illuminate\Http\Request;
@@ -126,36 +127,37 @@ public function generateAudioVoices(Request $request){
         return response()->json(['success' => false, 'message' => 'No text provided']);
     }
     $user = Auth::user();
-    $currentSubscription = Subscription::where('user_id', $user->user_id)
-        ->where('status', 'approved')
-        ->whereHas('plan', function ($query) {
-            $query->where('expires', '>=', now());
-        })
-        ->with('plan')
-        ->first();
+    $requiredCredits = mb_strlen($text);
 
-    if (!$currentSubscription) {
-        return response()->json([
-            'success' => false,
-            'message' => 'Your subscription is not approved or expired.'
-        ]);
-    }
+    $availableCredits = CreditHistory::where('user_id', $user->user_id)
+        ->where('status', 'available')
+        ->where('remaining_credits', '>', 0)
+        ->sum('remaining_credits');
 
-    // Get plan characters
-    $planCharacters = $currentSubscription->plan->characters ?? 0;
-
-    // Get user credits
-    $userCredits = $user->credits ?? 0;
-
-     //  Check Character Credits
-    $wordCount = mb_strlen($text);
-    $requiredCredits = $wordCount;
-
-    if ($user->credits < $requiredCredits) {
+    if ($availableCredits < $requiredCredits) {
         return response()->json([
             'success' => false,
             'message' => 'Insufficient credits. Please upgrade your plan.'
         ]);
+    }
+
+    // ✅ AFTER audio is successfully generated
+    $creditRows = CreditHistory::where('user_id', $user->user_id)
+        ->where('status', 'available')
+        ->where('remaining_credits', '>', 0)
+        ->orderBy('expiry_date', 'asc')
+        ->get();
+
+    $remaining = $requiredCredits;
+
+    foreach ($creditRows as $credit) {
+        if ($remaining <= 0) break;
+
+        $use = min($credit->remaining_credits, $remaining);
+        $credit->remaining_credits -= $use;
+        $credit->save();
+
+        $remaining -= $use;
     }
 
     try {

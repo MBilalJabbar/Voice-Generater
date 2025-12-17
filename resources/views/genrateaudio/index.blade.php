@@ -263,10 +263,27 @@
             <div class="col-12 col-md-4">
                 <div class="card shadow-sm p-4" style="border-radius:12px; border:2px solid rgba(231, 234, 233, 1);">
                     <div class="mb-4">
-                        <h5 class="d-flex align-items-center mb-3">
-                            <i class="fa-solid fa-sliders" style="color: #003E78;"></i>
-                            <span style="padding-left: 8px;">Voice Model Selection</span>
-                        </h5>
+                        <div class="d-flex justify-content-between ">
+                            <h5 class="d-flex align-items-center mb-3">
+                                <i class="fa-solid fa-sliders" style="color: #003E78;"></i>
+                                <span style="padding-left: 8px;">Voice Selection</span>
+                            </h5>
+
+
+                            {{-- <button class="btn btn-sm available-credits" data-bs-toggle="modal" data-bs-target="#taskModal"
+                                                style="background: transparent; border: none;">
+                                                Credits Details
+                                            </button> --}}
+                            <button id="openCredits" class="available-credits">
+                                Credit Details
+                            </button>
+
+
+                            {{-- <a href="{{ url('Credit-Details') }}" class="available-credits">
+                                Credits Details
+
+                            </a> --}}
+                        </div>
                         <!-- Normal Voice -->
                         <div class="form-group mb-3">
                             <label>Voice*</label>
@@ -368,6 +385,105 @@
             </div>
         </div>
     </div>
+
+
+
+     {{-- <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 70vw; height: 50vh;">
+            <div class="modal-content border-0 shadow-sm rounded-3" style="height: 70%;">
+                <!-- Header -->
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark px-3" id="taskModalLabel">Credits Details</h5>
+                    <button type="button" class="btn-close btn-close-white btn-lg" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
+                </div>
+                <!-- Body -->
+                <div class="modal-body">
+                    <div class="card border-0 p-4 rounded-3">
+                        <!-- Task Information -->
+                        <h6 class="fw-bold text-primary mb-3" style="color: #003E78 !important;">Credits Information</h6>
+                        <div class="row mb-4">
+                            <div class="col-md-2 small">
+                                <p><strong style="color:#47739E;">No:</strong><br> <span id="modalStatus"></span></p>
+                            </div>
+                            <div class="col-md-2 small">
+                                <p><strong style="color:#47739E;">Amount:</strong><br> <span id="modalStatus"></span></p>
+                            </div>
+                            <div class="col-md-2 small">
+                                <p><strong style="color:#47739E;">Status:</strong><br> <span id="modalStatus"></span></p>
+                            </div>
+                            <div class="col-md-3 small">
+                               <p>
+                                <strong style="color:#47739E;">Expired Date:</strong><br>
+                                <span id="modalCreated"></span>
+                                </p>
+                            </div>
+                            <div class="col-md-3 small">
+                               <p>
+                                <strong style="color:#47739E;">Purchase Date:</strong><br>
+                                <span id="modalCreated"></span>
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+
+  <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="taskModalLabel">Credits Details</h5>
+                {{-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> --}}
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No.</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Expiry Date</th>
+                                <th>Purchase Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="creditsTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    Loading credits...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button> --}}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
 
     <script>
         $(document).ready(function() {
@@ -1210,4 +1326,91 @@
             return item;
         }
     </script>
+
+
+
+
+
+
+<script>
+document.addEventListener('click', function (e) {
+
+    if (!e.target.matches('#openCredits')) return;
+
+    fetch("{{ route('credit.details') }}")
+        .then(res => res.json())
+        .then(res => {
+
+            let tbody = document.getElementById('creditsTableBody');
+            tbody.innerHTML = '';
+
+            if (!res.data.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">No credits found</td>
+                    </tr>`;
+            }
+
+            res.data.forEach((credit, index) => {
+            //     const expiryDate = new Date(credit.expiry_date).toLocaleDateString('en-GB', {
+            //     day: '2-digit',
+            //     month: 'short',
+            //     year: 'numeric'
+            // });
+
+            // const purchaseDate = new Date(credit.purchase_date).toLocaleDateString('en-GB', {
+            //     day: '2-digit',
+            //     month: 'short',
+            //     year: 'numeric'
+            // });
+
+             // Expiry date
+            const expiryDateObj = new Date(credit.expiry_date);
+            const expiryDate =
+                String(expiryDateObj.getDate()).padStart(2, '0') + '/' +
+                String(expiryDateObj.getMonth() + 1).padStart(2, '0') + '/' +
+                expiryDateObj.getFullYear() + ' ' +
+                String(expiryDateObj.getHours()).padStart(2, '0') + ':' +
+                String(expiryDateObj.getMinutes()).padStart(2, '0') + ':' +
+                String(expiryDateObj.getSeconds()).padStart(2, '0');
+
+            // Purchase date
+            const purchaseDateObj = new Date(credit.purchase_date);
+            const purchaseDate =
+                String(purchaseDateObj.getDate()).padStart(2, '0') + '/' +
+                String(purchaseDateObj.getMonth() + 1).padStart(2, '0') + '/' +
+                purchaseDateObj.getFullYear() + ' ' +
+                String(purchaseDateObj.getHours()).padStart(2, '0') + ':' +
+                String(purchaseDateObj.getMinutes()).padStart(2, '0') + ':' +
+                String(purchaseDateObj.getSeconds()).padStart(2, '0');
+
+
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${credit.total_credits}</td>
+                        <td>
+                            <span class="badge ${credit.status === 'available' ? 'bg-success' : 'bg-secondary'}">
+                                ${credit.status}
+                            </span>
+                        </td>
+                        <td>${expiryDate}</td>
+                        <td>${purchaseDate}</td>
+                    </tr>
+                `;
+            });
+
+            new bootstrap.Modal(
+                document.getElementById('taskModal')
+            ).show();
+        });
+
+});
+</script>
+
+
+
+
+
 @endsection

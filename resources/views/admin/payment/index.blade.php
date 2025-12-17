@@ -42,24 +42,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($paymentProofs as $paymentProof)
-                @php
-                // Use the user's subscription expiry date
-                $expiry = $paymentProof->user->plan_expiry_date
-                        ? \Carbon\Carbon::parse($paymentProof->user->plan_expiry_date)
-                        : null;
 
-                if ($expiry) {
-                    $daysRemaining = now()->startOfDay()->diffInDays($expiry->startOfDay(), false);
-                } else {
-                    $daysRemaining = 0;
-                }
-
-                                        if ($daysRemaining <= 0 && $paymentProof->status != 'expired') {
-                                            // Update status to expired
-                                            $paymentProof->status = 'expired';
-                                            $paymentProof->save();
-                                        }
-                                    @endphp
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td><img src="{{ asset('assets/images/profile.png') }}" width="40"
@@ -68,13 +51,47 @@
                                         <td>{{ $paymentProof->user->email }}</td>
                                         <td>{{ $paymentProof->user->phone }}</td>
                                         <td>{{ $paymentProof->plan->name }}</td>
+
                                         <td>
-                                            @if ($daysRemaining > 0)
-                                                {{ $daysRemaining }} days
-                                            @else
-                                                <span class="text-danger">Expired</span>
-                                            @endif
-                                        </td>
+@php
+    $latestCredit = $paymentProof->latestCredit;
+    $statusText = '';
+    $daysRemaining = 0;
+
+    if ($paymentProof->status === 'pending') {
+        $statusText = 'Subscription Not Approved';
+    }
+    elseif ($paymentProof->status === 'approved') {
+        if ($latestCredit && $latestCredit->expiry_date) {
+            $expiry = \Carbon\Carbon::parse($latestCredit->expiry_date);
+            $daysRemaining = now()->startOfDay()->diffInDays($expiry->startOfDay(), false);
+
+            if ($daysRemaining <= 0) {
+                $statusText = 'Expired';
+                $paymentProof->status = 'expired';
+                $paymentProof->save();
+            } else {
+                $statusText = $daysRemaining . ' days remaining';
+            }
+        } else {
+            $statusText = 'No Plan Found';
+        }
+    }
+    elseif ($paymentProof->status === 'expired') {
+        $statusText = 'Expired';
+    }
+@endphp
+
+@if($statusText === 'Expired')
+    <span class="text-danger">{{ $statusText }}</span>
+@elseif($statusText === 'Subscription Not Approved')
+    <span class="text-warning">{{ $statusText }}</span>
+@else
+    <span class="text-success">{{ $statusText }}</span>
+@endif
+</td>
+
+
                                         <td>
                                             @if ($paymentProof->status == 'pending')
                                                 <span class="badge bg-warning">Pending</span>
@@ -98,8 +115,9 @@
                                                     <i class="fa fa-eye text-primary"></i>
                                                 </button>
 
-                                                <button id="deletePlan" data-id="{{ $paymentProof->id }}" class="btn btn-light btn-sm rounded-circle border" title="Delete"><i
-                                                        class="fa fa-trash text-danger"></i></button>
+                                                <button class="btn btn-light btn-sm rounded-circle border deletePlan" data-id="{{ $paymentProof->id }}"  title="Delete">
+                                                    <i class="fa fa-trash text-danger"></i>
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>
@@ -224,7 +242,7 @@ $('#saveStatus').on('click', function() {
     });
 });
 
-$('#deletePlan').on('click', function(){
+$('.deletePlan').on('click', function(){
     let id = $(this).data('id');
 
     Swal.fire({

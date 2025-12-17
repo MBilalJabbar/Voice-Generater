@@ -14,7 +14,7 @@ class AddUserController extends Controller
     // Retrieve all users and pass them to the adduser index blade view
     public function index(Request $request)
     {
-        $users = User::all();
+        $users = User::with('creditHistories')->get();
         // $users = User::whereIn('user_role', ['admin', 'manager'])->get();
         return view('admin.adduser.index', compact('users'));
     }

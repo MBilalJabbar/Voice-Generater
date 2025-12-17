@@ -151,7 +151,7 @@ Route::post('/reset-user-password', [UserController::class, 'submitConfirmPasswo
 
 
 // Payment Routes
-Route::get('FreePlanActive/{id}', [PaymentProof::class, 'FreePlanActive']);
+Route::get('FreePlanActive/{id}', [PaymentProof::class, 'FreePlanActives'])->middleware('auth')->name('FreePlanActive');
 Route::get('/viewCheckout/{id}', [PaymentController::class, 'viewCheckout']);
 Route::post('/progressCheckout', [Subscription::class, 'progressCheckout']);
 Route::get('/binancePay/{id}', [PaymentController::class, 'binancePay']);
@@ -175,3 +175,13 @@ Route::post('/contactSupport', [ContactSupprotController::class, 'contactSupport
 
 Route::get('/support/get', [ContactSupprotController::class, 'showSupportPage']);
 
+
+
+Route::get('/credit-details', [PaymentProof::class, 'CreditDetails'])
+    ->name('credit.details');
+
+
+
+// Route::get('/password-credit', function () {
+//     return view('creditDetails.credit-histories');
+// });
