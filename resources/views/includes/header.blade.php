@@ -34,16 +34,21 @@
                 <div class="d-flex align-items-center">
 
                     <div class="me-2">
-                        @if($headerSubscription)
+                       @if($headerSubscription)
                             <h5 class="available-credits">
-                                Available Credits: {{ $headerSubscription->user->credits ?? 0 }}
-                                 {{-- / Plan Expire Date: {{ ($headerSubscription->user)->plan_expiry_date ?? 0 }} --}}
+                                Available Credits: {{ number_format($availableCredits) }}
+
+                                {{-- @if($nearestExpiry)
+                                    <small class="text-muted d-block">
+                                        Expires {{ \Carbon\Carbon::parse($nearestExpiry)->format('d M Y, H:i') }}
+                                    </small>
+                                @endif --}}
                             </h5>
-                        @else
-                            <h5 class="available-credits">
-                                Available Credits: {{ Auth::user()->credits ?? 0 }}
-                            </h5>
-                        @endif
+                    @else
+                        <h5 class="available-credits">
+                            Available Credits: 0
+                        </h5>
+                    @endif
 
 
                     </div>

@@ -21,4 +21,13 @@ class Subscription extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    public function creditHistories(){
+        return $this->hasMany(CreditHistory::class, 'subscription_id', 'id');
+    }
+
+    // Relationship to get the latest credit history
+    public function latestCredit(){
+        return $this->hasOne(CreditHistory::class, 'subscription_id', 'id')->latest('created_at');
+    }
+
 }

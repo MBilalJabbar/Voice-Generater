@@ -100,7 +100,7 @@ class AdminController extends Controller
 
     public function payment()
     {
-        $paymentProofs = Subscription::with(['user', 'plan'])->orderBy('created_at', 'Desc')->get();
+        $paymentProofs = Subscription::with(['user', 'plan', 'latestCredit'])->orderBy('created_at', 'desc')->get();
 
         return view('admin.payment.index', compact('paymentProofs'));
     }
