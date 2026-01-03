@@ -297,7 +297,7 @@ $(function() {
   <div class="card custom-card shadow-sm" style="border-radius:10px; border:2px solid rgba(231,234,233,1); overflow:hidden;">
     <div class="card-body d-flex align-items-center p-3">
       <div style="width:30%;">
-        <div class="voice-avatar-wrapper position-relative" style="width:100px; height:100px;">
+        <div class="voice-avatar-wrapper position-relative voiceCardMobile" style="width:100px; height:100px;">
           <div class="play-overlay d-flex justify-content-center align-items-center">
             <button class="btn btn-light rounded-circle play-btn" data-audio="${audioUrl}" style="width:40px; height:40px;">
               <i class="fa-solid fa-play"></i>
