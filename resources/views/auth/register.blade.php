@@ -290,7 +290,7 @@
 
                     <!-- Sign In Header and Account Link -->
                     <h3 class="d-inline-block">Sign Up</h3>
-                    <div class="account-link-container" style="color:#8D8D8D;">
+                    <div class="account-link-container onMobile" style="color:#8D8D8D;">
                         Have an Account?<a href="{{ url('/login') }}"><br> Sign in</a>
                     </div>
 

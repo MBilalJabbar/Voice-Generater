@@ -36,7 +36,7 @@
                     <div class="me-2">
                        @if($headerSubscription)
                             <h5 class="available-credits">
-                                Available Credits: {{ number_format($availableCredits) }}
+                                <span class="creditAvailable">Available</span> Credits: {{ number_format($availableCredits) }}
 
                                 {{-- @if($nearestExpiry)
                                     <small class="text-muted d-block">
@@ -46,7 +46,7 @@
                             </h5>
                     @else
                         <h5 class="available-credits">
-                            Available Credits: 0
+                            <span class="creditAvailable">Available</span> Credits: 0
                         </h5>
                     @endif
 

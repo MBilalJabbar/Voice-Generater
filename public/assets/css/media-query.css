@@ -30,6 +30,12 @@
     .signup-margin-top{
         margin-top: 350px !important;
     }
+    .onMobile{
+        display: flex;
+        align-items: end !important;
+        margin-top: 0 !important;
+        gap: 6px;
+    }
 
 
     /* Dasboard Page */
@@ -70,6 +76,12 @@
     }
     .crad-margin-b{
         margin-bottom: 0 !important;
+    }
+    .voiceCardMobile{
+        width: 100% !important;
+    }
+    .creditAvailable{
+        display: none;
     }
 
     /* Generate Audio Page */

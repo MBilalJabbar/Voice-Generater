@@ -285,7 +285,7 @@
 
                     <!-- Sign In Header and Account Link -->
                     <h3 class="d-inline-block">Sign in</h3>
-                    <div class="account-link-container" style="color:#8D8D8D;">
+                    <div class="account-link-container onMobile" style="color:#8D8D8D;">
                         No Account? <a href="/register" class="ml-1"> <br> Sign up</a>
                     </div>
 
