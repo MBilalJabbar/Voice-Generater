@@ -264,7 +264,7 @@
                 <div class="card shadow-sm p-4" style="border-radius:12px; border:2px solid rgba(231, 234, 233, 1);">
                     <div class="mb-4">
                         <div class="d-flex justify-content-between ">
-                            <h5 class="d-flex align-items-center mb-3">
+                            <h5 class="d-flex align-items-center mb-3 voice-selection-heading">
                                 <i class="fa-solid fa-sliders" style="color: #003E78;"></i>
                                 <span style="padding-left: 8px;">Voice Selection</span>
                             </h5>
@@ -367,7 +367,7 @@
                             {{-- <label class="form-check-label" for="boost-audio-switch"></label> --}}
                         </div>
 
-                        <div class="text-end mt-4">
+                        <div class="text-end mt-4 generate-download-buttons">
                             <button class="btn btn-sm text-white" id="generate-audio"
                                 style="background: rgba(0, 62, 120, 1); border-radius: 15px; padding: 0.4rem 0.8rem;">
                                 <i class="fa-solid fa-microphone me-2"></i> Generate Audio
@@ -1391,7 +1391,7 @@ document.addEventListener('click', function (e) {
                         <td>${index + 1}</td>
                         <td>${credit.total_credits}</td>
                         <td>
-                            <span class="badge ${credit.status === 'available' ? 'bg-success' : 'bg-secondary'}">
+                            <span class="badge ${credit.status === 'available' ? 'bg-success' : 'bg-danger'}">
                                 ${credit.status}
                             </span>
                         </td>

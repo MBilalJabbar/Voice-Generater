@@ -129,8 +129,10 @@ public function generateAudioVoices(Request $request){
     $user = Auth::user();
     $requiredCredits = mb_strlen($text);
 
+    $today = Carbon::today();
     $availableCredits = CreditHistory::where('user_id', $user->user_id)
         ->where('status', 'available')
+        ->where('expiry_date', '>=', $today)
         ->where('remaining_credits', '>', 0)
         ->sum('remaining_credits');
 

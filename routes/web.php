@@ -28,7 +28,10 @@ Route::get('/task-history', [TaskController::class, 'taskhistory'])->name('taskh
 Route::get('/voices-Page', [VoiceController::class, 'index'])->name('voice.index');
 Route::get('/clone-voice', [CloneVoiceController::class, 'index'])->name('clonevoice.index');
 Route::get('/setting', [PagesController::class, 'setting'])->name('pages.setting');
+Route::get('/admin-setting', [PagesController::class, 'adminsetting'])->name('pages.adminsetting');
 Route::get('/profile', [PagesController::class, 'profile'])->name('pages.profile');
+Route::get('/admin-profile', [PagesController::class, 'profileAdmin'])->name('pages.adminprofile');
+
 Route::get('/contact', [PagesController::class, 'contact'])->name('pages.contact');
 Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard.index');
 Route::get('/admin/payment-proof', [AdminController::class, 'payment'])->name('admin.payment.index');

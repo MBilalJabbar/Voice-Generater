@@ -73,7 +73,7 @@
                     <div class="row" style="padding: 15px">
 
                         <!-- Recent Tasks -->
-                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4 mobile-margin">
                             <div class="card custom-card"
                                 style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
                                 <div class="card-body">
@@ -91,7 +91,7 @@
                         </div>
 
                         <!-- Completed Tasks -->
-                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4 mobile-margin">
                             <div class="card custom-card"
                                 style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
                                 <div class="card-body">
@@ -109,7 +109,7 @@
                         </div>
 
                         <!-- Processing Tasks -->
-                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4 mobile-margin">
                             <div class="card custom-card"
                                 style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
                                 <div class="card-body">
@@ -119,12 +119,15 @@
                                         </span>
                                         <div class="flex-fill ms-3">
                                             <h5 class="fw-semibold mb-0 lh-1">
-                                        @if(Auth::user()->plan_name)
-                                            {{ Auth::user()->plan_name }}
-                                        @else
-                                            No Plan
-                                        @endif
-                                    </h5>
+                                                @if ($plaStatus && $plaStatus->payment_method === 'free' && $plaStatus->status === 'approved')
+                                                    Free Plan
+                                                @elseif ($plaStatus && $plaStatus->payment_method !== 'free' && $plaStatus->status === 'approved')
+                                                    Paid Plan
+                                                @else
+                                                    No Plan
+                                                @endif
+
+                                            </h5>
                                             <p class="mb-0 fs-10 text-muted fw-semibold">Your Current Plan Status</p>
                                         </div>
                                     </div>
@@ -133,7 +136,7 @@
                         </div>
 
                         <!-- Failed Tasks -->
-                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4">
+                        <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12 mb-4 mobile-margin">
                             <div class="card custom-card"
                                 style="border-radius:10px; border:2px solid rgba(231, 234, 233, 1);">
                                 <div class="card-body">
@@ -157,7 +160,9 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
 <div class="flex-fill ms-3">
     <h5 class="fw-semibold mb-0 lh-1">
         @if($remainingDays > 0)
-            ({{ $remainingDays }} {{ Str::plural('day', $remainingDays) }} )
+            <button id="openCredits" class="btn btn-sm btn-primary">
+                                Plans Details
+                            </button>
         @elseif($remainingDays === 0)
             (Expires today)
         @else
@@ -165,7 +170,7 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
         @endif
 
     </h5>
-    <p class="mb-0 fs-10 text-muted fw-semibold">Remaining Days</p>
+    <p class="mb-0 fs-10 text-muted fw-semibold">Plans Details</p>
 </div>
 
                                         </div>
@@ -259,7 +264,7 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
         </div>
     </div>
 
-        <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+        {{-- <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 70vw; height: 50vh;">
             <div class="modal-content border-0 shadow-sm rounded-3" style="height: 100%;">
                 <!-- Header -->
@@ -276,10 +281,7 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
                         <div class="row mb-4">
                             <div class="col-md-4 small">
                                 <p><strong style="color:#47739E;">Status:</strong><br> <span id="modalStatus"></span></p>
-                                {{-- <p>
-                                    <strong style="color:#47739E;">Completed:</strong><br>
-                                    <span id="modalCompleted"></span>
-                                </p> --}}
+
                                 <p><strong style="color:#47739E;">Filename:</strong><br><span id="modalFilename"></span></p>
                                 <p><strong style="color:#47739E;">Model ID:</strong><br> <span id="modalModel"></span></p>
                                 <p><strong style="color:#47739E;">Languages:</strong><br> <span id="modalLanguage"></span></p>
@@ -288,7 +290,7 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
                                <p>
                                 <strong style="color:#47739E;">Created:</strong><br>
                                 <span id="modalCreated"></span>
-                                {{-- <span class="voice-time" data-time="{{ $voice->started_time }}">Loading...</span> --}}
+
                                 </p>
 
                                 <p><strong style="color:#47739E;">Voice ID:</strong><br> <span id="modalVoiceId"></p>
@@ -298,18 +300,7 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
                                     <strong>Stability:</strong> <span id="modalStability"></span></p>
                                 </p>
                             </div>
-                            {{-- <div class="col-md-4 d-grid gap-2">
-                                <button class="btn btn-primary btn-lg fw-semibold"
-                                    style="background:#003E78; border:none;">Download Audio</button>
-                                <button class="btn btn-lg fw-semibold" style="background: #E5EDF5; border:none;">Download
-                                    Subtitles (SRT)</button>
-                                <button class="btn btn-lg fw-semibold" style="background: #E5EDF5; border:none;">Copy
-                                    Text</button>
-                                <button class="btn btn-lg fw-semibold" style="background: #E5EDF5; border:none;">Copy
-                                    Voice ID</button>
-                                <button class="btn btn-lg fw-semibold" style="background: #E5EDF5; border:none;">Copy
-                                    Model ID</button>
-                            </div> --}}
+
                             <div class="col-md-4 d-grid gap-2">
     <button id="downloadAudio" class="btn btn-primary btn-lg fw-semibold"
         style="background:#003E78; border:none;">Download Audio</button>
@@ -347,7 +338,180 @@ $remainingDays = $expiry ? (int) $today->diffInDays($expiry, false) : null;
                 </div>
             </div>
         </div>
+    </div> --}}
+
+
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down modal-xl">
+        <div class="modal-content border-0 shadow rounded-4">
+
+            <!-- Header -->
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-dark" id="taskModalLabel">
+                    Task Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+                <div class="card border-0 rounded-4">
+
+                    <h6 class="fw-bold mb-4" style="color:#003E78;">
+                        Task Information
+                    </h6>
+
+                    <!-- Info Section -->
+                    <div class="row g-4 small">
+
+                        <!-- Column 1 -->
+                        <div class="col-12 col-md-4">
+                            <p><strong style="color:#47739E;">Status</strong><br>
+                                <span id="modalStatus"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Filename</strong><br>
+                                <span id="modalFilename"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Model ID</strong><br>
+                                <span id="modalModel"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Languages</strong><br>
+                                <span id="modalLanguage"></span>
+                            </p>
+                        </div>
+
+                        <!-- Column 2 -->
+                        <div class="col-12 col-md-4">
+                            <p><strong style="color:#47739E;">Created</strong><br>
+                                <span id="modalCreated"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Voice ID</strong><br>
+                                <span id="modalVoiceId"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Voice Name</strong><br>
+                                <span id="modalVoiceName"></span>
+                            </p>
+
+                            <p>
+                                <strong>Speed:</strong> <span id="modalSpeed"></span> /
+                                <strong>Stability:</strong> <span id="modalStability"></span>
+                            </p>
+                        </div>
+
+                        <!-- Column 3 (Buttons) -->
+                        <div class="col-12 col-md-4 d-grid gap-2">
+                            <button id="downloadAudio"
+                                class="btn btn-primary fw-semibold"
+                                style="background:#003E78; border:none;">
+                                Download Audio
+                            </button>
+
+                            <button id="downloadSubtitles"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Download Subtitles (SRT)
+                            </button>
+
+                            <button id="copyText"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Copy Text
+                            </button>
+
+                            <button id="copyVoiceId"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Copy Voice ID
+                            </button>
+
+                            <button id="copyModelId"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Copy Model ID
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Text Content -->
+                    <h6 class="fw-bold mb-2" style="color:#003E78;">
+                        Text Content
+                    </h6>
+
+                    <p class="small text-muted" id="modalText"></p>
+
+                    <div class="text-end small text-muted mb-3">
+                        Character count: <span id="charCount">0</span> |
+                        Word count: <span id="wordCount">0</span>
+                    </div>
+
+                    <!-- Audio -->
+                    <audio id="voicePlayer" controls
+                        class="w-100 rounded shadow-sm"
+                        style="background:#E5EDF5; height:45px;">
+                        <source id="modalAudioSource" src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
+
+
+
+<div class="modal fade" id="taskModalDetails" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-3">
+
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold" id="taskModalLabel">Credits Details</h5>
+                {{-- <button type="button" class="btn-close" data-bs-dismiss="modal"></button> --}}
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>No.</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Expiry Date</th>
+                                <th>Purchase Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="creditsTableBody">
+                            <tr>
+                                <td colspan="5" class="text-center text-muted">
+                                    Loading credits...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                {{-- <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    Close
+                </button> --}}
+            </div>
+
+        </div>
+    </div>
+</div>
 
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -709,6 +873,85 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 </script> --}}
+
+
+{{-- plan details modal script --}}
+<script>
+document.addEventListener('click', function (e) {
+
+    if (!e.target.matches('#openCredits')) return;
+
+    fetch("{{ route('credit.details') }}")
+        .then(res => res.json())
+        .then(res => {
+
+            let tbody = document.getElementById('creditsTableBody');
+            tbody.innerHTML = '';
+
+            if (!res.data.length) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="text-center">No credits found</td>
+                    </tr>`;
+            }
+
+            res.data.forEach((credit, index) => {
+            //     const expiryDate = new Date(credit.expiry_date).toLocaleDateString('en-GB', {
+            //     day: '2-digit',
+            //     month: 'short',
+            //     year: 'numeric'
+            // });
+
+            // const purchaseDate = new Date(credit.purchase_date).toLocaleDateString('en-GB', {
+            //     day: '2-digit',
+            //     month: 'short',
+            //     year: 'numeric'
+            // });
+
+             // Expiry date
+            const expiryDateObj = new Date(credit.expiry_date);
+            const expiryDate =
+                String(expiryDateObj.getDate()).padStart(2, '0') + '/' +
+                String(expiryDateObj.getMonth() + 1).padStart(2, '0') + '/' +
+                expiryDateObj.getFullYear() + ' ' +
+                String(expiryDateObj.getHours()).padStart(2, '0') + ':' +
+                String(expiryDateObj.getMinutes()).padStart(2, '0') + ':' +
+                String(expiryDateObj.getSeconds()).padStart(2, '0');
+
+            // Purchase date
+            const purchaseDateObj = new Date(credit.purchase_date);
+            const purchaseDate =
+                String(purchaseDateObj.getDate()).padStart(2, '0') + '/' +
+                String(purchaseDateObj.getMonth() + 1).padStart(2, '0') + '/' +
+                purchaseDateObj.getFullYear() + ' ' +
+                String(purchaseDateObj.getHours()).padStart(2, '0') + ':' +
+                String(purchaseDateObj.getMinutes()).padStart(2, '0') + ':' +
+                String(purchaseDateObj.getSeconds()).padStart(2, '0');
+
+
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${credit.total_credits}</td>
+                        <td>
+                            <span class="badge ${credit.status === 'available' ? 'bg-success' : 'bg-danger'}">
+                                ${credit.status}
+                            </span>
+                        </td>
+                        <td>${expiryDate}</td>
+                        <td>${purchaseDate}</td>
+                    </tr>
+                `;
+            });
+
+            new bootstrap.Modal(
+                document.getElementById('taskModalDetails')
+            ).show();
+        });
+
+});
+</script>
 
 
 @endsection

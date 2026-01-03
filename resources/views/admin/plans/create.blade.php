@@ -29,7 +29,7 @@
                         @endif
                         <div class="row">
                             {{-- Basic Details --}}
-                            <div class="mb-3 col-6">
+                            <div class="mb-3 col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                                 <label for="name" class="form-label">Name</label>
                                 <input type="text" name="name" class="form-control" placeholder="e.g., Basic Plan"
                                     value="{{  old('name', isset($plansEdit) ? $plansEdit->name : "") }}" required>
@@ -38,7 +38,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-6">
+                            <div class="mb-3 col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                                 <label for="price" class="form-label">Price ($)</label>
                                 <input type="number" name="price" class="form-control" placeholder="e.g., 9.99"
                                     value="{{ old('price', isset($plansEdit) ? $plansEdit->price : "") }}" step="0.01" required>
@@ -47,7 +47,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-6">
+                            <div class="mb-3 col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
                                 <label for="duration" class="form-label">Duration</label>
                                 <input type="text" name="duration" class="form-control" placeholder="e.g., 30 days"
                                     value="{{ old('duration', isset($plansEdit) ? $plansEdit->duration : "") }}" required>
@@ -56,8 +56,8 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-6">
-                                <label for="expires" class="form-label">Expiration Date (Optional)</label>
+                            <div class="mb-3 col-6 col-sm-6 col-md-6 col-lg-6 col-xl-6">
+                                <label for="expires" class="form-label">Expiration Date <span class="expiration-date">(Optional)</span></label>
                                 <input type="date" name="expires" class="form-control"
                                     value="{{ old('expires', isset($plansEdit) ? $plansEdit->expires : "") }}">
                                 @error('expires')
@@ -69,7 +69,7 @@
                         <hr class="my-4">
                         <h5 class="mb-3">Usage Limits</h5>
                         <div class="row">
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="characters" class="form-label">Characters Limit</label>
                                 <input type="number" name="characters" class="form-control" placeholder="e.g., 100000"
                                     value="{{ old('characters', isset($plansEdit) ? $plansEdit->characters : "") }}">
@@ -78,7 +78,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="minutes" class="form-label">Minutes Limit</label>
                                 <input type="number" name="minutes" class="form-control" placeholder="e.g., 600"
                                     value="{{ old('minutes', isset($plansEdit) ? $plansEdit->minutes : "") }}">
@@ -92,7 +92,7 @@
                         <h5 class="mb-3">Feature Toggles (Select Yes/No)</h5>
                         <div class="row">
                             {{-- Feature Group 1 --}}
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="text_to_speech" class="form-label">Text to Speech</label>
                                 <select name="text_to_speech" class="form-select" required>
                                     <option value="1" {{ old('text_to_speech', isset($plansEdit) ? $plansEdit->text_to_speech : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -103,7 +103,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="bulk_voice_generation" class="form-label">Bulk Voice Generation</label>
                                 <select name="bulk_voice_generation" class="form-select" required>
                                     <option value="1" {{ old('bulk_voice_generation', isset($plansEdit) ? $plansEdit->bulk_voice_generation : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -114,7 +114,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="voice_cloning" class="form-label">Voice Cloning</label>
                                 <select name="voice_cloning" class="form-select" required>
                                     <option value="1" {{ old('voice_cloning', isset($plansEdit) ? $plansEdit->voice_cloning : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -126,7 +126,7 @@
                             </div>
 
                             {{-- Feature Group 2 --}}
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="voice_effects" class="form-label">Voice Effects</label>
                                 <select name="voice_effects" class="form-select" required>
                                     <option value="1" {{ old('voice_effects', isset($plansEdit) ? $plansEdit->voice_effects : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -137,7 +137,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="ultra_hd_audio" class="form-label">Ultra HD Audio</label>
                                 <select name="ultra_hd_audio" class="form-select" required>
                                     <option value="1" {{ old('ultra_hd_audio', isset($plansEdit) ? $plansEdit->ultra_hd_audio : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -148,7 +148,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="all_voices_models" class="form-label">All Voices/Models Access</label>
                                 <select name="all_voices_models" class="form-select" required>
                                     <option value="1" {{ old('all_voices_models', isset($plansEdit) ? $plansEdit->all_voices_models : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -160,7 +160,7 @@
                             </div>
 
                             {{-- Feature Group 3 --}}
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="priority_usage" class="form-label">Priority Usage</label>
                                 <select name="priority_usage" class="form-select" required>
                                     <option value="1" {{ old('priority_usage', isset($plansEdit) ? $plansEdit->priority_usage : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -171,7 +171,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="faster_processing" class="form-label">Faster Processing</label>
                                 <select name="faster_processing" class="form-select" required>
                                     <option value="1" {{ old('faster_processing', isset($plansEdit) ? $plansEdit->faster_processing : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -182,7 +182,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="team_studio_usage" class="form-label">Team Studio Usage</label>
                                 <select name="team_studio_usage" class="form-select" required>
                                     <option value="1" {{ old('team_studio_usage', isset($plansEdit) ? $plansEdit->team_studio_usage : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -194,7 +194,7 @@
                             </div>
 
                             {{-- Feature Group 4 (Final Row) --}}
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="premium_support" class="form-label">Premium Support</label>
                                 <select name="premium_support" class="form-select" required>
                                     <option value="1" {{ old('premium_support', isset($plansEdit) ? $plansEdit->premium_support : null) == 1 ? 'selected' : '' }}>Yes</option>
@@ -205,7 +205,7 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-3 col-4">
+                            <div class="mb-3 col-6 col-sm-6 col-md-4 col-lg-4 col-xl-4">
                                 <label for="extended_usage" class="form-label">Extended Usage/Rights</label>
                                 <select name="extended_usage" class="form-select" required>
                                     <option value="1" {{ old('extended_usage', isset($plansEdit) ? $plansEdit->extended_usage :null) == 1 ? 'selected' : '' }}>Yes</option>

@@ -171,9 +171,9 @@
         }
     </style>
     <div class="container-fluid mt-4">
-        <div class="row  mb-4">
+        <div class="row  mb-4 hole-container">
 
-            <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12 col-12 mb-3 mb-xl-0" style="width: 50%">
+            <div class="col-xl-8 col-lg-7 col-md-12 col-sm-12 col-12 mb-3 mb-xl-0 filters-margin-b searchFilter-width" style="width: 50%">
                 <div class="card custom-card search-card shadow-sm">
                     <div class="input-group">
                         <span class="input-group-text bg-white" style="padding-right: 0.5rem;">
@@ -184,10 +184,10 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12 mb-3 mb-xl-0">
+            <div class="col-xl-6 col-lg-5 col-md-12 col-sm-12 col-12 mb-3 mb-xl-0 ">
                 <div class="row mb-4">
                     <!-- Trending Dropdown -->
-                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3 mb-xl-0">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3 mb-xl-0 filters-margin-b">
                         <div class="card custom-card">
                             <div class="compact-header-btn trending-btn active" style="padding: 17px; cursor:pointer;">
                                 <i class="fa-solid fa-chart-line me-2" style="color:#003E78;"></i> Trending
@@ -202,7 +202,7 @@
                     </div>
 
                     <!-- Filter Dropdown -->
-                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3 mb-xl-0">
+                    <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-3 mb-xl-0 filters-margin-b">
                         <div class="card custom-card">
                             <div class="compact-header-btn filter-btn" style="padding: 17px; cursor:pointer;">
                                 <i class="fa-solid fa-filter me-2" style="color:#003E78;"></i> Filter
@@ -293,7 +293,7 @@ $(function() {
         const metaLine = `${voice.gender || 'N/A'} • ${voice.age || 'N/A'} • ${fullLanguage} • ${accentText}`;
 
         return `
-<div class="col-xxl-4 col-lg-4 col-md-6 col-sm-12 mb-4">
+<div class="col-xxl-4 col-lg-4 col-md-6 col-sm-12 mb-4 crad-margin-b">
   <div class="card custom-card shadow-sm" style="border-radius:10px; border:2px solid rgba(231,234,233,1); overflow:hidden;">
     <div class="card-body d-flex align-items-center p-3">
       <div style="width:30%;">

@@ -9,7 +9,7 @@
         <div class="row g-4">
 
             @foreach ($plans as $webplans)
-                <div class="col-md-4 mt-5">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 mt-5">
                     <div class="p-4 shadow-sm h-100 d-flex flex-column justify-content-between"
                         style="border-radius:25px; border:1px solid #eee;">
                         <div class="" style="color:#231D4F;">

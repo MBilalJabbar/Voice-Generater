@@ -132,7 +132,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    {{-- <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 50vw;">
             <div class="modal-content border-0 shadow-sm rounded-3" style="height: 80%;">
                 <!-- Header -->
@@ -196,7 +196,103 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down modal-lg">
+        <div class="modal-content border-0 shadow rounded-4">
+
+            <!-- Header -->
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-dark" id="taskModalLabel">
+                    Plan Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+                <div class="card border-0 rounded-4">
+
+                    <h6 class="fw-bold mb-4" style="color:#003E78;">
+                        Plan Information
+                    </h6>
+
+                    <!-- Status Form -->
+                    <form id="subscriptionForm" method="POST" class="row g-3 align-items-end">
+                        @csrf
+
+                        <div class="col-12 col-md-6">
+                            <label for="status" class="form-label" style="color:#47739E;">
+                                Status
+                            </label>
+                            <select name="status" id="status" class="form-select">
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="expired">Expired</option>
+                            </select>
+                        </div>
+
+                        <div class="col-12 col-md-6 text-md-end">
+                            <button type="button" id="saveStatus"
+                                class="btn mt-2 mt-md-0"
+                                style="background:#47739E; color:#fff; padding:10px 24px; border-radius:8px;">
+                                Save
+                            </button>
+                        </div>
+                    </form>
+
+                    <hr class="my-4">
+
+                    <!-- Plan Details -->
+                    <div class="row g-4 small">
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Status</strong><br>
+                            <span id="modalStatus"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Name</strong><br>
+                            <span id="modalName"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Email</strong><br>
+                            <span id="modalEmail"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Phone Number</strong><br>
+                            <span id="modalPhone"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Plan</strong><br>
+                            <span id="modalPlanName"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Payment Method</strong><br>
+                            <span id="modalPaymentMethod"></span>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                            <strong style="color:#47739E;">Plan Day Remaining</strong><br>
+                            <span id="modalRemaningday"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
+
+
+
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

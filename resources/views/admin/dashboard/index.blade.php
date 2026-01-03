@@ -9,10 +9,9 @@
         <div class="row g-4">
             <!-- Total Users -->
             <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="card custom-card shadow-sm"
-                    style="background:#003E78; color:#fff; border-radius:25px;
-                        padding:42px;">
-                    <div class="card-body d-flex flex-column justify-content-center">
+                <div class="card custom-card shadow-sm custom-card-sdesktop"
+                    style="background:#003E78; color:#fff; border-radius:25px;">
+                    <div class="card-body d-flex flex-column justify-content-center custom-card-sdesktop-heading">
                         <h5 class="text-white mb-2" style="font-weight: 200">Total Users</h5>
                         <h3 class="text-white r">{{ $userCount }}</h3>
                     </div>
@@ -21,10 +20,9 @@
 
             <!-- Free Plan -->
             <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="card custom-card shadow-sm"
-                    style="background:#003E78; color:#fff; border-radius:25px;
-                        padding:42px;">
-                    <div class="card-body d-flex flex-column justify-content-center">
+                <div class="card custom-card shadow-sm custom-card-sdesktop"
+                    style="background:#003E78; color:#fff; border-radius:25px;">
+                    <div class="card-body d-flex flex-column justify-content-center custom-card-sdesktop-heading">
                         <h5 class="text-white mb-2" style="font-weight: 200">Free Plan</h5>
                         <h3 class="text-white r">{{ $FreePlansCount }}</h3>
                     </div>
@@ -33,10 +31,9 @@
 
             <!-- Paid Plan -->
             <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="card custom-card shadow-sm"
-                    style="background:#003E78; color:#fff; border-radius:25px;
-                        padding:42px;">
-                    <div class="card-body d-flex flex-column justify-content-center">
+                <div class="card custom-card shadow-sm custom-card-sdesktop"
+                    style="background:#003E78; color:#fff; border-radius:25px;">
+                    <div class="card-body d-flex flex-column justify-content-center custom-card-sdesktop-heading">
                         <h5 class="text-white mb-2" style="font-weight: 200">Paid Plan</h5>
                         <h3 class="text-white r">{{ $PaidPlansCount }}</h3>
                     </div>
@@ -45,10 +42,9 @@
 
             <!-- Total Revenue -->
             <div class="col-xxl-3 col-lg-3 col-md-6 col-sm-12">
-                <div class="card custom-card shadow-sm"
-                    style="background:#003E78; color:#fff; border-radius:25px;
-                        padding:42px;">
-                    <div class="card-body d-flex flex-column justify-content-center">
+                <div class="card custom-card shadow-sm custom-card-sdesktop"
+                    style="background:#003E78; color:#fff; border-radius:25px;">
+                    <div class="card-body d-flex flex-column justify-content-center custom-card-sdesktop-heading">
                         <h5 class="text-white mb-2" style="font-weight: 200">Total Revenue</h5>
                         <h3 class="text-white r"> $ {{ number_format($TotalRevenue ?? 0, 2) }}</h3>
                     </div>
@@ -56,7 +52,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-8">
+            <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
 
                 <div class="year-buttons mb-3">
                     <button id="thisYearBtn" class="btn btn-primary">This Year</button>
@@ -121,7 +117,7 @@
                 </script>
             </div>
 
-            <div class="col-xxl-4 col-lg-4 col-md-6 col-sm-12">
+            <div class="col-xxl-4 col-lg-4 col-md-12 col-sm-12">
                 <div class="card custom-card shadow-sm p-4" style="height: 400px; overflow: auto; margin-top: 52px;">
                     <h3 style="font-size: 20px">New Users</h3>
                     @foreach ($users as $user)

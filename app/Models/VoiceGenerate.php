@@ -27,4 +27,8 @@ class VoiceGenerate extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'user_id');
     }
+    public function subscription()
+    {
+        return $this->belongsTo(Subscription::class, 'user_id', 'user_id');
+    }
 }

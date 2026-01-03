@@ -21,7 +21,7 @@
                     <form action="/CreateUserAdmin" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row">
-                            <div class="mb-3 col-8">
+                            <div class="mb-3 col-12 col-sm-12 col-md-8 col-lg-8 col-xl-8">
                                 <label for="name" class="form-label">Profile Image</label>
                                 <input type="file" name="profileImage" class="form-control" placeholder="Enter name"
                                     value="{{ old('profileImage') }}" required>

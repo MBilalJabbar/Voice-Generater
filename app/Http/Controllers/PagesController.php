@@ -17,6 +17,11 @@ class PagesController extends Controller
         $user = Auth::user();
         return view('pages.setting', compact('user'));
     }
+    public function adminsetting()
+    {
+        $user = Auth::user();
+        return view('pages.admin-setting', compact('user'));
+    }
     public function UpdateSetting(Request $request){
     $user = Auth::user();
 
@@ -58,6 +63,12 @@ class PagesController extends Controller
     {
         $user = Auth::user();
         return view('pages.profile', compact('user'));
+    }
+
+    public function profileAdmin()
+    {
+        $user = Auth::user();
+        return view('pages.admin-profile', compact('user'));
     }
 }
 

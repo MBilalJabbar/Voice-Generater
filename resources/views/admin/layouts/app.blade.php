@@ -16,6 +16,7 @@
     @include('admin.includes.style')
 
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('assets/css/media-query.css') }}">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 
@@ -24,7 +25,7 @@
 
 
 
-    
+
 
 
 </head>
@@ -83,7 +84,7 @@
         <footer class="footer mt-auto py-3 bg-white text-center">
             <div class="container">
                 <span class="text-muted"> Copyright © <span id="year"></span> <a href="javascript:void(0);"
-                        class="text-dark fw-semibold">Medical</a>
+                        class="text-dark fw-semibold">All Rights Reserved Develop By: MBiLaL</a>
             </div>
         </footer>
         <!-- END FOOTER -->
