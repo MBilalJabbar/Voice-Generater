@@ -2,7 +2,7 @@
     <div class="main-header-container container-fluid">
         <div class="header-content-left">
             <div class="header-element">
-                <div class="horizontal-logo">
+                <div class="horizontal-logo horizontal-logo-admin">
                     <a href="index.html" class="header-logo">
                         <img src="{{ asset('assets/images/profile.png') }}" alt="logo" class="desktop-logo">
                         <img src="{{ asset('assets/images/profile.png') }}" alt="logo" class="toggle-logo">
@@ -19,7 +19,7 @@
                     data-bs-toggle="sidebar" href="javascript:void(0);">
                     <span></span>
                 </a>
-                <h5 class="mt-3" style="font-weight: 400;"> 👋 Hello! @if (Auth::check())
+                <h5 class="mt-3 header-name-admin" style="font-weight: 400;"> 👋 Hello! @if (Auth::check())
                     {{ Auth::user()->user_name  }} ({{ Auth::user()->user_role }})
                     @else
                     Guest
@@ -33,7 +33,7 @@
                 <div class="d-flex align-items-center">
 
                     <div class="me-2">
-                        <h5 class="available-credits">
+                        <h5 class="available-credits credits-admin-hide ">
                             Available Credits: {{ $totalCredits }} / Expire Plan: {{ $nextExpire }}
                         </h5>
                     </div>
@@ -66,12 +66,12 @@
                         aria-labelledby="mainHeaderProfile">
 
                         <li>
-                            <a class="dropdown-item d-flex" href="{{ url('profile') }}">
+                            <a class="dropdown-item d-flex" href="{{ url('admin-profile') }}">
                                 <i class="ti ti-user fs-18 me-2 op-7"></i>Profile
                             </a>
                         </li>
                         <li>
-                            <a class="dropdown-item d-flex" href="{{ url('setting') }}">
+                            <a class="dropdown-item d-flex" href="{{ url('admin-setting') }}">
                                 <i class="ti ti-settings fs-18 me-2 op-7"></i>Settings
                             </a>
                         </li>

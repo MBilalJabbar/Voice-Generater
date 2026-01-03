@@ -13,7 +13,7 @@
                     </a>
                 </div>
             </div>
-            <div class="header-element">
+            <div class="header-element header-mobile">
                 <a aria-label="Hide Sidebar"
                     class="sidemenu-toggle header-link animated-arrow hor-toggle horizontal-navtoggle"
                     data-bs-toggle="sidebar" href="javascript:void(0);">
@@ -53,7 +53,7 @@
 
                     </div>
 
-                    <a href="javascript:void(0);" class="header-link me-2">
+                    <a href="javascript:void(0);" class="header-link me-2 bille-mobile-hide">
                         <i class="fa-solid fa-bell fs-4"></i>
                     </a>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Subscription;
 use App\Models\TaskHistory;
 use App\Models\VoiceGenerate;
 use Illuminate\Http\Request;
@@ -16,7 +17,9 @@ class DashbaordController extends Controller
                         ->where('user_id', Auth::id())
                         ->orderBy('created_at', 'Desc')
                         ->get();
-        return view('dashboard.index', compact('voices'));
+        $plaStatus = Subscription::where('user_id', Auth::id())
+        ->latest('created_at')->first();
+        return view('dashboard.index', compact('voices', 'plaStatus'));
     }
 
     // Voices Show view button popup in DataTable

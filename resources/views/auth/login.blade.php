@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <!-- Load Font Awesome for the Google icon -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/media-query.css') }}">
 
     <style>
         /* --- Colors & Typography --- */
@@ -236,7 +237,7 @@
             /* Lower text block moves to standard white background area */
             .sign-in-text-block {
                 padding: 40px 20px;
-                text-align: center;
+                /* text-align: center; */
             }
 
             .sign-in-text-block h1 {
@@ -273,7 +274,7 @@
             <div class="col-12 col-lg-6">
                 <div class="left-branding">
                     <a href="{{ url('/') }}">
-                        <img class="mt-5" src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="" width="50%">
+                        <img class="mt-5 logo-responsive" src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="" width="50%">
                     </a>
                 </div>
             </div>
@@ -327,7 +328,7 @@
 
         <!-- --- Lower Text Section (Appears below the blue band on the left) --- -->
         <div class="row">
-            <div class="col-12 col-lg-6">
+            <div class="col-12 col-lg-6 text-maring-mobile-login">
                 <div class="sign-in-text-block">
                     <h1 style="color: #003E78; font-weight:700;margin-top:-170px">Sign In to </h1>
                     <h1 style="font-weight:300">Speechly Studio</h1>

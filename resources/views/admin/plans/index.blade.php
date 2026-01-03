@@ -7,7 +7,7 @@
 @section('body')
     <div class="container-fluid">
         <!-- PAGE HEADER AND ADD BUTTON -->
-        <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+        <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb admin-plans-mobile">
             <nav>
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="">Home</a></li>

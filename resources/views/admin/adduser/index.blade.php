@@ -7,7 +7,7 @@
 @section('body')
     <div class="container-fluid">
         <!-- PAGE HEADER AND ADD BUTTON -->
-        <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb">
+        <div class="d-md-flex d-block align-items-center justify-content-between my-4 page-header-breadcrumb add-user-mobile">
             <nav>
                 <ol class="breadcrumb mb-0">
                     <li class="breadcrumb-item"><a href="">Home</a></li>
@@ -237,7 +237,7 @@
 
 
     {{-- View Modal Data --}}
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    {{-- <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" style="max-width: 50vw; height: 30vh;">
         <div class="modal-content border-0 shadow-sm rounded-3" style="height: 80%;">
             <div class="modal-header border-0 pb-0">
@@ -261,9 +261,7 @@
                                 <h6 style="color:#47739E;">Name</h6>
                                 <h6 style="color:#47739E;">Email</h6>
                                 <h6 style="color:#47739E;">Phone</h6>
-                                {{-- <p><strong style="color:#47739E;">Name:</strong><br> <span id="modalName"></span></p>
-                                <p><strong style="color:#47739E;">Email:</strong><br> <span id="modalEmail"></span></p>
-                                <p><strong style="color:#47739E;">Phone:</strong><br> <span id="modalPhone"></span></p> --}}
+
                             </div>
                             <div class="col-md-6 small">
                                 <h6 id="modalName"></h6>
@@ -277,7 +275,73 @@
             </div>
         </div>
     </div>
+</div> --}}
+
+{{-- View Modal Data --}}
+<div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down modal-lg">
+        <div class="modal-content border-0 shadow rounded-4">
+
+            {{-- Header --}}
+            <div class="modal-header border-0">
+                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+
+            {{-- Body --}}
+            <div class="modal-body p-4">
+                <div class="card border-0 rounded-4">
+
+                    <h6 class="fw-bold text-primary mb-4 text-center text-md-center">
+                        User Information
+                    </h6>
+
+                    <div class="row align-items-center">
+
+                        {{-- Profile --}}
+                        <div class="col-12 col-md-4 text-center mb-4 mb-md-0">
+                            <img id="modalImage"
+                                src="{{ asset('assets/images/profile.png') }}"
+                                alt="Profile Image"
+                                class="rounded-circle border shadow-sm mb-2"
+                                style="width: 110px; height: 110px; object-fit: cover;">
+
+                            <p class="mb-0 fw-semibold text-muted" id="modalRole">
+                                Role: N/A
+                            </p>
+                        </div>
+
+                        {{-- User Info --}}
+                        <div class="col-12 col-md-8">
+                            <div class="row g-3 small">
+
+                                <div class="col-5 text-muted fw-semibold">
+                                    Name
+                                </div>
+                                <div class="col-7" id="modalName"></div>
+
+                                <div class="col-5 text-muted fw-semibold">
+                                    Email
+                                </div>
+                                <div class="col-7" id="modalEmail"></div>
+
+                                <div class="col-5 text-muted fw-semibold">
+                                    Phone
+                                </div>
+                                <div class="col-7" id="modalPhone"></div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+    </div>
 </div>
+
 
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

@@ -76,10 +76,10 @@ $subscription->days_remaining = $daysRemaining;
                 ]);
 
                 // Optional (current plan info)
-                // $user->current_plan_id = $plan->id;
-                // $user->plan_name = $plan->name;
-                // $user->plan_expiry_date = $expiryDate;
-                // $user->save();
+                $user->current_plan_id = $plan->id;
+                $user->plan_name = $plan->name;
+                $user->plan_expiry_date = $expiryDate;
+                $user->save();
             }
 
             // $user->plan_expiry_date = now()->addDays($durationDays)->endOfDay();
@@ -192,10 +192,12 @@ $subscription->days_remaining = $daysRemaining;
     ]);
 
     // Update user info
-    // $user->current_plan_id = $plan->id;
-    // $user->plan_name = $plan->name;
-    // $user->plan_expiry_date = $expiryDate;
+    $user->current_plan_id = $plan->id;
+    $user->plan_name = $plan->name;
+    $user->plan_expiry_date = $expiryDate;
+
     // $user->credits = ($user->credits ?? 0) + $plan->characters;
+
     $user->free_plan_used = true;
     $user->save();
 
@@ -209,6 +211,7 @@ $subscription->days_remaining = $daysRemaining;
             'success' => true,
             'data' => CreditHistory::where('user_id', Auth::id())
                 ->select('total_credits', 'status', 'expiry_date', 'purchase_date')
+                ->orderBy('purchase_date', 'desc')
                 ->limit(10)
                 ->get()
         ]);

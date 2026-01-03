@@ -261,7 +261,7 @@
         </div>
     </div>
 
-    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    {{-- <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" style="max-width: 70vw; height: 50vh;">
             <div class="modal-content border-0 shadow-sm rounded-3" style="height: 100%;">
                 <!-- Header -->
@@ -278,10 +278,7 @@
                         <div class="row mb-4">
                             <div class="col-md-4 small">
                                 <p><strong style="color:#47739E;">Status:</strong><br> <span id="modalStatus"></span></p>
-                                {{-- <p>
-                                    <strong style="color:#47739E;">Completed:</strong><br>
-                                    <span class="voice-time" id="modalCompleted" data-time="">Loading...</span>
-                                </p> --}}
+
                                 <p><strong style="color:#47739E;">Filename:</strong><br><span id="modalFilename"></span>
                                 </p>
                                 <p><strong style="color:#47739E;">Model ID:</strong><br> <span id="modalModel"></span></p>
@@ -338,7 +335,133 @@
                 </div>
             </div>
         </div>
+    </div> --}}
+
+    <div class="modal fade" id="taskModal" tabindex="-1" aria-labelledby="taskModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-fullscreen-sm-down modal-xl">
+        <div class="modal-content border-0 shadow rounded-4">
+
+            <!-- Header -->
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-dark" id="taskModalLabel">
+                    Task Details
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body p-4">
+                <div class="card border-0 rounded-4">
+
+                    <h6 class="fw-bold mb-4" style="color:#003E78;">
+                        Task Information
+                    </h6>
+
+                    <div class="row g-4 small">
+
+                        <!-- Column 1 -->
+                        <div class="col-12 col-md-4">
+                            <p><strong style="color:#47739E;">Status</strong><br>
+                                <span id="modalStatus"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Filename</strong><br>
+                                <span id="modalFilename"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Model ID</strong><br>
+                                <span id="modalModel"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Languages</strong><br>
+                                <span id="modalLanguage"></span>
+                            </p>
+                        </div>
+
+                        <!-- Column 2 -->
+                        <div class="col-12 col-md-4">
+                            <p>
+                                <strong style="color:#47739E;">Created</strong><br>
+                                <span class="voice-time" id="modalCreated" data-time="">Loading...</span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Voice ID</strong><br>
+                                <span id="modalVoiceId"></span>
+                            </p>
+
+                            <p><strong style="color:#47739E;">Voice Name</strong><br>
+                                <span id="modalVoiceName"></span>
+                            </p>
+
+                            <p>
+                                <strong>Speed:</strong> <span id="modalSpeed"></span><br>
+                                <strong>Stability:</strong> <span id="modalStability"></span>
+                            </p>
+                        </div>
+
+                        <!-- Column 3 -->
+                        <div class="col-12 col-md-4 d-grid gap-2">
+                            <button id="downloadAudio"
+                                class="btn btn-primary fw-semibold"
+                                style="background:#003E78; border:none;">
+                                Download Audio
+                            </button>
+
+                            <button id="downloadSubtitles"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Download Subtitles (SRT)
+                            </button>
+
+                            <button id="copyText"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Copy Text
+                            </button>
+
+                            <button id="copyVoiceId"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Copy Voice ID
+                            </button>
+
+                            <button id="copyModelId"
+                                class="btn fw-semibold"
+                                style="background:#E5EDF5; border:none;">
+                                Copy Model ID
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <!-- Text Content -->
+                    <h6 class="fw-bold mb-2" style="color:#003E78;">
+                        Text Content
+                    </h6>
+
+                    <p class="small text-muted" id="modalText"></p>
+
+                    <div class="text-end small text-muted mb-3">
+                        Character count: <span id="charCount">0</span> |
+                        Word count: <span id="wordCount">0</span>
+                    </div>
+
+                    <!-- Audio Player -->
+                    <audio id="voicePlayer" controls
+                        class="w-100 rounded shadow-sm"
+                        style="background:#E5EDF5; height:45px;">
+                        <source id="modalAudioSource" src="" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
+
 
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>

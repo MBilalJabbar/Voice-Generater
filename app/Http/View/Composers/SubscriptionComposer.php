@@ -4,6 +4,7 @@ namespace App\Http\View\Composers;
 use App\Models\CreditHistory;
 use Illuminate\View\View;
 use App\Models\Subscription;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 
@@ -52,14 +53,38 @@ class SubscriptionComposer
                 ->first();
 
             //  GenAI-style credits
+            // $today = Carbon::today();
+            // $creditRows = CreditHistory::where('user_id', Auth::id())
+            //     ->where('status', 'available')
+            //     ->where('remaining_credits', '>', 0)
+            //     ->where('expiry_date', '>=', $today )
+            //     ->orderBy('expiry_date', 'asc')
+            //     ->get();
+
+            // $availableCredits = $creditRows->sum('remaining_credits');
+            // $nearestExpiry = $creditRows->first()?->expiry_date;
+
+            $today = Carbon::today();
+
+            CreditHistory::where('user_id', Auth::id())
+                ->where('status', 'available')
+                ->where('remaining_credits', '>', 0)
+                ->whereDate('expiry_date', '<=', $today)
+                ->update([
+                    'status' => 'expired',
+                    'remaining_credits' => 0
+                ]);
             $creditRows = CreditHistory::where('user_id', Auth::id())
                 ->where('status', 'available')
                 ->where('remaining_credits', '>', 0)
+                ->whereDate('expiry_date', '>', $today)
                 ->orderBy('expiry_date', 'asc')
                 ->get();
 
             $availableCredits = $creditRows->sum('remaining_credits');
-            $nearestExpiry = $creditRows->first()?->expiry_date;
+            $nearestExpiry    = $creditRows->first()?->expiry_date;
+
+
         }
 
         // --- GenAI Credit Details ---

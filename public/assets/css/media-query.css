@@ -1,0 +1,261 @@
+.custom-card-sdesktop{
+    padding: 42px;
+}
+
+/* For Mobile Devices */
+@media (max-width:767px){
+    /* Main Web Page */
+    .margin-bottom-sidebar-mobile{
+        margin-bottom: 20px !important;
+    }
+    /* .navbar-brand{
+        display: none !important;
+    } */
+    .mobile-header-padding{
+        padding-inline: 12px !important;
+    }
+    .voice-mobile-width{
+        width: 90% !important;
+    }
+
+    /* Login Page */
+    .logo-responsive{
+        margin-top: 0 !important;
+    }
+    .text-maring-mobile-login{
+        margin-top: 150px !important;
+    }
+
+    /* Sign Up Page */
+    .signup-margin-top{
+        margin-top: 350px !important;
+    }
+
+
+    /* Dasboard Page */
+    .header-mobile{
+        display: flex !important;
+        justify-content: center;
+        align-items: center !important;
+    }
+    .horizontal-logo a{
+        display: none;
+    }
+    .header-element h5{
+        font-size: 14px;
+        margin: 0 !important;
+    }
+    .bille-mobile-hide{
+        display: none !important;
+    }
+    .mobile-margin{
+        margin-bottom: 0 !important;
+    }
+    .dt-length{
+        text-align: left !important;
+    }
+    .dt-search{
+        text-align: left !important;
+    }
+
+    /* Voices Page */
+    .hole-container{
+        margin-bottom: 0 !important;
+    }
+    .filters-margin-b{
+        margin-bottom: 0 !important;
+    }
+    .searchFilter-width{
+        width: 100% !important;
+    }
+    .crad-margin-b{
+        margin-bottom: 0 !important;
+    }
+
+    /* Generate Audio Page */
+    .generate-download-buttons{
+        display: flex !important;
+        gap: 12px !important;
+        flex-direction: column !important;
+    }
+    .voice-selection-heading{
+        font-size: 12px !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+
+
+    /* Admin Dashboard Page */
+    .horizontal-logo-admin a{
+        display: none !important;
+    }
+    .header-name-admin{
+        display: none !important;
+    }
+    .credits-admin-hide{
+        font-size: 10px !important;
+    }
+    /* Add User Admin */
+    .add-user-mobile{
+        display: flex !important;
+    }
+
+    /* Create Plans Page */
+    .admin-plans-mobile{
+        display: flex !important;
+    }
+    .expiration-date{
+        display: none !important;
+    }
+
+
+}
+
+/* For Tablets */
+@media (min-width:768px) and (max-width:992px){
+    /* Main Web Page */
+
+    /* login page */
+    .logo-responsive{
+        margin-top: 0 !important;
+        width: 44% !important;
+    }
+    .text-maring-mobile-login{
+        margin-top: 200px !important;
+    }
+    /* SignUp Page */
+    .signup-margin-top{
+        margin-top: 600px !important;
+    }
+    /* Dashboard Page */
+    .header-mobile{
+        display: flex !important;
+        justify-content: center;
+        align-items: center !important;
+    }
+    .horizontal-logo a{
+        display: none;
+    }
+    .header-element h5{
+        font-size: 14px;
+        margin: 0 !important;
+    }
+    .bille-mobile-hide{
+        display: none !important;
+    }
+
+    /* Voices Page */
+    .hole-container{
+        margin-bottom: 0 !important;
+    }
+    .filters-margin-b{
+        margin-bottom: 0 !important;
+    }
+    .searchFilter-width{
+        width: 100% !important;
+    }
+    .crad-margin-b{
+        margin-bottom: 0 !important;
+    }
+
+    /* Generate Audio Page */
+    .generate-download-buttons{
+        display: flex !important;
+        gap: 12px !important;
+        flex-direction: column !important;
+    }
+    .voice-selection-heading{
+        font-size: 12px !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+
+}
+
+ /* For Small Desktops */
+@media (min-width:993px) and (max-width:1024px){
+
+    /* Voice Generate */
+    .generate-download-buttons{
+        display: flex !important;
+        gap: 12px !important;
+        flex-direction: column !important;
+    }
+    .voice-selection-heading{
+        font-size: 12px !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+    /* admin Bashboard */
+    .custom-card-sdesktop{
+        padding: 26px !important;
+    }
+    .custom-card-sdesktop-heading h5{
+        font-size: 16px !important;
+    }
+    .custom-card-sdesktop-heading h3{
+        font-size: 16px !important;
+    }
+
+}
+
+@media (min-width:1025px) and (max-width:1200px){
+
+    /* voice generate */
+    .generate-download-buttons{
+        display: flex !important;
+        gap: 12px !important;
+        flex-direction: column !important;
+    }
+
+    .voice-selection-heading{
+        font-size: 12px !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+    /* admin Bashboard */
+    .custom-card-sdesktop{
+        padding: 26px !important;
+    }
+    .custom-card-sdesktop-heading h5{
+        font-size: 16px !important;
+    }
+    .custom-card-sdesktop-heading h3{
+        font-size: 16px !important;
+    }
+}
+
+@media (min-width:1201px) and (max-width:1440px){
+
+    /* voice generate */
+    .generate-download-buttons{
+        display: flex !important;
+        gap: 12px !important;
+        flex-direction: column !important;
+    }
+    .voice-selection-heading{
+        font-size: 14px !important;
+        text-align: center !important;
+        margin: 0 !important;
+    }
+    /* admin Bashboard */
+    /* .custom-card-sdesktop{
+        padding: 26px !important;
+    }
+    .custom-card-sdesktop-heading h5{
+        font-size: 18px !important;
+    }
+    .custom-card-sdesktop-heading h3{
+        font-size: 18px !important;
+    } */
+}
+
+
+
+/* For Desktops */
+@media (min-width:1025px){
+    /* admin Bashboard */
+    .custom-card-sdesktop{
+        padding: 26px !important;
+    }
+}

@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('assets/css/media-query.css') }}">
     <style>
         /* ---------- Global Styles ---------- */
         body {
@@ -125,43 +126,154 @@
                 padding: 8px 20px;
             }
         }
+
+
+        /* ===== Sidebar (Mobile & Tablet) ===== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: -300px;
+    width: 280px;
+    height: 100%;
+    background: #fff;
+    padding: 20px;
+    transition: all 0.3s ease;
+    z-index: 1050;
+    box-shadow: 2px 0 15px rgba(0,0,0,0.15);
+}
+
+/* Open sidebar */
+.sidebar.active {
+    left: 0;
+}
+
+/* Overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    z-index: 1040;
+}
+
+.sidebar-overlay.active {
+    display: block;
+}
+
+/* Close button */
+.close-sidebar {
+    font-size: 32px;
+    background: none;
+    border: none;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    cursor: pointer;
+}
+
+/* Buttons spacing */
+.sidebar .btn {
+    width: 100%;
+}
+
+/* ===== Desktop Layout ===== */
+@media (min-width: 992px) {
+    .sidebar {
+        position: static;
+        width: auto;
+        height: auto;
+        padding: 0;
+        left: 0;
+        box-shadow: none;
+        display: flex !important;
+        flex-direction: row;
+        align-items: center;
+    }
+
+    .sidebar-overlay,
+    .close-sidebar {
+        display: none !important;
+    }
+
+    .navbar-nav {
+        flex-direction: row;
+        margin-left: 40px;
+    }
+
+    .navbar-toggler {
+        display: none;
+    }
+
+    .sidebar .mt-4 {
+        margin-top: 0 !important;
+        /* margin-left: auto; */
+        display: flex;
+        gap: 12px;
+    }
+
+    .sidebar .btn {
+        width: auto;
+    }
+}
+
+
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-light p-0">
-        <div class="container">
-            <a class="navbar-brand mt-3 mr-4" href="#home-section">
-                <a href="{{ url('/') }}">
-                <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}"
-                    alt="Logo" width="115">
-                    </a>
-                {{-- <img src="{{ asset('assets/images/Group 1000007299@3x.png') }}" alt="Logo" width="80"> --}}
-                <br>
-            </a>
+    <div class="container mobile-header-padding">
 
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+        <!-- LOGO -->
+        <a class="navbar-brand mt-3 mr-4" href="{{ url('/') }}">
+            <img src="{{ asset('assets/images/Purple and Black Podcast Microphone Logo 1 (1).png') }}"
+                alt="Logo" width="115">
+        </a>
 
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav mr-auto ml-5">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="#home-section">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#pricing-section">Pricing</a>
-                    </li>
-                </ul>
+        <!-- TOGGLER -->
+        <button class="navbar-toggler" type="button" id="sidebarToggle">
+            <span class="navbar-toggler-icon"></span>
+        </button>
 
-                <div class="ml-auto d-flex align-items-center">
+        <!-- SIDEBAR MENU -->
+        <div class="navbar-collapse sidebar" id="navbarNav">
+            <button class="close-sidebar d-lg-none">&times;</button>
+
+            <ul class="navbar-nav mt-4 margin-bottom-sidebar-mobile">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#home-section">Home</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="#pricing-section">Pricing</a>
+                </li>
+            </ul>
+
+            <!-- BUTTONS -->
+            {{-- <div class="mt-4">
+                <a href="{{ route('login') }}" class="btn btn-outline btn-block mb-2">
+                    Log In
+                </a>
+                <a href="{{ route('register') }}" class="btn btn-primary-custom btn-block">
+                    Sign Up
+                </a>
+            </div> --}}
+            <div class="ml-auto d-flex align-items-center">
                     <a href="{{ route('login') }}" class="btn btn-outline btn-rounded mr-3">Log In</a>
                     <a href="{{ route('register') }}" class="btn btn-primary-custom btn-rounded">Sign Up</a>
                 </div>
-            </div>
+
         </div>
-    </nav>
+
+        <!-- OVERLAY -->
+        <div class="sidebar-overlay"></div>
+
+    </div>
+</nav>
+
 
     <section class="hero-section container" id="home-section">
         <h1>The most realistic voice AI platform</h1>
@@ -181,7 +293,7 @@
             style="width: 70%; border-radius: 50px;"></video>
     </div> --}}
     <div class="text-center my-2">
-        <video src="{{ asset('assets/video/1115101_Broadcast_Woman_3840x2160.mp4') }}"
+        <video class="voice-mobile-width" src="{{ asset('assets/video/1115101_Broadcast_Woman_3840x2160.mp4') }}"
             style="width: 65%; height: 50vh; border-radius: 12px; object-fit: cover;" autoplay muted loop>
         </video>
     </div>
@@ -255,7 +367,7 @@
 
 
             @foreach ($plans as $webplans)
-                <div class="col-md-4 mt-5">
+                <div class="col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4 mt-5">
                     <div class="p-4 shadow-sm h-100 d-flex flex-column justify-content-between"
                         style="border-radius:25px; border:1px solid #eee;">
                         <div class="" style="color:#231D4F;">
@@ -354,6 +466,34 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+    <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('navbarNav');
+    const overlay = document.querySelector('.sidebar-overlay');
+    const closeBtn = document.querySelector('.close-sidebar');
+
+    toggleBtn.addEventListener('click', () => {
+        sidebar.classList.add('active');
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    });
+
+    function closeSidebar() {
+        sidebar.classList.remove('active');
+        overlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    overlay.addEventListener('click', closeSidebar);
+    closeBtn.addEventListener('click', closeSidebar);
+});
+</script>
+
+
+
 
     <script>
         @if (session('success'))

@@ -56,7 +56,7 @@
 
                 <!-- Binance Payment -->
                 <div class="d-flex justify-content-center flex-column align-items-center mb-3">
-                    <div class="col-8 my-3">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 my-3">
                         <form action="{{ url('progressCheckout') }}" method="POST">
                             @csrf
                             <input type="hidden" name="plan_id" value="{{ $fatchPlan->id }}">
@@ -70,7 +70,7 @@
 
                     </div>
 
-                    <div class="col-8">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
                         <form action="{{ url('progressCheckout') }}" method="POST">
                             @csrf
                             <input type="hidden" name="plan_id" value="{{ $fatchPlan->id }}">
@@ -87,7 +87,7 @@
                         </a> --}}
                     </div>
 
-                    <div class="col-8 my-3">
+                    <div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8 my-3">
                         <form action="{{ url('progressCheckout') }}" method="POST">
                             @csrf
 
