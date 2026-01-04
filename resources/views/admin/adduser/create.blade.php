@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    Item Index
+    Speechly Studio - Add User
 @endsection
 
 @section('body')

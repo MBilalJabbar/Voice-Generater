@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Dashboard
+    Speechly Studio - Voice-Generate
 @endsection
 
 @section('body')

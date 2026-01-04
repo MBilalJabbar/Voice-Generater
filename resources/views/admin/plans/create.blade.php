@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    Plans Create
+    Speechly Studio - {{ isset($plansEdit) ? 'Plans Edit' : 'Plans Create'}}
 @endsection
 
 @section('body')

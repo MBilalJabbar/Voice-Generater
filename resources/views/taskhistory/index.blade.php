@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Dashboard
+    Speechly Studio - Task History
 @endsection
 
 @section('body')
