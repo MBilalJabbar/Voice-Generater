@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    User Profile Settings
+    Admin - Profile Settings
 @endsection
 
 @section('body')

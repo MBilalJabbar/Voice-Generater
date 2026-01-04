@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Plans
+    Speechly Studio - Plans
 @endsection
 
 @section('body')

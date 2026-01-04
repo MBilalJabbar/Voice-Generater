@@ -10,7 +10,8 @@
     <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=no'>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <link rel="icon" href="/assets/docimage/sarzonelogo.png">
+    <link rel="icon" type="image/png" href="{{ asset('assets/images/fav-icon.png') }}">
+    {{-- <link rel="icon" href="/assets/docimage/sarzonelogo.png"> --}}
     <!-- TITLE -->
     <title> @yield('title')</title>
     @include('admin.includes.style')

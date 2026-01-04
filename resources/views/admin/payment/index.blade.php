@@ -1,7 +1,7 @@
 @extends('admin.layouts.app')
 
 @section('title')
-    Payment Proof
+    Speechly Studio - Payment Proof
 @endsection
 
 @section('body')

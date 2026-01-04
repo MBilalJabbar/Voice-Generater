@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('title')
-    Profile
+   Speechly Studio - Profile
 @endsection
 
 @section('body')
